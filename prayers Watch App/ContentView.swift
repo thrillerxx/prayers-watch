@@ -1,24 +1,38 @@
 import SwiftUI
 import AVFoundation
 
+final class SpeechDelegate: NSObject, AVSpeechSynthesizerDelegate {
+    var onFinish: (() -> Void)?
+
+    func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didFinish utterance: AVSpeechUtterance) {
+        onFinish?()
+    }
+}
+
 struct ContentView: View {
     @State private var prayers: [Prayer] = []
     @State private var errorText: String?
-    @State private var lang: String = "en"
+    @State private var lang: String = "en"   // default English
     @State private var isSpeaking = false
 
     private let synthesizer = AVSpeechSynthesizer()
+    private let speechDelegate = SpeechDelegate()
 
     var body: some View {
         VStack(spacing: 10) {
             Text("Divinity")
                 .font(.headline)
 
-            Picker("Lang", selection: $lang) {
-                Text("EN").tag("en")
-                Text("ES").tag("es")
+            HStack(spacing: 8) {
+                Button("EN") { lang = "en" }
+                    .buttonStyle(.bordered)
+                    .tint(lang == "en" ? .green : .gray)
+
+                Button("ES") { lang = "es" }
+                    .buttonStyle(.bordered)
+                    .tint(lang == "es" ? .green : .gray)
             }
-            .pickerStyle(.wheel)
+
             if let errorText {
                 Text(errorText)
                     .font(.footnote)
@@ -52,16 +66,19 @@ struct ContentView: View {
 
         isSpeaking = true
 
+        // Wire delegate so we can end exactly when speech ends.
+        speechDelegate.onFinish = {
+            DispatchQueue.main.async {
+                isSpeaking = false
+            }
+        }
+        synthesizer.delegate = speechDelegate
+
         let utterance = AVSpeechUtterance(string: text)
         utterance.voice = AVSpeechSynthesisVoice(language: lang == "es" ? "es-MX" : "en-US")
         utterance.rate = 0.45
 
         synthesizer.speak(utterance)
-
-        // temporary: re-enable after a bit (we'll make it exact with delegate next)
-        DispatchQueue.main.asyncAfter(deadline: .now() + 6) {
-            isSpeaking = false
-        }
     }
 }
 
