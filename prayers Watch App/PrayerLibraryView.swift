@@ -14,15 +14,13 @@ struct PrayerLibraryView: View {
     @State private var errorText: String?
     @State private var lang: String = "en"   // default English
     @State private var isSpeaking = false
+    @State private var speakingTitle: String?
 
     private let synthesizer = AVSpeechSynthesizer()
     private let speechDelegate = SpeechDelegate()
 
     var body: some View {
-        VStack(spacing: 10) {
-            Text("Prayer Library")
-                .font(.headline)
-
+        VStack(spacing: 8) {
             HStack(spacing: 8) {
                 Button("EN") { lang = "en" }
                     .buttonStyle(.bordered)
@@ -37,20 +35,26 @@ struct PrayerLibraryView: View {
                 Text(errorText)
                     .font(.footnote)
                     .foregroundStyle(.red)
-            } else if let first = prayers.first {
-                Text(first.title)
-                    .font(.caption)
-
-                Button(isSpeaking ? "Speaking…" : "Speak") {
-                    speak(first)
-                }
-                .disabled(isSpeaking)
+                    .padding(.horizontal)
             } else {
-                Text("Loading…")
-                    .font(.caption)
+                List(prayers) { prayer in
+                    Button {
+                        speak(prayer)
+                    } label: {
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text(prayer.title)
+                            if isSpeaking, speakingTitle == prayer.title {
+                                Text("Speaking…")
+                                    .font(.footnote)
+                                    .foregroundStyle(.secondary)
+                            }
+                        }
+                    }
+                    .disabled(isSpeaking)
+                }
             }
         }
-        .padding()
+        .navigationTitle("Prayers")
         .onAppear {
             do {
                 prayers = try PrayerStore.load()
@@ -65,10 +69,12 @@ struct PrayerLibraryView: View {
         guard !text.isEmpty else { return }
 
         isSpeaking = true
+        speakingTitle = prayer.title
 
         speechDelegate.onFinish = {
             DispatchQueue.main.async {
                 isSpeaking = false
+                speakingTitle = nil
             }
         }
         synthesizer.delegate = speechDelegate
@@ -82,5 +88,7 @@ struct PrayerLibraryView: View {
 }
 
 #Preview {
-    PrayerLibraryView()
+    NavigationStack {
+        PrayerLibraryView()
+    }
 }
