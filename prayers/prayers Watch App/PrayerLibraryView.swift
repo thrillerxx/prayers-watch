@@ -13,11 +13,6 @@ struct PrayerLibraryView: View {
     @State private var prayers: [Prayer] = []
     @State private var errorText: String?
     @State private var lang: String = "en"   // default English
-    @State private var isSpeaking = false
-    @State private var speakingTitle: String?
-
-    private let synthesizer = AVSpeechSynthesizer()
-    private let speechDelegate = SpeechDelegate()
 
     var body: some View {
         VStack(spacing: 8) {
@@ -36,21 +31,18 @@ struct PrayerLibraryView: View {
                     .font(.footnote)
                     .foregroundStyle(.red)
                     .padding(.horizontal)
+            } else if prayers.isEmpty {
+                Text("No prayers found")
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+                    .padding(.horizontal)
             } else {
                 List(prayers) { prayer in
-                    Button {
-                        speak(prayer)
+                    NavigationLink {
+                        PrayerDetailView(prayer: prayer, lang: lang)
                     } label: {
-                        VStack(alignment: .leading, spacing: 2) {
-                            Text(prayer.title)
-                            if isSpeaking, speakingTitle == prayer.title {
-                                Text("Speaking…")
-                                    .font(.footnote)
-                                    .foregroundStyle(.secondary)
-                            }
-                        }
+                        Text(prayer.title)
                     }
-                    .disabled(isSpeaking)
                 }
             }
         }
@@ -63,18 +55,55 @@ struct PrayerLibraryView: View {
             }
         }
     }
+}
 
-    private func speak(_ prayer: Prayer) {
-        let text = prayer.translations[lang] ?? prayer.translations["en"] ?? ""
+struct PrayerDetailView: View {
+    let prayer: Prayer
+    let lang: String
+
+    @State private var isSpeaking = false
+    private let synthesizer = AVSpeechSynthesizer()
+    private let speechDelegate = SpeechDelegate()
+
+    private var text: String {
+        prayer.translations[lang] ?? prayer.translations["en"] ?? ""
+    }
+
+    var body: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 12) {
+                Text(prayer.title)
+                    .font(.headline)
+
+                if text.isEmpty {
+                    Text("No text for this prayer in the selected language.")
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                } else {
+                    Text(text)
+                        .font(.body)
+                }
+
+                Button {
+                    speak()
+                } label: {
+                    Text(isSpeaking ? "Speaking…" : "Speak")
+                }
+                .disabled(isSpeaking || text.isEmpty)
+            }
+            .padding(.horizontal)
+        }
+        .navigationTitle("Prayer")
+    }
+
+    private func speak() {
         guard !text.isEmpty else { return }
 
         isSpeaking = true
-        speakingTitle = prayer.title
 
         speechDelegate.onFinish = {
             DispatchQueue.main.async {
                 isSpeaking = false
-                speakingTitle = nil
             }
         }
         synthesizer.delegate = speechDelegate
