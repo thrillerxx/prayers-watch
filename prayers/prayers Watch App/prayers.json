@@ -1,0 +1,18 @@
+{
+  "prayers": [
+    {
+      "id": "sign_of_cross",
+      "title": "Sign of the Cross",
+      "translations": {
+        "en": "In the name of the Father, and of the Son, and of the Holy Spirit. Amen.",
+        "es": "Por la señal de la Santa Cruz, de nuestros enemigos líbranos, Señor Dios nuestro. En el nombre del Padre, y del Hijo, y del Espíritu Santo. Amén."
+      },
+      "sources": [
+        {
+          "name": "USCCB (reference)",
+          "url": "https://www.usccb.org/prayers/sign-cross"
+        }
+      ]
+    }
+  ]
+}
