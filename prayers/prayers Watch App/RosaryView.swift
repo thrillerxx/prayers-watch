@@ -41,10 +41,12 @@ struct RosaryView: View {
                 Text(currentStep?.title ?? "Rosary")
                     .font(.headline)
 
-                Text(currentText ?? "")
-                    .font(.caption)
-                    .multilineTextAlignment(.center)
-                    .lineLimit(8)
+                ScrollView {
+                    Text(currentText ?? "")
+                        .font(.caption)
+                        .multilineTextAlignment(.center)
+                        .frame(maxWidth: .infinity)
+                }
 
                 Toggle("Auto", isOn: $autoAdvance)
                     .toggleStyle(.switch)
@@ -65,6 +67,7 @@ struct RosaryView: View {
                     Button("Next") { next() }
                         .disabled(index >= steps.count - 1 || speech.isSpeaking)
                 }
+                .buttonStyle(.bordered)
 
                 Button("Change Mystery") {
                     selectedMystery = nil
