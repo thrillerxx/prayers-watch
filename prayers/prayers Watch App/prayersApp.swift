@@ -11,7 +11,11 @@ import SwiftUI
 struct prayers_Watch_AppApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            if ProcessInfo.processInfo.arguments.contains("--autoplay") {
+                RosaryView()
+            } else {
+                ContentView()
+            }
         }
     }
 }
