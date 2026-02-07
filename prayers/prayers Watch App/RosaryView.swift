@@ -75,8 +75,26 @@ struct RosaryView: View {
         }
         .padding()
         .navigationTitle("Rosary")
-        .onAppear { loadPrayers() }
+        .onAppear {
+            loadPrayers()
+            autostartIfRequested()
+        }
     }
+
+    private func autostartIfRequested() {
+        // Allows automation without UI taps (e.g. simulator launches).
+        // Usage: xcrun simctl launch ... --args --autoplay
+        guard ProcessInfo.processInfo.arguments.contains("--autoplay") else { return }
+
+        let mystery = RosaryMystery.defaultForToday()
+        start(mystery)
+
+        // Speak after state updates land
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+            speakCurrent()
+        }
+    }
+
 
     private var currentStep: RosaryStep? {
         guard steps.indices.contains(index) else { return nil }

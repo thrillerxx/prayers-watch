@@ -53,6 +53,29 @@ enum RosaryMystery: String, CaseIterable, Identifiable {
             ]
         }
     }
+
+    static func defaultForToday(_ date: Date = Date(), calendar: Calendar = .current) -> RosaryMystery {
+        // Traditional default by weekday (can be overridden later with a user setting).
+        // Sunday: Glorious
+        // Monday: Joyful
+        // Tuesday: Sorrowful
+        // Wednesday: Glorious
+        // Thursday: Luminous
+        // Friday: Sorrowful
+        // Saturday: Joyful
+        let wd = calendar.component(.weekday, from: date)
+        switch wd {
+        case 1: return .glorious
+        case 2: return .joyful
+        case 3: return .sorrowful
+        case 4: return .glorious
+        case 5: return .luminous
+        case 6: return .sorrowful
+        case 7: return .joyful
+        default: return .joyful
+        }
+    }
+
 }
 
 enum RosaryStepContent: Codable {
