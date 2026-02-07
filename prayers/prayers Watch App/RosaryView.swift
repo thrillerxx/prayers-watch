@@ -11,7 +11,10 @@ struct RosaryView: View {
     @State private var steps: [RosaryStep] = []
     @State private var index: Int = 0
 
-    @State private var autoAdvance: Bool = true
+    @AppStorage(AppSettings.autoAdvanceKey) private var autoAdvance: Bool = AppSettings.defaultAutoAdvance
+    @AppStorage(AppSettings.hapticsKey) private var hapticsOn: Bool = AppSettings.defaultHaptics
+    @AppStorage(AppSettings.voiceLanguageKey) private var voiceLanguage: String = AppSettings.defaultVoiceLanguage
+    @AppStorage(AppSettings.speechRateKey) private var speechRate: Double = Double(AppSettings.defaultSpeechRate)
 
     @StateObject private var speech = SpeechManager()
 
@@ -131,20 +134,27 @@ struct RosaryView: View {
 
     private func speakCurrent() {
         guard let text = currentText, !text.isEmpty else { return }
-        speech.speak(text: text, voiceLanguage: "en-US", rate: 0.45) {
+
+        let rate = Float(speechRate)
+        speech.speak(text: text, voiceLanguage: voiceLanguage, rate: rate) {
             if autoAdvance, index < steps.count - 1 {
                 index += 1
+                if hapticsOn { Haptics.click() }
                 speakCurrent()
+            } else if index >= steps.count - 1 {
+                if hapticsOn { Haptics.success() }
             }
         }
     }
 
     private func back() {
         index = max(0, index - 1)
+        if hapticsOn { Haptics.click() }
     }
 
     private func next() {
         index = min(steps.count - 1, index + 1)
+        if hapticsOn { Haptics.click() }
     }
 }
 
