@@ -48,6 +48,23 @@
       "translations": {
         "en": "Hail, holy Queen, Mother of mercy, our life, our sweetness, and our hope..."
       }
+    },
+
+    
+    
+    {
+      "id": "our_father_en",
+      "title": "Our Father (legacy)",
+      "translations": {
+        "en": "Our Father, who art in heaven, hallowed be thy name..."
+      }
+    },
+    {
+      "id": "hail_mary_en",
+      "title": "Hail Mary (legacy)",
+      "translations": {
+        "en": "Hail Mary, full of grace, the Lord is with thee..."
+      }
     }
   ]
 }

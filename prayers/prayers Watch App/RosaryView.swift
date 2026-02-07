@@ -1,13 +1,4 @@
 import SwiftUI
-import AVFoundation
-
-final class RosarySpeechDelegate: NSObject, AVSpeechSynthesizerDelegate {
-    var onFinish: (() -> Void)?
-
-    func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didFinish utterance: AVSpeechUtterance) {
-        onFinish?()
-    }
-}
 
 struct RosaryView: View {
     @State private var prayersById: [String: Prayer] = [:]
@@ -20,10 +11,9 @@ struct RosaryView: View {
     @State private var steps: [RosaryStep] = []
     @State private var index: Int = 0
 
-    @State private var isSpeaking = false
+    @State private var autoAdvance: Bool = true
 
-    private let synthesizer = AVSpeechSynthesizer()
-    private let delegate = RosarySpeechDelegate()
+    @StateObject private var speech = SpeechManager()
 
     var body: some View {
         VStack(spacing: 10) {
@@ -53,24 +43,34 @@ struct RosaryView: View {
                     .multilineTextAlignment(.center)
                     .lineLimit(8)
 
+                Toggle("Auto", isOn: $autoAdvance)
+                    .toggleStyle(.switch)
+
                 HStack {
                     Button("Back") { back() }
-                        .disabled(index == 0 || isSpeaking)
+                        .disabled(index == 0 || speech.isSpeaking)
 
-                    Button(isSpeaking ? "Speaking…" : "Speak") { speak() }
-                        .disabled(isSpeaking || currentText == nil)
+                    Button(speech.isSpeaking ? "Stop" : "Speak") {
+                        if speech.isSpeaking {
+                            speech.stop()
+                        } else {
+                            speakCurrent()
+                        }
+                    }
+                    .disabled(currentText == nil)
 
                     Button("Next") { next() }
-                        .disabled(index >= steps.count - 1 || isSpeaking)
+                        .disabled(index >= steps.count - 1 || speech.isSpeaking)
                 }
 
                 Button("Change Mystery") {
                     selectedMystery = nil
                     steps = []
                     index = 0
+                    speech.stop()
                 }
                 .buttonStyle(.bordered)
-                .disabled(isSpeaking)
+                .disabled(speech.isSpeaking)
             }
         }
         .padding()
@@ -89,7 +89,9 @@ struct RosaryView: View {
         case .text(let t):
             return t
         case .prayerId(let prayerId):
-            guard let prayer = prayersById[prayerId] else { return nil }
+            guard let prayer = prayersById[prayerId] else {
+                return "[Missing prayer: \(prayerId)]"
+            }
             return prayer.translations[lang] ?? prayer.translations["en"]
         }
     }
@@ -109,21 +111,14 @@ struct RosaryView: View {
         }
     }
 
-    private func speak() {
+    private func speakCurrent() {
         guard let text = currentText, !text.isEmpty else { return }
-        isSpeaking = true
-
-        delegate.onFinish = {
-            DispatchQueue.main.async {
-                isSpeaking = false
+        speech.speak(text: text, voiceLanguage: "en-US", rate: 0.45) {
+            if autoAdvance, index < steps.count - 1 {
+                index += 1
+                speakCurrent()
             }
         }
-        synthesizer.delegate = delegate
-
-        let utterance = AVSpeechUtterance(string: text)
-        utterance.voice = AVSpeechSynthesisVoice(language: "en-US")
-        utterance.rate = 0.45
-        synthesizer.speak(utterance)
     }
 
     private func back() {
