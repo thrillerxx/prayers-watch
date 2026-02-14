@@ -4,10 +4,16 @@ struct PrayerCatalog: Codable {
     let prayers: [Prayer]
 }
 
+struct PrayerSource: Codable, Hashable {
+    let name: String
+    let url: String
+}
+
 struct Prayer: Codable, Identifiable {
     let id: String
     let title: String
     let translations: [String: String]
+    let sources: [PrayerSource]?
 }
 
 enum PrayerStore {

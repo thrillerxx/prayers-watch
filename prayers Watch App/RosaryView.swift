@@ -13,10 +13,11 @@ struct RosaryView: View {
     @State private var prayersById: [String: Prayer] = [:]
     @State private var errorText: String?
 
-    @State private var lang: String = "en"
-    @State private var steps: [RosaryStep] = RosaryScripts.opening
-    @State private var index: Int = 0
+    @AppStorage("rosaryLang") private var lang: String = "en"
+    @AppStorage("rosaryMysterySet") private var mysterySetRaw: String = MysterySet.joyful.rawValue
+    @AppStorage("rosaryStepIndex") private var index: Int = 0
 
+    @State private var steps: [RosaryStep] = []
     @State private var isSpeaking = false
 
     private let synthesizer = AVSpeechSynthesizer()
@@ -39,6 +40,12 @@ struct RosaryView: View {
                     .font(.footnote)
                     .foregroundStyle(.red)
             } else {
+                Picker("Mysteries", selection: $mysterySetRaw) {
+                    ForEach(MysterySet.allCases) { set in
+                        Text(set.rawValue).tag(set.rawValue)
+                    }
+                }
+
                 Text(currentStep?.title ?? "Rosary")
                     .font(.headline)
 
@@ -51,17 +58,35 @@ struct RosaryView: View {
                     Button("Back") { back() }
                         .disabled(index == 0 || isSpeaking)
 
-                    Button(isSpeaking ? "Speaking…" : "Start") { startOrSpeak() }
+                    Button(isSpeaking ? "Speaking…" : (index == 0 ? "Start" : "Continue")) { startOrSpeak() }
                         .disabled(isSpeaking)
 
-                    Button("Skip") { skip() }
+                    Button("Next") { skip() }
                         .disabled(index >= steps.count - 1 || isSpeaking)
                 }
+
+                Button("Restart") {
+                    synthesizer.stopSpeaking(at: .immediate)
+                    isSpeaking = false
+                    index = 0
+                }
+                .font(.footnote)
+                .disabled(isSpeaking)
             }
         }
         .padding()
         .navigationTitle("Rosary")
-        .onAppear { loadPrayers() }
+        .onAppear {
+            loadPrayers()
+            rebuildSteps(resetIndexIfNeeded: false)
+        }
+        .onChange(of: mysterySetRaw) { _, _ in
+            rebuildSteps(resetIndexIfNeeded: true)
+        }
+    }
+
+    private var selectedSet: MysterySet {
+        MysterySet(rawValue: mysterySetRaw) ?? .joyful
     }
 
     private var currentStep: RosaryStep? {
@@ -69,14 +94,15 @@ struct RosaryView: View {
         return steps[index]
     }
 
-    private var currentPrayer: Prayer? {
-        guard let step = currentStep else { return nil }
-        return prayersById[step.prayerId]
-    }
-
     private var currentText: String? {
-        guard let prayer = currentPrayer else { return nil }
-        return prayer.translations[lang] ?? prayer.translations["en"]
+        guard let step = currentStep else { return nil }
+        switch step.kind {
+        case .announcement(let text):
+            return text
+        case .prayer(let id):
+            guard let prayer = prayersById[id] else { return nil }
+            return prayer.translations[lang] ?? prayer.translations["en"]
+        }
     }
 
     private func loadPrayers() {
@@ -85,6 +111,16 @@ struct RosaryView: View {
             prayersById = Dictionary(uniqueKeysWithValues: prayers.map { ($0.id, $0) })
         } catch {
             errorText = error.localizedDescription
+        }
+    }
+
+    private func rebuildSteps(resetIndexIfNeeded: Bool) {
+        steps = RosaryScripts.full(set: selectedSet)
+        if resetIndexIfNeeded {
+            index = 0
+        } else {
+            // clamp persisted index if steps changed
+            index = min(max(0, index), max(steps.count - 1, 0))
         }
     }
 
