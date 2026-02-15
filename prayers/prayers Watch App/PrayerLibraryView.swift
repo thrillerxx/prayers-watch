@@ -21,7 +21,7 @@ struct PrayerLibraryView: View {
             } else {
                 List(prayers) { prayer in
                     NavigationLink {
-                        PrayerDetailView(prayer: prayer, lang: lang)
+                        PrayerDetailView(prayer: prayer)
                     } label: {
                         Text(prayer.title)
                     }
@@ -41,7 +41,7 @@ struct PrayerLibraryView: View {
 
 struct PrayerDetailView: View {
     let prayer: Prayer
-    let lang: String = "en"
+    private let lang: String = "en"
 
     @StateObject private var speech = SpeechManager.shared
 
