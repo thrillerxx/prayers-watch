@@ -16,7 +16,7 @@ struct RosaryView: View {
     @AppStorage(AppSettings.voiceLanguageKey) private var voiceLanguage: String = AppSettings.defaultVoiceLanguage
     @AppStorage(AppSettings.speechRateKey) private var speechRate: Double = Double(AppSettings.defaultSpeechRate)
 
-    @StateObject private var speech = SpeechManager()
+    @StateObject private var speech = SpeechManager.shared
 
     var body: some View {
         VStack(spacing: 10) {
@@ -65,9 +65,11 @@ struct RosaryView: View {
                     Button("Back") { back() }
                         .disabled(index == 0 || speech.isSpeaking)
 
-                    Button(speech.isSpeaking ? "Stop" : "Speak") {
+                    Button(speech.isSpeaking ? "Pause" : (speech.isPaused ? "Resume" : "Speak")) {
                         if speech.isSpeaking {
-                            speech.stop()
+                            speech.pause()
+                        } else if speech.isPaused {
+                            speech.resume()
                         } else {
                             speakCurrent()
                         }
