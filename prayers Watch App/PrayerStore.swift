@@ -18,29 +18,26 @@ struct Prayer: Codable, Identifiable {
 
 enum PrayerStore {
     static func load() throws -> [Prayer] {
-        // Prefer a known-good bundled prayers.json, even if multiple copies exist.
-        let candidates: [URL] = (Bundle.main.urls(forResourcesWithExtension: "json", subdirectory: nil) ?? [])
-            .filter { $0.lastPathComponent == "prayers.json" }
+        // Deterministic: load the watch app’s single canonical resource.
+        let resourceName = "rosary_prayers_en"
+        let resourceExt = "json"
 
-        // Try all candidates (largest first) until one decodes.
-        let sorted = candidates.sorted { (a, b) in
-            let sa = (try? a.resourceValues(forKeys: [.fileSizeKey]).fileSize) ?? 0
-            let sb = (try? b.resourceValues(forKeys: [.fileSizeKey]).fileSize) ?? 0
-            return sa > sb
+        #if DEBUG
+        let dups = (Bundle.main.urls(forResourcesWithExtension: resourceExt, subdirectory: nil) ?? [])
+            .filter { $0.lastPathComponent == "\(resourceName).\(resourceExt)" }
+        print("[PrayerStore] \(resourceName).\(resourceExt) matches: \(dups.count)")
+        assert(dups.count <= 1, "Duplicate \(resourceName).\(resourceExt) bundled")
+        #endif
+
+        guard let url = Bundle.main.url(forResource: resourceName, withExtension: resourceExt) else {
+            throw NSError(domain: "PrayerStore", code: 1, userInfo: [NSLocalizedDescriptionKey: "\(resourceName).\(resourceExt) not found in bundle"])
         }
+        #if DEBUG
+        print("[PrayerStore] Resolved: \(url.path)")
+        #endif
 
-        var lastError: Error?
-        for url in (sorted.isEmpty ? [Bundle.main.url(forResource: "prayers", withExtension: "json")].compactMap { $0 } : sorted) {
-            do {
-                let data = try Data(contentsOf: url)
-                let catalog = try JSONDecoder().decode(PrayerCatalog.self, from: data)
-                return catalog.prayers
-            } catch {
-                lastError = error
-                continue
-            }
-        }
-
-        throw lastError ?? NSError(domain: "PrayerStore", code: 1, userInfo: [NSLocalizedDescriptionKey: "prayers.json not found in bundle"])
+        let data = try Data(contentsOf: url)
+        let catalog = try JSONDecoder().decode(PrayerCatalog.self, from: data)
+        return catalog.prayers
     }
 }

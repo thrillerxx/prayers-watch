@@ -18,9 +18,24 @@ struct Prayer: Codable, Identifiable {
 
 enum PrayerStore {
     static func load() throws -> [Prayer] {
-        guard let url = Bundle.main.url(forResource: "prayers", withExtension: "json") else {
-            throw NSError(domain: "PrayerStore", code: 1, userInfo: [NSLocalizedDescriptionKey: "prayers.json not found in bundle"])
+        // Deterministic: load the watch app’s single canonical resource.
+        let resourceName = "rosary_prayers_en"
+        let resourceExt = "json"
+
+        #if DEBUG
+        let dups = (Bundle.main.urls(forResourcesWithExtension: resourceExt, subdirectory: nil) ?? [])
+            .filter { $0.lastPathComponent == "\(resourceName).\(resourceExt)" }
+        print("[PrayerStore] \(resourceName).\(resourceExt) matches: \(dups.count)")
+        assert(dups.count <= 1, "Duplicate \(resourceName).\(resourceExt) bundled")
+        #endif
+
+        guard let url = Bundle.main.url(forResource: resourceName, withExtension: resourceExt) else {
+            throw NSError(domain: "PrayerStore", code: 1, userInfo: [NSLocalizedDescriptionKey: "\(resourceName).\(resourceExt) not found in bundle"])
         }
+        #if DEBUG
+        print("[PrayerStore] Resolved: \(url.path)")
+        #endif
+
         let data = try Data(contentsOf: url)
         let catalog = try JSONDecoder().decode(PrayerCatalog.self, from: data)
         return catalog.prayers
