@@ -14,6 +14,10 @@ struct RosaryView: View {
     // Playback state machine guards
     @State private var playbackGeneration: Int = 0
     @State private var isTransitioningStep: Bool = false
+    @State private var lastManualNavAt: Date = .distantPast
+
+    // Cancellable auto-advance work
+    @State private var autoAdvanceTask: Task<Void, Never>? = nil
 
     @AppStorage(AppSettings.autoAdvanceKey) private var autoAdvance: Bool = AppSettings.defaultAutoAdvance
     @AppStorage(AppSettings.hapticsKey) private var hapticsOn: Bool = AppSettings.defaultHaptics
@@ -76,7 +80,7 @@ struct RosaryView: View {
                         } else if speech.isPaused {
                             speech.resume()
                         } else {
-                            speakCurrent()
+                            transition(to: index, reason: .manualStart)
                         }
                     }
                     .disabled(currentText == nil)
@@ -116,7 +120,7 @@ struct RosaryView: View {
 
         // Speak after state updates land
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-            speakCurrent()
+            transition(to: index, reason: .manualStart)
         }
     }
 
@@ -202,10 +206,76 @@ struct RosaryView: View {
         }
     }
 
-    private func speakCurrent() {
+    private enum TransitionReason {
+        case manualNext
+        case manualBack
+        case manualStart
+        case autoCompletion
+    }
+
+    @MainActor
+    private func cancelAutoTask(reason: String) {
+        autoAdvanceTask?.cancel()
+        autoAdvanceTask = nil
+        #if DEBUG
+        print("[Rosary] cancelAutoTask reason=\(reason) gen=\(playbackGeneration) idx=\(index)")
+        #endif
+    }
+
+    @MainActor
+    private func transition(to newIndex: Int, reason: TransitionReason, spokenIndex: Int? = nil, callbackGeneration: Int? = nil) {
+        if isTransitioningStep {
+            #if DEBUG
+            print("[Rosary] transition ignored (reentry) reason=\(reason) gen=\(playbackGeneration) idx=\(index)")
+            #endif
+            return
+        }
+        isTransitioningStep = true
+        defer { isTransitioningStep = false }
+
+        // Debounce manual tap storms.
+        if case .manualNext = reason {
+            let now = Date()
+            if now.timeIntervalSince(lastManualNavAt) < 0.22 {
+                #if DEBUG
+                print("[Rosary] manualNext debounced gen=\(playbackGeneration) idx=\(index)")
+                #endif
+                return
+            }
+            lastManualNavAt = now
+        }
+
+        cancelAutoTask(reason: "transition")
+
+        if reason != .autoCompletion {
+            playbackGeneration &+= 1
+        }
+
+        if speech.isSpeaking || speech.isPaused {
+            speech.stop()
+        }
+
+        index = min(max(0, newIndex), max(steps.count - 1, 0))
+
+        #if DEBUG
+        print("[Rosary] transition reason=\(reason) gen=\(playbackGeneration) idx=\(index)")
+        #endif
+
+        // Start speech once (auto or manual start).
+        guard autoAdvance || reason == .manualStart else { return }
+        speakStep(at: index)
+    }
+
+    @MainActor
+    private func speakStep(at idx: Int) {
+        guard steps.indices.contains(idx) else { return }
         guard let text = currentText, !text.isEmpty else { return }
 
+        // Cancel any scheduled auto advance before starting a new utterance.
+        cancelAutoTask(reason: "speakStep")
+
         let g = playbackGeneration
+        let spokenIdx = idx
 
         let rate: Float
         switch speechSpeed {
@@ -215,73 +285,64 @@ struct RosaryView: View {
         }
 
         speech.speak(text: text, voiceLanguage: voiceLanguage, rate: rate) {
-            // Ignore stale callbacks (e.g. user hit Next while speech was in-flight).
-            guard g == playbackGeneration else { return }
-
             DispatchQueue.main.async {
-                // Re-check generation after hopping to main.
-                guard g == playbackGeneration else { return }
-
-                guard autoAdvance else {
-                    if index >= steps.count - 1, hapticsOn { Haptics.success() }
+                // Completion callback hard gate.
+                if g != playbackGeneration {
+                    #if DEBUG
+                    print("[Rosary] callback ignored (gen mismatch) cbGen=\(g) gen=\(playbackGeneration)")
+                    #endif
+                    return
+                }
+                if isTransitioningStep {
+                    #if DEBUG
+                    print("[Rosary] callback ignored (transitioning) gen=\(playbackGeneration)")
+                    #endif
+                    return
+                }
+                if index != spokenIdx {
+                    #if DEBUG
+                    print("[Rosary] callback ignored (idx changed) spoken=\(spokenIdx) idx=\(index)")
+                    #endif
+                    return
+                }
+                if !autoAdvance {
+                    #if DEBUG
+                    print("[Rosary] callback ignored (auto off)")
+                    #endif
                     return
                 }
 
-                if index < steps.count - 1 {
-                    index += 1
-                    if hapticsOn { Haptics.click() }
-
-                    let delay = Double(max(1, min(10, pauseBetweenPartsSeconds)))
-                    DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
-                        // Guard again in case generation changed during the delay.
-                        guard g == playbackGeneration else { return }
-                        speakCurrent()
-                    }
-                } else {
+                if index >= steps.count - 1 {
                     if hapticsOn { Haptics.success() }
+                    return
+                }
+
+                // Schedule next step with cancellable task.
+                let delay = Double(max(1, min(10, pauseBetweenPartsSeconds)))
+                cancelAutoTask(reason: "schedule")
+                autoAdvanceTask = Task { @MainActor in
+                    try? await Task.sleep(nanoseconds: UInt64(delay * 1_000_000_000))
+                    guard !Task.isCancelled else { return }
+                    // Guard again.
+                    guard g == playbackGeneration else { return }
+                    guard autoAdvance else { return }
+                    transition(to: index + 1, reason: .autoCompletion, spokenIndex: spokenIdx, callbackGeneration: g)
                 }
             }
         }
     }
 
     private func back() {
-        // Manual navigation cancels any in-flight auto callback.
-        playbackGeneration &+= 1
-
-        if speech.isSpeaking || speech.isPaused {
-            speech.stop()
-        }
-
-        index = max(0, index - 1)
-        if hapticsOn { Haptics.click() }
-
-        if autoAdvance {
-            DispatchQueue.main.async {
-                speakCurrent()
-            }
+        Task { @MainActor in
+            cancelAutoTask(reason: "manualBack")
+            transition(to: index - 1, reason: .manualBack)
         }
     }
 
     private func next() {
-        guard !isTransitioningStep else { return }
-        isTransitioningStep = true
-        defer { isTransitioningStep = false }
-
-        // Manual navigation cancels any in-flight auto callback.
-        playbackGeneration &+= 1
-
-        if speech.isSpeaking || speech.isPaused {
-            speech.stop()
-        }
-
-        index = min(steps.count - 1, index + 1)
-        if hapticsOn { Haptics.click() }
-
-        // If auto mode is enabled, immediately start speaking the new step.
-        if autoAdvance {
-            DispatchQueue.main.async {
-                speakCurrent()
-            }
+        Task { @MainActor in
+            cancelAutoTask(reason: "manualNext")
+            transition(to: index + 1, reason: .manualNext)
         }
     }
 }
