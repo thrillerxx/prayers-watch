@@ -42,10 +42,18 @@ struct RosaryView: View {
                     .font(.headline)
 
                 ScrollView {
-                    Text(currentText ?? "")
-                        .font(.caption)
-                        .multilineTextAlignment(.center)
-                        .frame(maxWidth: .infinity)
+                    VStack(spacing: 8) {
+                        if let label = hailMaryCounterLabel {
+                            Text(label)
+                                .font(.footnote)
+                                .foregroundStyle(.secondary)
+                        }
+
+                        Text(currentText ?? "")
+                            .font(.caption)
+                            .multilineTextAlignment(.center)
+                            .frame(maxWidth: .infinity)
+                    }
                 }
 
                 Toggle("Auto", isOn: $autoAdvance)
@@ -134,6 +142,29 @@ struct RosaryView: View {
             }
         }
         return step.title
+    }
+
+    private var hailMaryCounterLabel: String? {
+        guard let step = currentStep else { return nil }
+        // Show counter only during the 10 Hail Mary steps of a decade.
+        guard step.title == "Hail Mary" else { return nil }
+
+        // Find the start of this decade's Hail Mary run by scanning backwards
+        // until we hit the preceding Our Father.
+        var startIndex = index
+        while startIndex > 0 {
+            let prev = steps[startIndex - 1]
+            if prev.title == "Our Father" { break }
+            // Stop if we hit another non-Hail Mary prayer (safety)
+            if prev.title != "Hail Mary" { break }
+            startIndex -= 1
+        }
+
+        let pos = (index - startIndex) + 1
+        let total = 10
+        let remaining = max(0, total - pos)
+        if pos < 1 || pos > total { return nil }
+        return remaining > 0 ? "Hail Mary \(pos)/\(total) (\(remaining) remaining)" : "Hail Mary \(pos)/\(total)"
     }
 
     private func start(_ mystery: RosaryMystery) {
