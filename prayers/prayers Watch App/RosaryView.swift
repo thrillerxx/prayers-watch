@@ -38,7 +38,7 @@ struct RosaryView: View {
                     }
                 }
             } else {
-                Text(currentStep?.title ?? "Rosary")
+                Text(displayTitle)
                     .font(.headline)
 
                 ScrollView {
@@ -120,10 +120,35 @@ struct RosaryView: View {
         }
     }
 
+    private var displayTitle: String {
+        guard let step = currentStep else { return "Rosary" }
+        // If this is a mystery meditation step, show the mystery title loaded from JSON.
+        if case .prayerId(let prayerId) = step.content,
+           prayerId.hasPrefix("mystery_"),
+           prayerId.hasSuffix("_meditation") {
+            let titleId = prayerId.replacingOccurrences(of: "_meditation", with: "_title")
+            if let titlePrayer = prayersById[titleId],
+               let t = titlePrayer.translations[lang] ?? titlePrayer.translations["en"],
+               !t.isEmpty {
+                return t
+            }
+        }
+        return step.title
+    }
+
     private func start(_ mystery: RosaryMystery) {
         selectedMystery = mystery
         steps = RosaryScripts.full(mystery: mystery)
         index = 0
+
+        // Verification log: we expect 10 ids per set (5 titles + 5 meditations).
+        let ids = (1...5).flatMap { i in
+            [
+                "mystery_\(mystery.contentKey)_\(i)_title",
+                "mystery_\(mystery.contentKey)_\(i)_meditation"
+            ]
+        }
+        print("[Mysteries] set=\(mystery.rawValue) count=\(ids.count) first=\(ids.first ?? "") last=\(ids.last ?? "")")
     }
 
     private func loadPrayers() {

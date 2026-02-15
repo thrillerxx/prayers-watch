@@ -17,42 +17,12 @@ enum RosaryMystery: String, CaseIterable, Identifiable {
         }
     }
 
-    var mysteries: [String] {
-        switch self {
-        case .joyful:
-            return [
-                "The Annunciation",
-                "The Visitation",
-                "The Nativity",
-                "The Presentation",
-                "The Finding in the Temple"
-            ]
-        case .sorrowful:
-            return [
-                "The Agony in the Garden",
-                "The Scourging at the Pillar",
-                "The Crowning with Thorns",
-                "The Carrying of the Cross",
-                "The Crucifixion"
-            ]
-        case .glorious:
-            return [
-                "The Resurrection",
-                "The Ascension",
-                "The Descent of the Holy Spirit",
-                "The Assumption",
-                "The Coronation of Mary"
-            ]
-        case .luminous:
-            return [
-                "The Baptism of Jesus",
-                "The Wedding at Cana",
-                "The Proclamation of the Kingdom",
-                "The Transfiguration",
-                "The Institution of the Eucharist"
-            ]
-        }
-    }
+    /// Rosary mystery content is loaded from `rosary_prayers_en.json` via ids:
+    /// - mystery_<set>_<1-5>_title
+    /// - mystery_<set>_<1-5>_meditation
+    ///
+    /// This enum only provides the set key used to build those ids.
+    var contentKey: String { rawValue }
 
     static func defaultForToday(_ date: Date = Date(), calendar: Calendar = .current) -> RosaryMystery {
         // Traditional default by weekday (can be overridden later with a user setting).
@@ -136,9 +106,13 @@ enum RosaryScripts {
         prayer("hail_mary", title: "Hail Mary")
         prayer("glory_be", title: "Glory Be")
 
-        // Decades
-        for (i, m) in mystery.mysteries.enumerated() {
-            text(m, title: "Mystery \(i + 1) — \(mystery.title)")
+        // Decades (5 mysteries)
+        for i in 1...5 {
+            let medId = "mystery_\(mystery.contentKey)_\(i)_meditation"
+            // The actual title + meditation are rendered from prayer ids at runtime.
+            // (RosaryView maps *_meditation -> corresponding *_title.)
+            prayer(medId, title: "Mystery \(i) — \(mystery.title)")
+
             prayer("our_father", title: "Our Father")
             for _ in 0..<10 {
                 prayer("hail_mary", title: "Hail Mary")
