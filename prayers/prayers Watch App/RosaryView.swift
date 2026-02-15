@@ -41,19 +41,20 @@ struct RosaryView: View {
                 Text(displayTitle)
                     .font(.headline)
 
-                ScrollView {
-                    VStack(spacing: 8) {
-                        if let label = hailMaryCounterLabel {
-                            Text(label)
-                                .font(.footnote)
-                                .foregroundStyle(.secondary)
-                        }
+                if let label = hailMaryCounterLabel {
+                    Text(label)
+                        .font(.subheadline.weight(.semibold))
+                        .foregroundStyle(.primary)
+                        .frame(maxWidth: .infinity, alignment: .center)
+                        .minimumScaleFactor(0.7)
+                        .lineLimit(1)
+                }
 
-                        Text(currentText ?? "")
-                            .font(.caption)
-                            .multilineTextAlignment(.center)
-                            .frame(maxWidth: .infinity)
-                    }
+                ScrollView {
+                    Text(currentText ?? "")
+                        .font(.caption)
+                        .multilineTextAlignment(.center)
+                        .frame(maxWidth: .infinity)
                 }
 
                 Toggle("Auto", isOn: $autoAdvance)
@@ -164,7 +165,7 @@ struct RosaryView: View {
         let total = 10
         let remaining = max(0, total - pos)
         if pos < 1 || pos > total { return nil }
-        return remaining > 0 ? "Hail Mary \(pos)/\(total) (\(remaining) remaining)" : "Hail Mary \(pos)/\(total)"
+        return "Hail Mary \(pos)/\(total)"
     }
 
     private func start(_ mystery: RosaryMystery) {
