@@ -31,7 +31,14 @@ struct PrayerLibraryView: View {
         .navigationTitle("Prayers")
         .onAppear {
             do {
-                prayers = try PrayerStore.load()
+                prayers = try PrayerStore.load().filter { prayer in
+                    // Hide mystery set metadata rows (keep per-mystery title/meditation entries).
+                    // Examples to hide:
+                    // - mysteryset_<set>_title
+                    // - mysteryset_<set>_description
+                    // - mysteryset_luminous_alt_title
+                    !prayer.id.hasPrefix("mysteryset_")
+                }
             } catch {
                 errorText = error.localizedDescription
             }
