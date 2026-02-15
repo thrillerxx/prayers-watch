@@ -1,6 +1,8 @@
 import SwiftUI
 
 struct ContentView: View {
+    @StateObject private var speech = SpeechManager.shared
+
     var body: some View {
         NavigationStack {
             List {
@@ -17,6 +19,16 @@ struct ContentView: View {
                 }
             }
             .navigationTitle("Divinity")
+            .toolbar {
+                if speech.isSpeaking || speech.isPaused {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Button("Pause") {
+                            speech.pause()
+                        }
+                        .font(.footnote)
+                    }
+                }
+            }
         }
     }
 }
