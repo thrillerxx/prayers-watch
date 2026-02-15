@@ -1,19 +1,6 @@
 {
   "prayers": [
     {
-      "id": "sign_of_cross",
-      "title": "Sign of the Cross",
-      "translations": {
-        "en": "In the name of the Father, and of the Son, and of the Holy Spirit. Amen."
-      },
-      "sources": [
-        {
-          "name": "USCCB (prayers)",
-          "url": "https://www.usccb.org/prayers"
-        }
-      ]
-    },
-    {
       "id": "apostles_creed",
       "title": "Apostles' Creed",
       "translations": {
@@ -27,422 +14,396 @@
       ]
     },
     {
+      "id": "mysteries_intro",
+      "title": "Mysteries Intro",
+      "translations": {
+        "en": "Meditating on these mysteries during the Rosary conforms our lives to Christ, as each sheds light on human existence from birth to eternal glory."
+      }
+    },
+    {
+      "id": "mysteryset_joyful_title",
+      "title": "Joyful Mysteries (Title)",
+      "translations": {
+        "en": "Joyful Mysteries"
+      }
+    },
+    {
+      "id": "mysteryset_joyful_description",
+      "title": "Joyful Mysteries (Description)",
+      "translations": {
+        "en": "These mysteries meditate on the Incarnation and hidden life of Christ, emphasizing Mary's fiat and the early joys of salvation history."
+      }
+    },
+    {
+      "id": "mystery_joyful_1_title",
+      "title": "Joyful Mysteries 1 (Title)",
+      "translations": {
+        "en": "The Annunciation"
+      }
+    },
+    {
+      "id": "mystery_joyful_1_meditation",
+      "title": "Joyful Mysteries 1: The Annunciation",
+      "translations": {
+        "en": "The Angel Gabriel announces to the Blessed Virgin Mary that she will conceive and bear a son by the power of the Holy Spirit, and that she is to be the Mother of God."
+      }
+    },
+    {
+      "id": "mystery_joyful_2_title",
+      "title": "Joyful Mysteries 2 (Title)",
+      "translations": {
+        "en": "The Visitation"
+      }
+    },
+    {
+      "id": "mystery_joyful_2_meditation",
+      "title": "Joyful Mysteries 2: The Visitation",
+      "translations": {
+        "en": "The Blessed Virgin Mary hastens to visit her cousin Saint Elizabeth, the mother of Saint John the Baptist, bringing joy and sanctifying the unborn Baptist with her presence."
+      }
+    },
+    {
+      "id": "mystery_joyful_3_title",
+      "title": "Joyful Mysteries 3 (Title)",
+      "translations": {
+        "en": "The Nativity"
+      }
+    },
+    {
+      "id": "mystery_joyful_3_meditation",
+      "title": "Joyful Mysteries 3: The Nativity",
+      "translations": {
+        "en": "Our Lord Jesus Christ is born in a stable in Bethlehem, laid in a manger, as shepherds and angels rejoice at the Savior's humble entry into the world."
+      }
+    },
+    {
+      "id": "mystery_joyful_4_title",
+      "title": "Joyful Mysteries 4 (Title)",
+      "translations": {
+        "en": "The Presentation of the Child Jesus in the Temple"
+      }
+    },
+    {
+      "id": "mystery_joyful_4_meditation",
+      "title": "Joyful Mysteries 4: The Presentation of the Child Jesus in the Temple",
+      "translations": {
+        "en": "Mary and Joseph present the Child Jesus in the Temple of Jerusalem, offering Him to God the Father according to the Law and fulfilling the prophecy of Simeon."
+      }
+    },
+    {
+      "id": "mystery_joyful_5_title",
+      "title": "Joyful Mysteries 5 (Title)",
+      "translations": {
+        "en": "The Finding of the Child Jesus in the Temple"
+      }
+    },
+    {
+      "id": "mystery_joyful_5_meditation",
+      "title": "Joyful Mysteries 5: The Finding of the Child Jesus in the Temple",
+      "translations": {
+        "en": "After searching anxiously for three days, Mary and Joseph find the twelve year old Jesus in the Temple, sitting among the doctors, listening and asking questions."
+      }
+    },
+    {
+      "id": "mysteryset_luminous_title",
+      "title": "Luminous Mysteries (Title)",
+      "translations": {
+        "en": "Luminous Mysteries"
+      }
+    },
+    {
+      "id": "mysteryset_luminous_alt_title",
+      "title": "Luminous Mysteries (Alt Title)",
+      "translations": {
+        "en": "Mysteries of Light"
+      }
+    },
+    {
+      "id": "mysteryset_luminous_description",
+      "title": "Luminous Mysteries (Description)",
+      "translations": {
+        "en": "Added by Pope Saint John Paul II, these focus on Christ's public ministry, revealing Him as the light of the world and inviting deeper contemplation of the Gospel."
+      }
+    },
+    {
+      "id": "mystery_luminous_1_title",
+      "title": "Luminous Mysteries 1 (Title)",
+      "translations": {
+        "en": "The Baptism of the Lord in the Jordan"
+      }
+    },
+    {
+      "id": "mystery_luminous_1_meditation",
+      "title": "Luminous Mysteries 1: The Baptism of the Lord in the Jordan",
+      "translations": {
+        "en": "Jesus is baptized by John in the Jordan River, where the voice of the Father declares Him the beloved Son, and the Holy Spirit descends like a dove."
+      }
+    },
+    {
+      "id": "mystery_luminous_2_title",
+      "title": "Luminous Mysteries 2 (Title)",
+      "translations": {
+        "en": "The Wedding Feast at Cana"
+      }
+    },
+    {
+      "id": "mystery_luminous_2_meditation",
+      "title": "Luminous Mysteries 2: The Wedding Feast at Cana",
+      "translations": {
+        "en": "At the wedding in Cana, Christ performs His first miracle at Mary's intercession, changing water into wine and manifesting His divine glory to His disciples."
+      }
+    },
+    {
+      "id": "mystery_luminous_3_title",
+      "title": "Luminous Mysteries 3 (Title)",
+      "translations": {
+        "en": "The Proclamation of the Kingdom"
+      }
+    },
+    {
+      "id": "mystery_luminous_3_meditation",
+      "title": "Luminous Mysteries 3: The Proclamation of the Kingdom",
+      "translations": {
+        "en": "Jesus preaches the Good News of the Kingdom of God, calling all to repentance, faith, and conversion of heart as He inaugurates His messianic mission."
+      }
+    },
+    {
+      "id": "mystery_luminous_4_title",
+      "title": "Luminous Mysteries 4 (Title)",
+      "translations": {
+        "en": "The Transfiguration"
+      }
+    },
+    {
+      "id": "mystery_luminous_4_meditation",
+      "title": "Luminous Mysteries 4: The Transfiguration",
+      "translations": {
+        "en": "On Mount Tabor, Jesus is transfigured before Peter, James, and John, revealing His divine glory as Moses and Elijah appear, confirming His identity as the Son of God."
+      }
+    },
+    {
+      "id": "mystery_luminous_5_title",
+      "title": "Luminous Mysteries 5 (Title)",
+      "translations": {
+        "en": "The Institution of the Eucharist"
+      }
+    },
+    {
+      "id": "mystery_luminous_5_meditation",
+      "title": "Luminous Mysteries 5: The Institution of the Eucharist",
+      "translations": {
+        "en": "At the Last Supper, Jesus institutes the Eucharist as the Paschal Banquet, offering His Body and Blood under the appearances of bread and wine for the forgiveness of sins."
+      }
+    },
+    {
+      "id": "mysteryset_sorrowful_title",
+      "title": "Sorrowful Mysteries (Title)",
+      "translations": {
+        "en": "Sorrowful Mysteries"
+      }
+    },
+    {
+      "id": "mysteryset_sorrowful_description",
+      "title": "Sorrowful Mysteries (Description)",
+      "translations": {
+        "en": "These invite contemplation of Christ's Passion, where He embraces suffering out of love, reversing humanity's sin and revealing the depths of divine mercy."
+      }
+    },
+    {
+      "id": "mystery_sorrowful_1_title",
+      "title": "Sorrowful Mysteries 1 (Title)",
+      "translations": {
+        "en": "The Agony in the Garden"
+      }
+    },
+    {
+      "id": "mystery_sorrowful_1_meditation",
+      "title": "Sorrowful Mysteries 1: The Agony in the Garden",
+      "translations": {
+        "en": "In the Garden of Gethsemane, Our Lord Jesus experiences dreadful anguish, sweating blood in agony as He prays to the Father and submits His will completely."
+      }
+    },
+    {
+      "id": "mystery_sorrowful_2_title",
+      "title": "Sorrowful Mysteries 2 (Title)",
+      "translations": {
+        "en": "The Scourging at the Pillar"
+      }
+    },
+    {
+      "id": "mystery_sorrowful_2_meditation",
+      "title": "Sorrowful Mysteries 2: The Scourging at the Pillar",
+      "translations": {
+        "en": "Christ is stripped of His garments and cruelly scourged at the pillar by the Roman soldiers, His sacred body torn by lashes for our sins."
+      }
+    },
+    {
+      "id": "mystery_sorrowful_3_title",
+      "title": "Sorrowful Mysteries 3 (Title)",
+      "translations": {
+        "en": "The Crowning with Thorns"
+      }
+    },
+    {
+      "id": "mystery_sorrowful_3_meditation",
+      "title": "Sorrowful Mysteries 3: The Crowning with Thorns",
+      "translations": {
+        "en": "Jesus is mockingly crowned with thorns by heartless soldiers, who hail Him as a false king, spitting upon and striking the true King of Kings."
+      }
+    },
+    {
+      "id": "mystery_sorrowful_4_title",
+      "title": "Sorrowful Mysteries 4 (Title)",
+      "translations": {
+        "en": "The Carrying of the Cross"
+      }
+    },
+    {
+      "id": "mystery_sorrowful_4_meditation",
+      "title": "Sorrowful Mysteries 4: The Carrying of the Cross",
+      "translations": {
+        "en": "From the place of condemnation, Jesus carries His heavy Cross through the streets of Jerusalem to Calvary, the site of His Crucifixion, falling under its weight."
+      }
+    },
+    {
+      "id": "mystery_sorrowful_5_title",
+      "title": "Sorrowful Mysteries 5 (Title)",
+      "translations": {
+        "en": "The Crucifixion"
+      }
+    },
+    {
+      "id": "mystery_sorrowful_5_meditation",
+      "title": "Sorrowful Mysteries 5: The Crucifixion",
+      "translations": {
+        "en": "Our Lord is nailed to the Cross amid the jeers and blasphemies of His enemies, where He endures six hours of agony before commending His spirit to the Father."
+      }
+    },
+    {
+      "id": "mysteryset_glorious_title",
+      "title": "Glorious Mysteries (Title)",
+      "translations": {
+        "en": "Glorious Mysteries"
+      }
+    },
+    {
+      "id": "mysteryset_glorious_description",
+      "title": "Glorious Mysteries (Description)",
+      "translations": {
+        "en": "These mysteries celebrate Christ's triumph over death and Mary's share in heavenly glory, filling us with hope for eternal life."
+      }
+    },
+    {
+      "id": "mystery_glorious_1_title",
+      "title": "Glorious Mysteries 1 (Title)",
+      "translations": {
+        "en": "The Resurrection of Our Lord"
+      }
+    },
+    {
+      "id": "mystery_glorious_1_meditation",
+      "title": "Glorious Mysteries 1: The Resurrection of Our Lord",
+      "translations": {
+        "en": "On the third day, Jesus rises glorious and immortal from the tomb, conquering sin and death, appearing first to Mary Magdalene and the Apostles."
+      }
+    },
+    {
+      "id": "mystery_glorious_2_title",
+      "title": "Glorious Mysteries 2 (Title)",
+      "translations": {
+        "en": "The Ascension of Our Lord"
+      }
+    },
+    {
+      "id": "mystery_glorious_2_meditation",
+      "title": "Glorious Mysteries 2: The Ascension of Our Lord",
+      "translations": {
+        "en": "Forty days after the Resurrection, Christ ascends body and soul into heaven in the sight of His Apostles, taking His place at the right hand of the Father."
+      }
+    },
+    {
+      "id": "mystery_glorious_3_title",
+      "title": "Glorious Mysteries 3 (Title)",
+      "translations": {
+        "en": "The Coming of the Holy Ghost upon the Apostles"
+      }
+    },
+    {
+      "id": "mystery_glorious_3_meditation",
+      "title": "Glorious Mysteries 3: The Coming of the Holy Ghost upon the Apostles",
+      "translations": {
+        "en": "At Pentecost, the Holy Spirit descends upon the Apostles gathered with Mary in the Upper Room, empowering the birth of the Church."
+      }
+    },
+    {
+      "id": "mystery_glorious_4_title",
+      "title": "Glorious Mysteries 4 (Title)",
+      "translations": {
+        "en": "The Assumption of the Blessed Virgin"
+      }
+    },
+    {
+      "id": "mystery_glorious_4_meditation",
+      "title": "Glorious Mysteries 4: The Assumption of the Blessed Virgin",
+      "translations": {
+        "en": "At the end of her earthly life, Mary is assumed body and soul into heavenly glory, free from corruption by reason of her Immaculate Conception."
+      }
+    },
+    {
+      "id": "mystery_glorious_5_title",
+      "title": "Glorious Mysteries 5 (Title)",
+      "translations": {
+        "en": "The Coronation of the Blessed Virgin"
+      }
+    },
+    {
+      "id": "mystery_glorious_5_meditation",
+      "title": "Glorious Mysteries 5: The Coronation of the Blessed Virgin",
+      "translations": {
+        "en": "In heaven, Mary is crowned Queen of all Angels and Saints by the Most Holy Trinity, reigning in dignity next to her Divine Son, Our Lord Jesus Christ."
+      }
+    },
+    {
+      "id": "sign_of_cross",
+      "title": "Sign of the Cross",
+      "translations": {
+        "en": "In the name of the Father, and of the Son, and of the Holy Spirit. Amen."
+      }
+    },
+    {
       "id": "our_father",
       "title": "Our Father",
       "translations": {
-        "en": "Our Father, who art in heaven,\nhallowed be thy name;\nthy kingdom come;\nthy will be done\non earth as it is in heaven.\n\nGive us this day our daily bread;\nand forgive us our trespasses\nas we forgive those who trespass against us;\nand lead us not into temptation,\nbut deliver us from evil. Amen."
-      },
-      "sources": [
-        {
-          "name": "USCCB (prayers)",
-          "url": "https://www.usccb.org/prayers"
-        }
-      ]
+        "en": "Our Father, who art in heaven, hallowed be thy name; thy kingdom come, thy will be done on earth as it is in heaven. Give us this day our daily bread, and forgive us our trespasses, as we forgive those who trespass against us; and lead us not into temptation, but deliver us from evil. Amen."
+      }
     },
     {
       "id": "hail_mary",
       "title": "Hail Mary",
       "translations": {
-        "en": "Hail Mary, full of grace,\nthe Lord is with thee.\nBlessed art thou among women,\nand blessed is the fruit of thy womb, Jesus.\n\nHoly Mary, Mother of God,\npray for us sinners,\nnow and at the hour of our death. Amen."
-      },
-      "sources": [
-        {
-          "name": "USCCB (prayers)",
-          "url": "https://www.usccb.org/prayers"
-        }
-      ]
+        "en": "Hail Mary, full of grace, the Lord is with thee. Blessed art thou among women, and blessed is the fruit of thy womb, Jesus. Holy Mary, Mother of God, pray for us sinners, now and at the hour of our death. Amen."
+      }
     },
     {
       "id": "glory_be",
       "title": "Glory Be",
       "translations": {
-        "en": "Glory be to the Father, and to the Son, and to the Holy Spirit,\nas it was in the beginning, is now, and ever shall be,\nworld without end. Amen."
-      },
-      "sources": [
-        {
-          "name": "USCCB (prayers)",
-          "url": "https://www.usccb.org/prayers"
-        }
-      ]
-    },
-    {
-      "id": "fatima",
-      "title": "Rosary Prayer (Fatima)",
-      "translations": {
-        "en": "O my Jesus, forgive us our sins, save us from the fires of hell; lead all souls to heaven, especially those in most need of thy mercy. Amen."
-      },
-      "sources": [
-        {
-          "name": "USCCB (prayers)",
-          "url": "https://www.usccb.org/prayers"
-        }
-      ]
+        "en": "Glory be to the Father, and to the Son, and to the Holy Spirit, as it was in the beginning, is now, and ever shall be, world without end. Amen."
+      }
     },
     {
       "id": "hail_holy_queen",
       "title": "Hail, Holy Queen",
       "translations": {
-        "en": "Hail, holy Queen, Mother of mercy,\nour life, our sweetness, and our hope.\nTo thee do we cry, poor banished children of Eve;\nto thee do we send up our sighs,\nmourning and weeping in this valley of tears.\n\nTurn then, most gracious Advocate,\nthine eyes of mercy toward us;\nand after this, our exile,\nshow unto us the blessed fruit of thy womb, Jesus.\n\nO clement, O loving, O sweet Virgin Mary.\n\nPray for us, O holy Mother of God,\nthat we may be made worthy of the promises of Christ. Amen."
-      },
-      "sources": [
-        {
-          "name": "USCCB (prayers)",
-          "url": "https://www.usccb.org/prayers"
-        }
-      ]
+        "en": "Hail, Holy Queen, Mother of mercy, hail our life, our sweetness, and our hope. To thee do we cry, poor banished children of Eve; to thee do we send up our sighs, mourning and weeping in this vale of tears. Turn then, most gracious advocate, thine eyes of mercy toward us; and after this our exile, show unto us the blessed fruit of thy womb, Jesus. O clement, O loving, O sweet Virgin Mary. Pray for us, O holy Mother of God, that we may be made worthy of the promises of Christ. Amen."
+      }
     },
     {
       "id": "rosary_prayer",
       "title": "Rosary Prayer",
       "translations": {
-        "en": "Let us pray.\n\nO God, whose only begotten Son, by his life, death, and resurrection, has purchased for us the rewards of eternal life,\ngrant, we beseech thee, that meditating upon these mysteries of the most holy Rosary of the Blessed Virgin Mary,\nwe may imitate what they contain and obtain what they promise,\nthrough the same Christ our Lord. Amen."
-      },
-      "sources": [
-        {
-          "name": "USCCB (prayers)",
-          "url": "https://www.usccb.org/prayers"
-        }
-      ]
-    },
-    {
-      "id": "mystery_joyful_1",
-      "title": "Joyful Mystery 1: The Annunciation",
-      "translations": {
-        "en": "We contemplate the angel Gabriel announcing to Mary that she is chosen to bear the Savior. In humble faith she replies, \"Let it be done to me according to your word.\" We ask for the grace to say yes to God promptly and joyfully."
-      },
-      "sources": [
-        {
-          "name": "Vatican",
-          "url": "https://www.vatican.va"
-        },
-        {
-          "name": "USCCB (prayers)",
-          "url": "https://www.usccb.org/prayers"
-        }
-      ]
-    },
-    {
-      "id": "mystery_joyful_2",
-      "title": "Joyful Mystery 2: The Visitation",
-      "translations": {
-        "en": "Mary hastens to Elizabeth, carrying Jesus to her cousin's home. John the Baptist leaps in the womb and Elizabeth proclaims Mary blessed. We ask for charity that moves us to serve and to bring Christ to others."
-      },
-      "sources": [
-        {
-          "name": "Vatican",
-          "url": "https://www.vatican.va"
-        },
-        {
-          "name": "USCCB (prayers)",
-          "url": "https://www.usccb.org/prayers"
-        }
-      ]
-    },
-    {
-      "id": "mystery_joyful_3",
-      "title": "Joyful Mystery 3: The Nativity",
-      "translations": {
-        "en": "Jesus is born in Bethlehem, laid in a manger, and adored by Mary and Joseph. The shepherds come in wonder and praise. We ask for poverty of spirit and a heart that welcomes Christ with gratitude."
-      },
-      "sources": [
-        {
-          "name": "Vatican",
-          "url": "https://www.vatican.va"
-        },
-        {
-          "name": "USCCB (prayers)",
-          "url": "https://www.usccb.org/prayers"
-        }
-      ]
-    },
-    {
-      "id": "mystery_joyful_4",
-      "title": "Joyful Mystery 4: The Presentation of the Child Jesus in the Temple",
-      "translations": {
-        "en": "Mary and Joseph present Jesus to the Lord in the Temple, fulfilling the Law. Simeon recognizes the Messiah and foretells that a sword will pierce Mary's heart. We ask for obedience and devotion to God's will."
-      },
-      "sources": [
-        {
-          "name": "Vatican",
-          "url": "https://www.vatican.va"
-        },
-        {
-          "name": "USCCB (prayers)",
-          "url": "https://www.usccb.org/prayers"
-        }
-      ]
-    },
-    {
-      "id": "mystery_joyful_5",
-      "title": "Joyful Mystery 5: The Finding of the Child Jesus in the Temple",
-      "translations": {
-        "en": "After three days of searching, Mary and Joseph find Jesus among the teachers in the Temple. He is about his Father's business. We ask for the grace to seek Jesus first and to remain close to him in all things."
-      },
-      "sources": [
-        {
-          "name": "Vatican",
-          "url": "https://www.vatican.va"
-        },
-        {
-          "name": "USCCB (prayers)",
-          "url": "https://www.usccb.org/prayers"
-        }
-      ]
-    },
-    {
-      "id": "mystery_luminous_1",
-      "title": "Luminous Mystery 1: The Baptism of the Lord in the Jordan",
-      "translations": {
-        "en": "Jesus is baptized by John in the Jordan and the heavens open. The Father's voice declares him beloved, and the Spirit descends upon him. We ask for fidelity to our baptism and a renewed life in the Holy Spirit."
-      },
-      "sources": [
-        {
-          "name": "Vatican",
-          "url": "https://www.vatican.va"
-        },
-        {
-          "name": "USCCB (prayers)",
-          "url": "https://www.usccb.org/prayers"
-        }
-      ]
-    },
-    {
-      "id": "mystery_luminous_2",
-      "title": "Luminous Mystery 2: The Wedding Feast at Cana",
-      "translations": {
-        "en": "At Mary's intercession Jesus performs his first sign, changing water into wine. The disciples begin to believe more deeply in him. We ask for trust in Mary\u2019s guidance and obedience to Christ\u2019s words: \"Do whatever he tells you.\""
-      },
-      "sources": [
-        {
-          "name": "Vatican",
-          "url": "https://www.vatican.va"
-        },
-        {
-          "name": "USCCB (prayers)",
-          "url": "https://www.usccb.org/prayers"
-        }
-      ]
-    },
-    {
-      "id": "mystery_luminous_3",
-      "title": "Luminous Mystery 3: The Proclamation of the Kingdom",
-      "translations": {
-        "en": "Jesus proclaims the Kingdom of God and calls all to repentance and faith. He forgives sins and heals the sick as signs of God's mercy. We ask for conversion of heart and the courage to live the Gospel."
-      },
-      "sources": [
-        {
-          "name": "Vatican",
-          "url": "https://www.vatican.va"
-        },
-        {
-          "name": "USCCB (prayers)",
-          "url": "https://www.usccb.org/prayers"
-        }
-      ]
-    },
-    {
-      "id": "mystery_luminous_4",
-      "title": "Luminous Mystery 4: The Transfiguration",
-      "translations": {
-        "en": "Jesus is transfigured on the mountain and his glory is revealed to Peter, James, and John. The Father commands, \"Listen to him.\" We ask for deeper prayer and the grace to follow Christ even through suffering."
-      },
-      "sources": [
-        {
-          "name": "Vatican",
-          "url": "https://www.vatican.va"
-        },
-        {
-          "name": "USCCB (prayers)",
-          "url": "https://www.usccb.org/prayers"
-        }
-      ]
-    },
-    {
-      "id": "mystery_luminous_5",
-      "title": "Luminous Mystery 5: The Institution of the Eucharist",
-      "translations": {
-        "en": "At the Last Supper Jesus gives us his Body and Blood under the appearances of bread and wine. He commands, \"Do this in remembrance of me.\" We ask for greater love for the Eucharist and reverence at every Mass."
-      },
-      "sources": [
-        {
-          "name": "Vatican",
-          "url": "https://www.vatican.va"
-        },
-        {
-          "name": "USCCB (prayers)",
-          "url": "https://www.usccb.org/prayers"
-        }
-      ]
-    },
-    {
-      "id": "mystery_sorrowful_1",
-      "title": "Sorrowful Mystery 1: The Agony in the Garden",
-      "translations": {
-        "en": "Jesus prays in Gethsemane, experiencing sorrow and anguish, yet surrendering to the Father: \"Not my will, but yours be done.\" We ask for strength in temptation and trust in God\u2019s providence."
-      },
-      "sources": [
-        {
-          "name": "Vatican",
-          "url": "https://www.vatican.va"
-        },
-        {
-          "name": "USCCB (prayers)",
-          "url": "https://www.usccb.org/prayers"
-        }
-      ]
-    },
-    {
-      "id": "mystery_sorrowful_2",
-      "title": "Sorrowful Mystery 2: The Scourging at the Pillar",
-      "translations": {
-        "en": "Jesus is scourged, bearing wounds for our sins. He endures humiliation and pain in silence. We ask for purity of heart and the grace to resist sin."
-      },
-      "sources": [
-        {
-          "name": "Vatican",
-          "url": "https://www.vatican.va"
-        },
-        {
-          "name": "USCCB (prayers)",
-          "url": "https://www.usccb.org/prayers"
-        }
-      ]
-    },
-    {
-      "id": "mystery_sorrowful_3",
-      "title": "Sorrowful Mystery 3: The Crowning with Thorns",
-      "translations": {
-        "en": "Soldiers mock Jesus as King, pressing thorns into his head and clothing him in purple. He accepts ridicule and injustice for our sake. We ask for humility and patience when we are misunderstood."
-      },
-      "sources": [
-        {
-          "name": "Vatican",
-          "url": "https://www.vatican.va"
-        },
-        {
-          "name": "USCCB (prayers)",
-          "url": "https://www.usccb.org/prayers"
-        }
-      ]
-    },
-    {
-      "id": "mystery_sorrowful_4",
-      "title": "Sorrowful Mystery 4: The Carrying of the Cross",
-      "translations": {
-        "en": "Jesus carries the cross to Calvary, falling under its weight yet continuing out of love. He meets his Mother and accepts help on the way. We ask for perseverance and the grace to carry our daily crosses faithfully."
-      },
-      "sources": [
-        {
-          "name": "Vatican",
-          "url": "https://www.vatican.va"
-        },
-        {
-          "name": "USCCB (prayers)",
-          "url": "https://www.usccb.org/prayers"
-        }
-      ]
-    },
-    {
-      "id": "mystery_sorrowful_5",
-      "title": "Sorrowful Mystery 5: The Crucifixion",
-      "translations": {
-        "en": "Jesus is nailed to the cross and offers his life for the salvation of the world. He forgives his enemies and entrusts us to Mary. We ask for the grace of true contrition and to love as Christ loves."
-      },
-      "sources": [
-        {
-          "name": "Vatican",
-          "url": "https://www.vatican.va"
-        },
-        {
-          "name": "USCCB (prayers)",
-          "url": "https://www.usccb.org/prayers"
-        }
-      ]
-    },
-    {
-      "id": "mystery_glorious_1",
-      "title": "Glorious Mystery 1: The Resurrection of Our Lord",
-      "translations": {
-        "en": "On the third day Jesus rises from the dead, conquering sin and death. The tomb is empty and hope is restored. We ask for a living faith and joy that no sorrow can extinguish."
-      },
-      "sources": [
-        {
-          "name": "Vatican",
-          "url": "https://www.vatican.va"
-        },
-        {
-          "name": "USCCB (prayers)",
-          "url": "https://www.usccb.org/prayers"
-        }
-      ]
-    },
-    {
-      "id": "mystery_glorious_2",
-      "title": "Glorious Mystery 2: The Ascension of Our Lord",
-      "translations": {
-        "en": "Jesus ascends into heaven and promises the Holy Spirit. He remains with his Church and prepares a place for us. We ask for a desire for heaven and confidence in Christ\u2019s reign."
-      },
-      "sources": [
-        {
-          "name": "Vatican",
-          "url": "https://www.vatican.va"
-        },
-        {
-          "name": "USCCB (prayers)",
-          "url": "https://www.usccb.org/prayers"
-        }
-      ]
-    },
-    {
-      "id": "mystery_glorious_3",
-      "title": "Glorious Mystery 3: The Coming of the Holy Ghost upon the Apostles",
-      "translations": {
-        "en": "The Holy Spirit descends at Pentecost, filling the apostles with courage and transforming them into witnesses. The Church is born in power and unity. We ask for the gifts of the Holy Spirit and zeal for mission."
-      },
-      "sources": [
-        {
-          "name": "Vatican",
-          "url": "https://www.vatican.va"
-        },
-        {
-          "name": "USCCB (prayers)",
-          "url": "https://www.usccb.org/prayers"
-        }
-      ]
-    },
-    {
-      "id": "mystery_glorious_4",
-      "title": "Glorious Mystery 4: The Assumption of the Blessed Virgin",
-      "translations": {
-        "en": "Mary is assumed body and soul into heavenly glory, a sign of God\u2019s promise to his faithful. She is near to us as Mother and intercessor. We ask for purity, hope, and perseverance to the end."
-      },
-      "sources": [
-        {
-          "name": "Vatican",
-          "url": "https://www.vatican.va"
-        },
-        {
-          "name": "USCCB (prayers)",
-          "url": "https://www.usccb.org/prayers"
-        }
-      ]
-    },
-    {
-      "id": "mystery_glorious_5",
-      "title": "Glorious Mystery 5: The Coronation of the Blessed Virgin",
-      "translations": {
-        "en": "Mary is crowned Queen of heaven and earth, radiant with grace. She reigns with her Son and prays for her children. We ask to be faithful disciples and to seek holiness with Mary\u2019s help."
-      },
-      "sources": [
-        {
-          "name": "Vatican",
-          "url": "https://www.vatican.va"
-        },
-        {
-          "name": "USCCB (prayers)",
-          "url": "https://www.usccb.org/prayers"
-        }
-      ]
+        "en": "O God, whose only begotten Son, by His life, death, and resurrection, has purchased for us the rewards of eternal life. Grant, we beseech Thee, that by meditating on these mysteries of the most holy Rosary of the Blessed Virgin Mary, we may imitate what they contain and obtain what they promise, through the same Christ our Lord. Amen."
+      }
     }
   ]
 }
