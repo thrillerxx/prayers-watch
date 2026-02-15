@@ -32,12 +32,14 @@ struct PrayerLibraryView: View {
         .onAppear {
             do {
                 prayers = try PrayerStore.load().filter { prayer in
-                    // Hide mystery set metadata rows (keep per-mystery title/meditation entries).
-                    // Examples to hide:
-                    // - mysteryset_<set>_title
-                    // - mysteryset_<set>_description
-                    // - mysteryset_luminous_alt_title
-                    !prayer.id.hasPrefix("mysteryset_")
+                    let id = prayer.id
+                    // Keep only prayable text entries.
+                    // Hide any metadata/title helper rows.
+                    if id.hasPrefix("mysteryset_") { return false }
+                    if id.hasSuffix("_title") { return false }
+                    if id.hasSuffix("_alt_title") { return false }
+                    // keep everything else (including *_meditation + core prayers)
+                    return true
                 }
             } catch {
                 errorText = error.localizedDescription
