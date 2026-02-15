@@ -18,11 +18,29 @@ struct Prayer: Codable, Identifiable {
 
 enum PrayerStore {
     static func load() throws -> [Prayer] {
-        guard let url = Bundle.main.url(forResource: "prayers", withExtension: "json") else {
-            throw NSError(domain: "PrayerStore", code: 1, userInfo: [NSLocalizedDescriptionKey: "prayers.json not found in bundle"])
+        // Prefer a known-good bundled prayers.json, even if multiple copies exist.
+        let candidates: [URL] = (Bundle.main.urls(forResourcesWithExtension: "json", subdirectory: nil) ?? [])
+            .filter { $0.lastPathComponent == "prayers.json" }
+
+        // Try all candidates (largest first) until one decodes.
+        let sorted = candidates.sorted { (a, b) in
+            let sa = (try? a.resourceValues(forKeys: [.fileSizeKey]).fileSize) ?? 0
+            let sb = (try? b.resourceValues(forKeys: [.fileSizeKey]).fileSize) ?? 0
+            return sa > sb
         }
-        let data = try Data(contentsOf: url)
-        let catalog = try JSONDecoder().decode(PrayerCatalog.self, from: data)
-        return catalog.prayers
+
+        var lastError: Error?
+        for url in (sorted.isEmpty ? [Bundle.main.url(forResource: "prayers", withExtension: "json")].compactMap { $0 } : sorted) {
+            do {
+                let data = try Data(contentsOf: url)
+                let catalog = try JSONDecoder().decode(PrayerCatalog.self, from: data)
+                return catalog.prayers
+            } catch {
+                lastError = error
+                continue
+            }
+        }
+
+        throw lastError ?? NSError(domain: "PrayerStore", code: 1, userInfo: [NSLocalizedDescriptionKey: "prayers.json not found in bundle"])
     }
 }
