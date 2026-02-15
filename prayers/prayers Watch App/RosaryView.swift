@@ -14,7 +14,8 @@ struct RosaryView: View {
     @AppStorage(AppSettings.autoAdvanceKey) private var autoAdvance: Bool = AppSettings.defaultAutoAdvance
     @AppStorage(AppSettings.hapticsKey) private var hapticsOn: Bool = AppSettings.defaultHaptics
     @AppStorage(AppSettings.voiceLanguageKey) private var voiceLanguage: String = AppSettings.defaultVoiceLanguage
-    @AppStorage(AppSettings.speechRateKey) private var speechRate: Double = Double(AppSettings.defaultSpeechRate)
+    @AppStorage(AppSettings.speechSpeedKey) private var speechSpeed: String = AppSettings.defaultSpeechSpeed
+    @AppStorage(AppSettings.pauseBetweenPartsKey) private var pauseBetweenPartsSeconds: Int = AppSettings.defaultPauseBetweenPartsSeconds
 
     @StateObject private var speech = SpeechManager.shared
 
@@ -199,13 +200,28 @@ struct RosaryView: View {
     private func speakCurrent() {
         guard let text = currentText, !text.isEmpty else { return }
 
-        let rate = Float(speechRate)
+        let rate: Float
+        switch speechSpeed {
+        case "fast": rate = 0.55
+        case "normal": rate = 0.48
+        default: rate = 0.42 // slow
+        }
+
         speech.speak(text: text, voiceLanguage: voiceLanguage, rate: rate) {
-            if autoAdvance, index < steps.count - 1 {
+            guard autoAdvance else {
+                if index >= steps.count - 1, hapticsOn { Haptics.success() }
+                return
+            }
+
+            if index < steps.count - 1 {
                 index += 1
                 if hapticsOn { Haptics.click() }
-                speakCurrent()
-            } else if index >= steps.count - 1 {
+
+                let delay = Double(max(1, min(10, pauseBetweenPartsSeconds)))
+                DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
+                    speakCurrent()
+                }
+            } else {
                 if hapticsOn { Haptics.success() }
             }
         }
