@@ -364,6 +364,13 @@
       }
     },
     {
+      "id": "fatima",
+      "title": "Fatima Prayer",
+      "translations": {
+        "en": "O my Jesus, forgive us our sins, save us from the fires of hell; lead all souls to heaven, especially those in most need of thy mercy. Amen."
+      }
+    },
+    {
       "id": "sign_of_cross",
       "title": "Sign of the Cross",
       "translations": {
