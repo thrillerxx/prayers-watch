@@ -11,6 +11,10 @@ struct RosaryView: View {
     @State private var steps: [RosaryStep] = []
     @State private var index: Int = 0
 
+    // Playback state machine guards
+    @State private var playbackGeneration: Int = 0
+    @State private var isTransitioningStep: Bool = false
+
     @AppStorage(AppSettings.autoAdvanceKey) private var autoAdvance: Bool = AppSettings.defaultAutoAdvance
     @AppStorage(AppSettings.hapticsKey) private var hapticsOn: Bool = AppSettings.defaultHaptics
     @AppStorage(AppSettings.voiceLanguageKey) private var voiceLanguage: String = AppSettings.defaultVoiceLanguage
@@ -83,6 +87,7 @@ struct RosaryView: View {
                 .buttonStyle(.bordered)
 
                 Button("Change Mystery") {
+                    playbackGeneration &+= 1
                     selectedMystery = nil
                     steps = []
                     index = 0
@@ -173,6 +178,7 @@ struct RosaryView: View {
     }
 
     private func start(_ mystery: RosaryMystery) {
+        playbackGeneration &+= 1
         selectedMystery = mystery
         steps = RosaryScripts.full(mystery: mystery)
         index = 0
@@ -199,6 +205,8 @@ struct RosaryView: View {
     private func speakCurrent() {
         guard let text = currentText, !text.isEmpty else { return }
 
+        let g = playbackGeneration
+
         let rate: Float
         switch speechSpeed {
         case "veryslow": rate = 0.35
@@ -207,32 +215,61 @@ struct RosaryView: View {
         }
 
         speech.speak(text: text, voiceLanguage: voiceLanguage, rate: rate) {
-            guard autoAdvance else {
-                if index >= steps.count - 1, hapticsOn { Haptics.success() }
-                return
-            }
+            // Ignore stale callbacks (e.g. user hit Next while speech was in-flight).
+            guard g == playbackGeneration else { return }
 
-            if index < steps.count - 1 {
-                index += 1
-                if hapticsOn { Haptics.click() }
+            DispatchQueue.main.async {
+                // Re-check generation after hopping to main.
+                guard g == playbackGeneration else { return }
 
-                let delay = Double(max(1, min(10, pauseBetweenPartsSeconds)))
-                DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
-                    speakCurrent()
+                guard autoAdvance else {
+                    if index >= steps.count - 1, hapticsOn { Haptics.success() }
+                    return
                 }
-            } else {
-                if hapticsOn { Haptics.success() }
+
+                if index < steps.count - 1 {
+                    index += 1
+                    if hapticsOn { Haptics.click() }
+
+                    let delay = Double(max(1, min(10, pauseBetweenPartsSeconds)))
+                    DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
+                        // Guard again in case generation changed during the delay.
+                        guard g == playbackGeneration else { return }
+                        speakCurrent()
+                    }
+                } else {
+                    if hapticsOn { Haptics.success() }
+                }
             }
         }
     }
 
     private func back() {
+        // Manual navigation cancels any in-flight auto callback.
+        playbackGeneration &+= 1
+
+        if speech.isSpeaking || speech.isPaused {
+            speech.stop()
+        }
+
         index = max(0, index - 1)
         if hapticsOn { Haptics.click() }
+
+        if autoAdvance {
+            DispatchQueue.main.async {
+                speakCurrent()
+            }
+        }
     }
 
     private func next() {
-        // Always stop current utterance and advance immediately.
+        guard !isTransitioningStep else { return }
+        isTransitioningStep = true
+        defer { isTransitioningStep = false }
+
+        // Manual navigation cancels any in-flight auto callback.
+        playbackGeneration &+= 1
+
         if speech.isSpeaking || speech.isPaused {
             speech.stop()
         }
