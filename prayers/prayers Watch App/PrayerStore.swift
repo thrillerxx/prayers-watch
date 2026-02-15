@@ -32,11 +32,14 @@ enum PrayerStore {
         guard let url = Bundle.main.url(forResource: resourceName, withExtension: resourceExt) else {
             throw NSError(domain: "PrayerStore", code: 1, userInfo: [NSLocalizedDescriptionKey: "\(resourceName).\(resourceExt) not found in bundle"])
         }
-        #if DEBUG
-        print("[PrayerStore] Resolved: \(url.path)")
-        #endif
 
         let data = try Data(contentsOf: url)
+
+        #if DEBUG
+        print("[PrayerStore] Resolved: \(url.path)")
+        print("[PrayerStore] Bytes: \(data.count)")
+        #endif
+
         let catalog = try JSONDecoder().decode(PrayerCatalog.self, from: data)
         return catalog.prayers
     }
