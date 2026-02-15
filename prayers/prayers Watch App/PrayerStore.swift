@@ -25,7 +25,7 @@ enum PrayerStore {
         #if DEBUG
         let dups = (Bundle.main.urls(forResourcesWithExtension: resourceExt, subdirectory: nil) ?? [])
             .filter { $0.lastPathComponent == "\(resourceName).\(resourceExt)" }
-        print("[PrayerStore] \(resourceName).\(resourceExt) matches: \(dups.count)")
+        NSLog("[PrayerStore] \(resourceName).\(resourceExt) matches: \(dups.count)")
         assert(dups.count <= 1, "Duplicate \(resourceName).\(resourceExt) bundled")
         #endif
 
@@ -36,8 +36,8 @@ enum PrayerStore {
         let data = try Data(contentsOf: url)
 
         #if DEBUG
-        print("[PrayerStore] Resolved: \(url.path)")
-        print("[PrayerStore] Bytes: \(data.count)")
+        NSLog("[PrayerStore] Resolved: \(url.path)")
+        NSLog("[PrayerStore] Bytes: \(data.count)")
         #endif
 
         let catalog = try JSONDecoder().decode(PrayerCatalog.self, from: data)

@@ -13,11 +13,11 @@ struct prayers_Watch_AppApp: App {
         #if DEBUG
         do {
             let prayers = try PrayerStore.load()
-            print("[PrayerStore] Decode: OK")
-            print("[PrayerStore] Entries: \(prayers.count)")
+            NSLog("[PrayerStore] Decode: OK")
+            NSLog("[PrayerStore] Entries: \(prayers.count)")
         } catch {
-            print("[PrayerStore] Decode: FAIL")
-            print("[PrayerStore] Error: \(error)")
+            NSLog("[PrayerStore] Decode: FAIL")
+            NSLog("[PrayerStore] Error: \(error)")
         }
         #endif
     }
