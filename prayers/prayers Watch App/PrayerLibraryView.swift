@@ -53,6 +53,7 @@ struct PrayerDetailView: View {
     private let lang: String = "en"
 
     @StateObject private var speech = SpeechManager.shared
+    @State private var didAutoplay = false
 
     private var text: String {
         prayer.translations[lang] ?? prayer.translations["en"] ?? ""
@@ -89,6 +90,14 @@ struct PrayerDetailView: View {
             .padding(.horizontal)
         }
         .navigationTitle("Prayer")
+        .onAppear {
+            // Always interrupt any current playback and start this prayer immediately.
+            if !didAutoplay {
+                didAutoplay = true
+                speech.stop()
+                speak()
+            }
+        }
     }
 
     private func speak() {
