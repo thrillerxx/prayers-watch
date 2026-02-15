@@ -168,7 +168,6 @@ struct RosaryView: View {
 
         let pos = (index - startIndex) + 1
         let total = 10
-        let remaining = max(0, total - pos)
         if pos < 1 || pos > total { return nil }
         return "Hail Mary \(pos)/\(total)"
     }
