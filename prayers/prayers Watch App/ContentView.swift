@@ -20,13 +20,21 @@ struct ContentView: View {
             }
             .navigationTitle("Divinity")
             .toolbar {
-                if speech.isSpeaking || speech.isPaused {
-                    ToolbarItem(placement: .topBarTrailing) {
-                        Button("Pause") {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button {
+                        if speech.isSpeaking {
                             speech.pause()
+                        } else if speech.isPaused {
+                            speech.resume()
                         }
-                        .font(.footnote)
+                    } label: {
+                        Image(systemName: speech.isSpeaking ? "pause.fill" : "play.fill")
+                            .font(.body.weight(.semibold))
+                            .frame(width: 28, height: 28)
                     }
+                    .buttonStyle(.plain)
+                    .disabled(!(speech.isSpeaking || speech.isPaused))
+                    .accessibilityLabel(speech.isSpeaking ? "Pause" : "Play")
                 }
             }
         }
