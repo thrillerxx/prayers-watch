@@ -2,7 +2,9 @@ import SwiftUI
 
 struct SettingsView: View {
     @AppStorage(AppSettings.voiceLanguageKey) private var voiceLanguage: String = AppSettings.defaultVoiceLanguage
-    @AppStorage(AppSettings.speechRateKey) private var speechRate: Double = Double(AppSettings.defaultSpeechRate)
+
+    @AppStorage(AppSettings.speechSpeedKey) private var speechSpeed: String = AppSettings.defaultSpeechSpeed
+    @AppStorage(AppSettings.pauseBetweenPartsKey) private var pauseBetweenPartsSeconds: Int = AppSettings.defaultPauseBetweenPartsSeconds
 
     @AppStorage(AppSettings.autoAdvanceKey) private var autoAdvance: Bool = AppSettings.defaultAutoAdvance
     @AppStorage(AppSettings.hapticsKey) private var haptics: Bool = AppSettings.defaultHaptics
@@ -18,17 +20,15 @@ struct SettingsView: View {
                 Picker("Voice", selection: $voiceLanguage) {
                     Text("English (US)").tag("en-US")
                     Text("English (UK)").tag("en-GB")
-                    Text("Spanish").tag("es-ES")
                 }
 
-                VStack(alignment: .leading, spacing: 6) {
-                    Text("Rate")
-                    Slider(value: $speechRate, in: 0.35...0.60, step: 0.01)
-                    Text(String(format: "%.2f", speechRate))
-                        .font(.footnote)
-                        .foregroundStyle(.secondary)
+                Picker("Speech Speed", selection: $speechSpeed) {
+                    Text("Slow").tag("slow")
+                    Text("Normal").tag("normal")
+                    Text("Fast").tag("fast")
                 }
-                .padding(.vertical, 4)
+
+                Stepper("Pause Between Parts: \(pauseBetweenPartsSeconds)s", value: $pauseBetweenPartsSeconds, in: 1...10)
             }
 
             Section {

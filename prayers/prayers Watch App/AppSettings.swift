@@ -6,7 +6,10 @@ import SwiftUI
 enum AppSettings {
     // Speech
     static let voiceLanguageKey = "settings.voiceLanguage"      // e.g. en-US
-    static let speechRateKey = "settings.speechRate"            // Float (0.0 - 1.0-ish)
+
+    // New pacing controls
+    static let speechSpeedKey = "settings.rosary.speechSpeed"   // String preset: slow|normal|fast
+    static let pauseBetweenPartsKey = "settings.rosary.pauseSeconds" // Int (1-10)
 
     // Rosary
     static let autoAdvanceKey = "settings.rosary.autoAdvance"   // Bool
@@ -14,7 +17,8 @@ enum AppSettings {
 
     // Defaults
     static let defaultVoiceLanguage = "en-US"
-    static let defaultSpeechRate: Float = 0.45
+    static let defaultSpeechSpeed = "slow"
+    static let defaultPauseBetweenPartsSeconds = 2
     static let defaultAutoAdvance = true
     static let defaultHaptics = true
 }
