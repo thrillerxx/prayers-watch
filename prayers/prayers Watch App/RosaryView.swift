@@ -78,7 +78,7 @@ struct RosaryView: View {
                     .disabled(currentText == nil)
 
                     Button("Next") { next() }
-                        .disabled(index >= steps.count - 1 || speech.isSpeaking)
+                        .disabled(index >= steps.count - 1)
                 }
                 .buttonStyle(.bordered)
 
@@ -233,8 +233,20 @@ struct RosaryView: View {
     }
 
     private func next() {
+        // Always stop current utterance and advance immediately.
+        if speech.isSpeaking || speech.isPaused {
+            speech.stop()
+        }
+
         index = min(steps.count - 1, index + 1)
         if hapticsOn { Haptics.click() }
+
+        // If auto mode is enabled, immediately start speaking the new step.
+        if autoAdvance {
+            DispatchQueue.main.async {
+                speakCurrent()
+            }
+        }
     }
 }
 
