@@ -38,6 +38,22 @@ enum PrayerStore {
         #if DEBUG
         NSLog("[PrayerStore] Resolved: \(url.path)")
         NSLog("[PrayerStore] Bytes: \(data.count)")
+
+        // Also persist to app Documents for QA capture.
+        let logURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+            .appendingPathComponent("prayerstore_probe.log")
+        let line = "[PrayerStore] Resolved: \(url.path) | Bytes: \(data.count)\n"
+        if let d = line.data(using: .utf8) {
+            if FileManager.default.fileExists(atPath: logURL.path) {
+                if let fh = try? FileHandle(forWritingTo: logURL) {
+                    try? fh.seekToEnd()
+                    try? fh.write(contentsOf: d)
+                    try? fh.close()
+                }
+            } else {
+                try? d.write(to: logURL, options: .atomic)
+            }
+        }
         #endif
 
         let catalog = try JSONDecoder().decode(PrayerCatalog.self, from: data)
