@@ -28,7 +28,19 @@ struct SettingsView: View {
                     Text("Normal").tag("normal")
                 }
 
-                Stepper("Pause Between Parts: \(pauseBetweenPartsSeconds)s", value: $pauseBetweenPartsSeconds, in: 1...10)
+                HStack {
+                    Text("Pause Between Parts")
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.7)
+
+                    Spacer()
+
+                    Stepper(value: $pauseBetweenPartsSeconds, in: 1...10) {
+                        Text("\(pauseBetweenPartsSeconds)s")
+                            .monospacedDigit()
+                    }
+                    .labelsHidden()
+                }
             }
 
             Section {
