@@ -40,6 +40,7 @@ struct RosaryView: View {
             } else {
                 Text(displayTitle)
                     .font(.headline)
+                    .padding(.top, 6)
 
                 if let label = hailMaryCounterLabel {
                     Text(label)
@@ -89,7 +90,8 @@ struct RosaryView: View {
             }
         }
         .padding()
-        .navigationTitle("Rosary")
+        .navigationTitle("")
+        .navigationBarTitleDisplayMode(.inline)
         .onAppear {
             loadPrayers()
             autostartIfRequested()
