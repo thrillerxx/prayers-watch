@@ -28,19 +28,31 @@ struct SettingsView: View {
                     Text("Normal").tag("normal")
                 }
 
-                HStack {
-                    Text("Pause Between Parts")
+                HStack(spacing: 8) {
+                    Text("Pause")
                         .lineLimit(1)
-                        .minimumScaleFactor(0.7)
 
-                    Spacer()
+                    Spacer(minLength: 6)
 
-                    Stepper(value: $pauseBetweenPartsSeconds, in: 1...10) {
-                        Text("\(pauseBetweenPartsSeconds)s")
-                            .monospacedDigit()
+                    Button {
+                        pauseBetweenPartsSeconds = max(1, pauseBetweenPartsSeconds - 1)
+                    } label: {
+                        Image(systemName: "minus.circle")
                     }
-                    .labelsHidden()
+                    .buttonStyle(.plain)
+
+                    Text("\(pauseBetweenPartsSeconds)s")
+                        .monospacedDigit()
+                        .frame(minWidth: 28, alignment: .center)
+
+                    Button {
+                        pauseBetweenPartsSeconds = min(10, pauseBetweenPartsSeconds + 1)
+                    } label: {
+                        Image(systemName: "plus.circle")
+                    }
+                    .buttonStyle(.plain)
                 }
+                .contentShape(Rectangle())
             }
 
             Section {
