@@ -23,9 +23,9 @@ struct SettingsView: View {
                 }
 
                 Picker("Speech Speed", selection: $speechSpeed) {
+                    Text("Very Slow").tag("veryslow")
                     Text("Slow").tag("slow")
                     Text("Normal").tag("normal")
-                    Text("Fast").tag("fast")
                 }
 
                 Stepper("Pause Between Parts: \(pauseBetweenPartsSeconds)s", value: $pauseBetweenPartsSeconds, in: 1...10)

@@ -17,7 +17,7 @@ enum AppSettings {
 
     // Defaults
     static let defaultVoiceLanguage = "en-US"
-    static let defaultSpeechSpeed = "slow"
+    static let defaultSpeechSpeed = "slow" // veryslow|slow|normal
     static let defaultPauseBetweenPartsSeconds = 2
     static let defaultAutoAdvance = true
     static let defaultHaptics = true

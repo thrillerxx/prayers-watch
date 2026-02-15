@@ -202,9 +202,9 @@ struct RosaryView: View {
 
         let rate: Float
         switch speechSpeed {
-        case "fast": rate = 0.55
-        case "normal": rate = 0.48
-        default: rate = 0.42 // slow
+        case "veryslow": rate = 0.35
+        case "slow": rate = 0.42
+        default: rate = 0.50 // normal
         }
 
         speech.speak(text: text, voiceLanguage: voiceLanguage, rate: rate) {
