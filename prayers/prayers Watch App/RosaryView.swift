@@ -33,9 +33,6 @@ struct RosaryView: View {
                     .font(.footnote)
                     .foregroundStyle(.red)
             } else if selectedMystery == nil {
-                Text("Choose Mystery")
-                    .font(.headline)
-
                 List {
                     ForEach(RosaryMystery.allCases) { mystery in
                         Button {
@@ -46,9 +43,6 @@ struct RosaryView: View {
                     }
                 }
             } else {
-                Text(displayTitle)
-                    .font(.headline)
-        
                 if let label = hailMaryCounterLabel {
                     Text(label)
                         .font(.subheadline.weight(.semibold))
@@ -86,10 +80,10 @@ struct RosaryView: View {
             }
         }
         .padding()
-        .navigationTitle("Rosary")
+        .navigationTitle(selectedMystery == nil ? "Choose Mystery" : displayTitle)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
-            ToolbarItem(placement: .topBarLeading) {
+            ToolbarItem(placement: .cancellationAction) {
                 Button {
                     Task { @MainActor in
                         stopPlayback()
@@ -101,10 +95,10 @@ struct RosaryView: View {
                 }
                 .buttonStyle(.plain)
                 .accessibilityLabel("Stop")
-                .disabled(selectedMystery == nil && !speech.isSpeaking && !speech.isPaused)
+                .disabled(selectedMystery == nil)
             }
 
-            ToolbarItem(placement: .topBarTrailing) {
+            ToolbarItem(placement: .confirmationAction) {
                 Button {
                     Task { @MainActor in
                         playPauseTapped()
@@ -115,7 +109,7 @@ struct RosaryView: View {
                         .frame(width: 28, height: 28)
                 }
                 .buttonStyle(.plain)
-                .accessibilityLabel(speech.isSpeaking ? "Pause" : (speech.isPaused ? "Play" : "Play"))
+                .accessibilityLabel(speech.isSpeaking ? "Pause" : "Play")
                 .disabled(selectedMystery == nil || currentText == nil)
             }
         }

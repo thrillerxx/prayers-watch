@@ -16,7 +16,12 @@ final class prayers_Watch_AppUITests: XCTestCase {
     private func writeScreenshot(_ screenshot: XCUIScreenshot, name: String) {
         let dir = URL(fileURLWithPath: "/tmp/screenshots", isDirectory: true)
         try? FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
-        let url = dir.appendingPathComponent("\(name).png")
+
+        let device = (ProcessInfo.processInfo.environment["SIMULATOR_DEVICE_NAME"] ?? "watch")
+            .replacingOccurrences(of: "/", with: "-")
+            .replacingOccurrences(of: " ", with: "_")
+
+        let url = dir.appendingPathComponent("\(name)_\(device).png")
         try? screenshot.pngRepresentation.write(to: url)
     }
 
@@ -33,6 +38,10 @@ final class prayers_Watch_AppUITests: XCTestCase {
         writeScreenshot(XCUIScreen.main.screenshot(), name: "home")
 
         app.buttons["Rosary"].tap()
+
+        // Choose Mystery screenshot
+        writeScreenshot(XCUIScreen.main.screenshot(), name: "choose_mystery")
+
         app.buttons["Joyful"].tap()
 
         // Rosary screenshot
