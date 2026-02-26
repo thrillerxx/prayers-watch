@@ -6,6 +6,8 @@ struct PrayerLibraryView: View {
     @State private var errorText: String?
     private let lang: String = "en"
 
+    @StateObject private var speech = SpeechManager.shared
+
     var body: some View {
         VStack(spacing: 8) {
             if let errorText {
@@ -30,9 +32,9 @@ struct PrayerLibraryView: View {
         }
         .navigationTitle("Prayers")
         .toolbar {
-            if SpeechManager.shared.isSpeaking || SpeechManager.shared.isPaused {
+            if speech.isSpeaking || speech.isPaused {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button { SpeechManager.shared.stop() } label: {
+                    Button { speech.stop() } label: {
                         Image(systemName: "stop.fill")
                             .font(.body.weight(.semibold))
                             .frame(width: 28, height: 28)
@@ -44,19 +46,19 @@ struct PrayerLibraryView: View {
 
                 ToolbarItem(placement: .confirmationAction) {
                     Button {
-                        if SpeechManager.shared.isSpeaking {
-                            SpeechManager.shared.pause()
+                        if speech.isSpeaking {
+                            speech.pause()
                         } else {
-                            SpeechManager.shared.resume()
+                            speech.resume()
                         }
                     } label: {
-                        Image(systemName: SpeechManager.shared.isSpeaking ? "pause.fill" : "play.fill")
+                        Image(systemName: speech.isSpeaking ? "pause.fill" : "play.fill")
                             .font(.body.weight(.semibold))
                             .frame(width: 28, height: 28)
                     }
                     .buttonStyle(.plain)
-                    .accessibilityLabel(SpeechManager.shared.isSpeaking ? "Pause" : "Play")
-                    .accessibilityIdentifier(SpeechManager.shared.isSpeaking ? "Pause" : "Play")
+                    .accessibilityLabel(speech.isSpeaking ? "Pause" : "Play")
+                    .accessibilityIdentifier(speech.isSpeaking ? "Pause" : "Play")
                 }
             }
         }
@@ -84,6 +86,7 @@ struct PrayerDetailView: View {
     private let lang: String = "en"
 
     @StateObject private var speech = SpeechManager.shared
+
     @State private var didAutoplay = false
 
     private var text: String {
