@@ -77,6 +77,43 @@ final class prayers_Watch_AppUITests: XCTestCase {
         XCTAssertTrue(app.exists)
     }
 
+
+
+    /// Global transport toolbar:
+    /// - Start playback from Prayer Library (detail autoplays)
+    /// - Pause to keep session active
+    /// - Navigate back to Library + Home, assert Stop exists
+    /// - Tap Stop from Home
+    @MainActor
+    func testGlobalTransportFromLibraryToHomeStop() throws {
+        let app = XCUIApplication()
+        app.launch()
+
+        app.buttons["Prayer Library"].tap()
+
+        let firstCell = app.cells.element(boundBy: 0)
+        XCTAssertTrue(firstCell.waitForExistence(timeout: 5))
+        firstCell.tap()
+
+        // Pause via toolbar (ensures session stays active while navigating).
+        let pauseButton = app.buttons["Pause"].firstMatch
+        XCTAssertTrue(pauseButton.waitForExistence(timeout: 10))
+        pauseButton.tap()
+
+        // Back to Library list.
+        app.navigationBars.buttons.element(boundBy: 0).tap()
+        writeScreenshot(XCUIScreen.main.screenshot(), name: "library_playing")
+        XCTAssertTrue(app.buttons["Stop"].firstMatch.exists)
+
+        // Back to Home.
+        app.navigationBars.buttons.element(boundBy: 0).tap()
+        writeScreenshot(XCUIScreen.main.screenshot(), name: "home_playing")
+        XCTAssertTrue(app.buttons["Stop"].firstMatch.exists)
+
+        app.buttons["Stop"].firstMatch.tap()
+        XCTAssertTrue(app.exists)
+    }
+
     /// Prayer Library interrupt:
     /// - Enter prayer detail 1 (autoplays)
     /// - Switch to prayer 2

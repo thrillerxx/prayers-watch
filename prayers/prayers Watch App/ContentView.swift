@@ -20,21 +20,36 @@ struct ContentView: View {
             }
             .navigationTitle("Divinity")
             .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button {
-                        if speech.isSpeaking {
-                            speech.pause()
-                        } else if speech.isPaused {
-                            speech.resume()
+                if speech.isSpeaking || speech.isPaused {
+                    ToolbarItem(placement: .cancellationAction) {
+                        Button {
+                            speech.stop()
+                        } label: {
+                            Image(systemName: "stop.fill")
+                                .font(.body.weight(.semibold))
+                                .frame(width: 28, height: 28)
                         }
-                    } label: {
-                        Image(systemName: speech.isSpeaking ? "pause.fill" : "play.fill")
-                            .font(.body.weight(.semibold))
-                            .frame(width: 28, height: 28)
+                        .buttonStyle(.plain)
+                        .accessibilityLabel("Stop")
+                        .accessibilityIdentifier("Stop")
                     }
-                    .buttonStyle(.plain)
-                    .disabled(!(speech.isSpeaking || speech.isPaused))
-                    .accessibilityLabel(speech.isSpeaking ? "Pause" : "Play")
+
+                    ToolbarItem(placement: .confirmationAction) {
+                        Button {
+                            if speech.isSpeaking {
+                                speech.pause()
+                            } else {
+                                speech.resume()
+                            }
+                        } label: {
+                            Image(systemName: speech.isSpeaking ? "pause.fill" : "play.fill")
+                                .font(.body.weight(.semibold))
+                                .frame(width: 28, height: 28)
+                        }
+                        .buttonStyle(.plain)
+                        .accessibilityLabel(speech.isSpeaking ? "Pause" : "Play")
+                        .accessibilityIdentifier(speech.isSpeaking ? "Pause" : "Play")
+                    }
                 }
             }
         }

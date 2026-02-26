@@ -29,6 +29,37 @@ struct PrayerLibraryView: View {
             }
         }
         .navigationTitle("Prayers")
+        .toolbar {
+            if SpeechManager.shared.isSpeaking || SpeechManager.shared.isPaused {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button { SpeechManager.shared.stop() } label: {
+                        Image(systemName: "stop.fill")
+                            .font(.body.weight(.semibold))
+                            .frame(width: 28, height: 28)
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel("Stop")
+                    .accessibilityIdentifier("Stop")
+                }
+
+                ToolbarItem(placement: .confirmationAction) {
+                    Button {
+                        if SpeechManager.shared.isSpeaking {
+                            SpeechManager.shared.pause()
+                        } else {
+                            SpeechManager.shared.resume()
+                        }
+                    } label: {
+                        Image(systemName: SpeechManager.shared.isSpeaking ? "pause.fill" : "play.fill")
+                            .font(.body.weight(.semibold))
+                            .frame(width: 28, height: 28)
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel(SpeechManager.shared.isSpeaking ? "Pause" : "Play")
+                    .accessibilityIdentifier(SpeechManager.shared.isSpeaking ? "Pause" : "Play")
+                }
+            }
+        }
         .onAppear {
             do {
                 prayers = try PrayerStore.load().filter { prayer in
@@ -90,6 +121,37 @@ struct PrayerDetailView: View {
             .padding(.horizontal)
         }
         .navigationTitle("Prayer")
+        .toolbar {
+            if speech.isSpeaking || speech.isPaused {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button { speech.stop() } label: {
+                        Image(systemName: "stop.fill")
+                            .font(.body.weight(.semibold))
+                            .frame(width: 28, height: 28)
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel("Stop")
+                    .accessibilityIdentifier("Stop")
+                }
+
+                ToolbarItem(placement: .confirmationAction) {
+                    Button {
+                        if speech.isSpeaking {
+                            speech.pause()
+                        } else {
+                            speech.resume()
+                        }
+                    } label: {
+                        Image(systemName: speech.isSpeaking ? "pause.fill" : "play.fill")
+                            .font(.body.weight(.semibold))
+                            .frame(width: 28, height: 28)
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel(speech.isSpeaking ? "Pause" : "Play")
+                    .accessibilityIdentifier(speech.isSpeaking ? "Pause" : "Play")
+                }
+            }
+        }
         .onAppear {
             // Always interrupt any current playback and start this prayer immediately.
             if !didAutoplay {
