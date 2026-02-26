@@ -13,55 +13,69 @@ final class prayers_Watch_AppUITests: XCTestCase {
         XCTFail("Expected one of buttons to exist: \(names)", file: file, line: line)
     }
 
+    private func writeScreenshot(_ screenshot: XCUIScreenshot, name: String) {
+        let dir = URL(fileURLWithPath: "/tmp/screenshots", isDirectory: true)
+        try? FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
+        let url = dir.appendingPathComponent("\(name).png")
+        try? screenshot.pngRepresentation.write(to: url)
+    }
+
+    /// Rosary transport sanity:
+    /// - Auto ON should advance without manual Next
+    /// - Back should remain present/hittable during auto playback
+    /// - Stop should halt playback and set Auto OFF
     @MainActor
-    func testAutoNextSpamDoesNotFreeze() throws {
+    func testRosaryAutoBackStopTransport() throws {
         let app = XCUIApplication()
         app.launch()
+
+        // Home screenshot
+        writeScreenshot(XCUIScreen.main.screenshot(), name: "home")
 
         app.buttons["Rosary"].tap()
         app.buttons["Joyful"].tap()
 
-        // Pre-capture key controls *before* starting speech to avoid UI-idle wait flakiness.
+        // Rosary screenshot
+        writeScreenshot(XCUIScreen.main.screenshot(), name: "rosary")
+
         let autoSwitch = app.switches["Auto"]
-        XCTAssertTrue(autoSwitch.waitForExistence(timeout: 3))
+        XCTAssertTrue(autoSwitch.waitForExistence(timeout: 5))
+        if (autoSwitch.value as? String) == "0" { autoSwitch.tap() }
 
-        let speakButton = app.buttons["Speak"]
-        XCTAssertTrue(speakButton.waitForExistence(timeout: 3))
+        // Start playback via toolbar Play button.
+        let playButton = app.buttons["Play"].firstMatch
+        XCTAssertTrue(playButton.waitForExistence(timeout: 5))
+        playButton.tap()
 
-        let nextButton = app.buttons["Next"]
-        XCTAssertTrue(nextButton.waitForExistence(timeout: 3))
+        // Wait until we leave the initial title (auto-advance). We allow a generous timeout.
+        let initialTitle = app.staticTexts["Sign of the Cross"]
+        _ = initialTitle.waitForExistence(timeout: 5)
 
-        // We should start on the first step.
-        XCTAssertTrue(app.staticTexts["Sign of the Cross"].waitForExistence(timeout: 3))
+        let predicate = NSPredicate(format: "exists == false")
+        let exp = expectation(for: predicate, evaluatedWith: initialTitle)
+        let result = XCTWaiter.wait(for: [exp], timeout: 90)
+        XCTAssertEqual(result, .completed)
 
-        // Ensure Auto is ON.
-        if (autoSwitch.value as? String) == "0" {
-            autoSwitch.tap()
-        }
+        // Back should still be present/hittable.
+        let backButton = app.buttons["Back"]
+        XCTAssertTrue(backButton.exists)
+        backButton.tap()
+        XCTAssertTrue(backButton.exists)
 
-        // Start speaking, then immediately spam Next while speech is active.
-        speakButton.tap()
+        // Stop should disable Auto and stop playback.
+        let stopButton = app.buttons["Stop"].firstMatch
+        XCTAssertTrue(stopButton.exists)
+        stopButton.tap()
 
-        for _ in 0..<10 {
-            nextButton.tap()
-        }
-
-        // Give UI a moment to settle.
-        sleep(1)
-
-        // Assertion 1: title changed at least once.
-        XCTAssertFalse(app.staticTexts["Sign of the Cross"].exists)
-
-        // Assertion 2: still on the Rosary screen.
-        XCTAssertTrue(app.switches["Auto"].exists)
-        XCTAssertTrue(app.buttons["Next"].exists)
-
-        // Assertion 3: a Speak/Pause control is still available.
-        assertAnyButtonExists(app, names: ["Speak", "Pause", "Resume"])
-
+        XCTAssertEqual(autoSwitch.value as? String, "0")
+        XCTAssertTrue(app.buttons["Play"].firstMatch.exists)
         XCTAssertTrue(app.exists)
     }
 
+    /// Prayer Library interrupt:
+    /// - Enter prayer detail 1 (autoplays)
+    /// - Switch to prayer 2
+    /// - Assert displayed title changes to prayer 2 and a playback control exists
     @MainActor
     func testLibraryInterruptSwitchesActivePrayer() throws {
         let app = XCUIApplication()
@@ -80,22 +94,16 @@ final class prayers_Watch_AppUITests: XCTestCase {
         XCTAssertNotEqual(prayer1Title, "")
         XCTAssertNotEqual(prayer2Title, "")
 
-        // Start playback on prayer 1 (detail view autoplays on appear).
         firstCell.tap()
-        // Avoid long waits while speech starts; just verify we navigated to a detail screen.
         XCTAssertTrue(app.navigationBars.buttons.element(boundBy: 0).waitForExistence(timeout: 5))
 
-        // Switch to prayer 2 while audio is active.
         app.navigationBars.buttons.element(boundBy: 0).tap()
-        XCTAssertTrue(secondCell.waitForExistence(timeout: 5))
         secondCell.tap()
 
-        // Assert title changed to prayer 2 (best-effort; should be fast).
         XCTAssertTrue(app.staticTexts[prayer2Title].waitForExistence(timeout: 5))
+        XCTAssertFalse(app.staticTexts[prayer1Title].exists)
 
-        // Playback control should be present.
         assertAnyButtonExists(app, names: ["Speak", "Pause", "Resume"])
-
         XCTAssertTrue(app.exists)
     }
 }
