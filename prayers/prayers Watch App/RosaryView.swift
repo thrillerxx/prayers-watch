@@ -14,7 +14,6 @@ struct RosaryView: View {
     // Playback state machine guards
     @State private var playbackGeneration: Int = 0
     @State private var isTransitioningStep: Bool = false
-    @State private var lastManualNavAt: Date = .distantPast
 
     // Cancellable auto-advance work
     @State private var autoAdvanceTask: Task<Void, Never>? = nil
@@ -49,8 +48,7 @@ struct RosaryView: View {
             } else {
                 Text(displayTitle)
                     .font(.headline)
-                    .padding(.top, 6)
-
+        
                 if let label = hailMaryCounterLabel {
                     Text(label)
                         .font(.subheadline.weight(.semibold))
@@ -72,21 +70,7 @@ struct RosaryView: View {
 
                 HStack {
                     Button("Back") { back() }
-                        .disabled(index == 0 || speech.isSpeaking)
-
-                    Button(speech.isSpeaking ? "Pause" : (speech.isPaused ? "Resume" : "Speak")) {
-                        if speech.isSpeaking {
-                            speech.pause()
-                        } else if speech.isPaused {
-                            speech.resume()
-                        } else {
-                            transition(to: index, reason: .manualStart)
-                        }
-                    }
-                    .disabled(currentText == nil)
-
-                    Button("Next") { next() }
-                        .disabled(index >= steps.count - 1)
+                        .disabled(index == 0)
                 }
                 .buttonStyle(.bordered)
 
@@ -102,8 +86,39 @@ struct RosaryView: View {
             }
         }
         .padding()
-        .navigationTitle("")
+        .navigationTitle("Rosary")
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                Button {
+                    Task { @MainActor in
+                        stopPlayback()
+                    }
+                } label: {
+                    Image(systemName: "stop.fill")
+                        .font(.body.weight(.semibold))
+                        .frame(width: 28, height: 28)
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel("Stop")
+                .disabled(selectedMystery == nil && !speech.isSpeaking && !speech.isPaused)
+            }
+
+            ToolbarItem(placement: .topBarTrailing) {
+                Button {
+                    Task { @MainActor in
+                        playPauseTapped()
+                    }
+                } label: {
+                    Image(systemName: speech.isSpeaking ? "pause.fill" : "play.fill")
+                        .font(.body.weight(.semibold))
+                        .frame(width: 28, height: 28)
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel(speech.isSpeaking ? "Pause" : (speech.isPaused ? "Play" : "Play"))
+                .disabled(selectedMystery == nil || currentText == nil)
+            }
+        }
         .onAppear {
             loadPrayers()
             autostartIfRequested()
@@ -207,7 +222,6 @@ struct RosaryView: View {
     }
 
     private enum TransitionReason {
-        case manualNext
         case manualBack
         case manualStart
         case autoCompletion
@@ -232,18 +246,6 @@ struct RosaryView: View {
         }
         isTransitioningStep = true
         defer { isTransitioningStep = false }
-
-        // Debounce manual tap storms.
-        if case .manualNext = reason {
-            let now = Date()
-            if now.timeIntervalSince(lastManualNavAt) < 0.22 {
-                #if DEBUG
-                print("[Rosary] manualNext debounced gen=\(playbackGeneration) idx=\(index)")
-                #endif
-                return
-            }
-            lastManualNavAt = now
-        }
 
         cancelAutoTask(reason: "transition")
 
@@ -332,17 +334,34 @@ struct RosaryView: View {
         }
     }
 
+    
+
+    @MainActor
+    private func stopPlayback() {
+        cancelAutoTask(reason: "stop")
+        autoAdvance = false
+        playbackGeneration &+= 1
+        speech.stop()
+        index = 0
+    }
+
+    @MainActor
+    private func playPauseTapped() {
+        if speech.isSpeaking {
+            speech.pause()
+            return
+        }
+        if speech.isPaused {
+            speech.resume()
+            return
+        }
+        transition(to: index, reason: .manualStart)
+    }
+
     private func back() {
         Task { @MainActor in
             cancelAutoTask(reason: "manualBack")
             transition(to: index - 1, reason: .manualBack)
-        }
-    }
-
-    private func next() {
-        Task { @MainActor in
-            cancelAutoTask(reason: "manualNext")
-            transition(to: index + 1, reason: .manualNext)
         }
     }
 }
