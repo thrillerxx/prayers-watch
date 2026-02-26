@@ -83,7 +83,35 @@ struct RosaryView: View {
         .navigationTitle(selectedMystery == nil ? "Choose Mystery" : displayTitle)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
-            TransportToolbarItems()
+            ToolbarItem(placement: .cancellationAction) {
+                Button {
+                    Task { @MainActor in
+                        stopPlayback()
+                    }
+                } label: {
+                    Image(systemName: "stop.fill")
+                        .font(.body.weight(.semibold))
+                        .frame(width: 28, height: 28)
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel("Stop")
+                .disabled(selectedMystery == nil)
+            }
+
+            ToolbarItem(placement: .confirmationAction) {
+                Button {
+                    Task { @MainActor in
+                        playPauseTapped()
+                    }
+                } label: {
+                    Image(systemName: speech.isSpeaking ? "pause.fill" : "play.fill")
+                        .font(.body.weight(.semibold))
+                        .frame(width: 28, height: 28)
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel(speech.isSpeaking ? "Pause" : "Play")
+                .disabled(selectedMystery == nil || currentText == nil)
+            }
         }
         .onAppear {
             loadPrayers()
@@ -220,7 +248,7 @@ struct RosaryView: View {
         }
 
         if speech.isSpeaking || speech.isPaused {
-            speech.stopAndClearSession()
+            speech.stop()
         }
 
         index = min(max(0, newIndex), max(steps.count - 1, 0))
@@ -307,7 +335,7 @@ struct RosaryView: View {
         cancelAutoTask(reason: "stop")
         autoAdvance = false
         playbackGeneration &+= 1
-        speech.stopAndClearSession()
+        speech.stop()
         index = 0
     }
 
