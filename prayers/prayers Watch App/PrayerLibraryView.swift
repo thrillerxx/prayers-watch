@@ -29,6 +29,9 @@ struct PrayerLibraryView: View {
             }
         }
         .navigationTitle("Prayers")
+        .toolbar {
+            TransportToolbarItems()
+        }
         .onAppear {
             do {
                 prayers = try PrayerStore.load().filter { prayer in
@@ -90,11 +93,14 @@ struct PrayerDetailView: View {
             .padding(.horizontal)
         }
         .navigationTitle("Prayer")
+        .toolbar {
+            TransportToolbarItems()
+        }
         .onAppear {
             // Always interrupt any current playback and start this prayer immediately.
             if !didAutoplay {
                 didAutoplay = true
-                speech.stop()
+                speech.stopAndClearSession()
                 speak()
             }
         }

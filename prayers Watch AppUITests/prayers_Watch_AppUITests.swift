@@ -77,6 +77,48 @@ final class prayers_Watch_AppUITests: XCTestCase {
         XCTAssertTrue(app.exists)
     }
 
+
+
+    /// Global transport sanity:
+    /// - Start playback from Prayer Library detail
+    /// - Verify transport is visible on Prayer Library list and Home
+    /// - Stop clears session and disables/hides controls
+    @MainActor
+    func testGlobalTransportHomeLibrary() throws {
+        let app = XCUIApplication()
+        app.launch()
+
+        app.buttons["Prayer Library"].tap()
+
+        let firstCell = app.cells.element(boundBy: 0)
+        XCTAssertTrue(firstCell.waitForExistence(timeout: 5))
+        firstCell.tap()
+
+        // Wait for global transport to appear.
+        let stopButton = app.buttons["Stop"].firstMatch
+        XCTAssertTrue(stopButton.waitForExistence(timeout: 10))
+
+        // Back to Library list (still playing/resumable)
+        app.navigationBars.buttons.element(boundBy: 0).tap()
+        writeScreenshot(XCUIScreen.main.screenshot(), name: "library_playing")
+        XCTAssertTrue(app.buttons["Stop"].firstMatch.exists)
+
+        // Back to Home
+        app.navigationBars.buttons.element(boundBy: 0).tap()
+        writeScreenshot(XCUIScreen.main.screenshot(), name: "home_playing")
+        XCTAssertTrue(app.buttons["Stop"].firstMatch.exists)
+
+        // Stop should clear the session.
+        app.buttons["Stop"].firstMatch.tap()
+
+        // After Stop: either hidden or disabled.
+        let stopExists = app.buttons["Stop"].firstMatch.exists
+        if stopExists {
+            XCTAssertFalse(app.buttons["Stop"].firstMatch.isHittable)
+        }
+        XCTAssertTrue(app.exists)
+    }
+
     /// Prayer Library interrupt:
     /// - Enter prayer detail 1 (autoplays)
     /// - Switch to prayer 2
