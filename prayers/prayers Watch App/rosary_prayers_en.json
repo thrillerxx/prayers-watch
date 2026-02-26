@@ -411,6 +411,58 @@
       "translations": {
         "en": "O God, whose only begotten Son, by His life, death, and resurrection, has purchased for us the rewards of eternal life. Grant, we beseech Thee, that by meditating on these mysteries of the most holy Rosary of the Blessed Virgin Mary, we may imitate what they contain and obtain what they promise, through the same Christ our Lord. Amen."
       }
+    },
+    {
+      "id": "memorare",
+      "title": "Memorare",
+      "translations": {
+        "en": "Remember, O most gracious Virgin Mary,\nthat never was it known\nthat anyone who fled to thy protection,\nimplored thy help,\nor sought thy intercession,\nwas left unaided.\n\nInspired by this confidence,\nI fly unto thee,\nO Virgin of virgins, my mother;\nto thee do I come,\nbefore thee I stand,\nsinful and sorrowful.\n\nO Mother of the Word Incarnate,\ndespise not my petitions,\nbut in thy mercy hear and answer me.\nAmen."
+      },
+      "sources": [
+        {
+          "name": "USCCB (prayers)",
+          "url": "https://www.usccb.org/prayers"
+        }
+      ]
+    },
+    {
+      "id": "angelus",
+      "title": "The Angelus",
+      "translations": {
+        "en": "V. The Angel of the Lord declared unto Mary.\nR. And she conceived of the Holy Spirit.\n\nHail Mary, full of grace, the Lord is with thee. Blessed art thou among women and blessed is the fruit of thy womb, Jesus. Holy Mary, Mother of God, pray for us sinners, now and at the hour of our death. Amen.\n\nV. Behold the handmaid of the Lord.\nR. Be it done unto me according to thy word.\n\nHail Mary, full of grace, the Lord is with thee. Blessed art thou among women and blessed is the fruit of thy womb, Jesus. Holy Mary, Mother of God, pray for us sinners, now and at the hour of our death. Amen.\n\nV. And the Word was made flesh.\nR. And dwelt among us.\n\nHail Mary, full of grace, the Lord is with thee. Blessed art thou among women and blessed is the fruit of thy womb, Jesus. Holy Mary, Mother of God, pray for us sinners, now and at the hour of our death. Amen.\n\nV. Pray for us, O holy Mother of God.\nR. That we may be made worthy of the promises of Christ.\n\nLet us pray:\nPour forth, we beseech thee, O Lord, thy grace into our hearts; that we, to whom the Incarnation of Christ, thy Son, was made known by the message of an angel, may by his Passion and Cross be brought to the glory of his Resurrection. Through the same Christ our Lord. Amen."
+      },
+      "sources": [
+        {
+          "name": "USCCB (prayers)",
+          "url": "https://www.usccb.org/prayers"
+        }
+      ]
+    },
+    {
+      "id": "act_of_contrition",
+      "title": "Act of Contrition",
+      "translations": {
+        "en": "O my God, I am heartily sorry for having offended you, and I detest all my sins because of your just punishments, but most of all because they offend you, my God, who are all good and deserving of all my love. I firmly resolve, with the help of your grace, to sin no more and to avoid the near occasions of sin. Amen."
+      },
+      "sources": [
+        {
+          "name": "USCCB (prayers)",
+          "url": "https://www.usccb.org/prayers"
+        }
+      ]
+    },
+    {
+      "id": "eternal_rest",
+      "title": "Eternal Rest",
+      "translations": {
+        "en": "Eternal rest grant unto them, O Lord,\nand let perpetual light shine upon them.\n\nMay they rest in peace.\nAmen."
+      },
+      "sources": [
+        {
+          "name": "USCCB (prayers)",
+          "url": "https://www.usccb.org/prayers"
+        }
+      ]
     }
   ]
 }
