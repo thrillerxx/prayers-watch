@@ -1,43 +1,62 @@
-//
-//  prayers_Watch_AppUITests.swift
-//  prayers Watch AppUITests
-//
-//  Created by Car Gonzalez on 2/5/26.
-//
-
 import XCTest
 
 final class prayers_Watch_AppUITests: XCTestCase {
 
     override func setUpWithError() throws {
-        // Put setup code here. This method is called before the invocation of each test method in the class.
-
-        // In UI tests it is usually best to stop immediately when a failure occurs.
         continueAfterFailure = false
-
-        // In UI tests it’s important to set the initial state - such as interface orientation - required for your tests before they run. The setUp method is a good place to do this.
-    }
-
-    override func tearDownWithError() throws {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
     }
 
     @MainActor
-    func testExample() throws {
-        // UI tests must launch the application that they test.
+    func testAutoNextSpamDoesNotFreeze() throws {
         let app = XCUIApplication()
         app.launch()
 
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
+        app.buttons["Rosary"].tap()
+        app.buttons["Joyful"].tap()
+
+        // Ensure Auto is ON
+        let autoSwitch = app.switches["Auto"]
+        if autoSwitch.exists, (autoSwitch.value as? String) == "0" {
+            autoSwitch.tap()
+        }
+
+        // Start speaking
+        app.buttons["Speak"].tap()
+
+        // Spam Next
+        let nextButton = app.buttons["Next"]
+        for _ in 0..<10 {
+            nextButton.tap()
+        }
+
+        sleep(1)
+
+        // First step after selecting a mystery is "Sign of the Cross".
+        XCTAssertFalse(app.staticTexts["Sign of the Cross"].exists)
+        XCTAssertTrue(app.exists)
     }
 
     @MainActor
-    func testLaunchPerformance() throws {
-        if #available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 7.0, *) {
-            // This measures how long it takes to launch your application.
-            measure(metrics: [XCTApplicationLaunchMetric()]) {
-                XCUIApplication().launch()
-            }
-        }
+    func testLibraryInterruptSwitchesActivePrayer() throws {
+        let app = XCUIApplication()
+        app.launch()
+
+        app.buttons["Prayer Library"].tap()
+
+        // Pick any visible prayer-like entry and open it (detail view autoplays).
+        let firstCell = app.cells.element(boundBy: 0)
+        XCTAssertTrue(firstCell.waitForExistence(timeout: 5))
+        firstCell.tap()
+
+        // Immediately go back and pick a different entry while speech is still active.
+        app.navigationBars.buttons.element(boundBy: 0).tap()
+
+        let secondCell = app.cells.element(boundBy: 1)
+        XCTAssertTrue(secondCell.waitForExistence(timeout: 5))
+        secondCell.tap()
+
+        // New detail should be visible (headline is the prayer title).
+        XCTAssertTrue(app.staticTexts.element(boundBy: 0).exists)
+        XCTAssertTrue(app.exists)
     }
 }

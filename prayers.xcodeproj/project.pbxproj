@@ -89,7 +89,7 @@
 		};
 		167C332C2F34767100DD1377 /* prayers Watch App */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = "prayers Watch App";
+			path = "prayers/prayers Watch App";
 			sourceTree = "<group>";
 		};
 		167C333D2F34767200DD1377 /* prayers Watch AppTests */ = {
