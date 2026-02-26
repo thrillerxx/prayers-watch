@@ -6,6 +6,13 @@ final class prayers_Watch_AppUITests: XCTestCase {
         continueAfterFailure = false
     }
 
+    private func assertAnyButtonExists(_ app: XCUIApplication, names: [String], file: StaticString = #filePath, line: UInt = #line) {
+        for name in names {
+            if app.buttons[name].exists { return }
+        }
+        XCTFail("Expected one of buttons to exist: \(names)", file: file, line: line)
+    }
+
     @MainActor
     func testAutoNextSpamDoesNotFreeze() throws {
         let app = XCUIApplication()
@@ -14,25 +21,44 @@ final class prayers_Watch_AppUITests: XCTestCase {
         app.buttons["Rosary"].tap()
         app.buttons["Joyful"].tap()
 
-        // Ensure Auto is ON
+        // Pre-capture key controls *before* starting speech to avoid UI-idle wait flakiness.
         let autoSwitch = app.switches["Auto"]
-        if autoSwitch.exists, (autoSwitch.value as? String) == "0" {
+        XCTAssertTrue(autoSwitch.waitForExistence(timeout: 3))
+
+        let speakButton = app.buttons["Speak"]
+        XCTAssertTrue(speakButton.waitForExistence(timeout: 3))
+
+        let nextButton = app.buttons["Next"]
+        XCTAssertTrue(nextButton.waitForExistence(timeout: 3))
+
+        // We should start on the first step.
+        XCTAssertTrue(app.staticTexts["Sign of the Cross"].waitForExistence(timeout: 3))
+
+        // Ensure Auto is ON.
+        if (autoSwitch.value as? String) == "0" {
             autoSwitch.tap()
         }
 
-        // Start speaking
-        app.buttons["Speak"].tap()
+        // Start speaking, then immediately spam Next while speech is active.
+        speakButton.tap()
 
-        // Spam Next
-        let nextButton = app.buttons["Next"]
         for _ in 0..<10 {
             nextButton.tap()
         }
 
+        // Give UI a moment to settle.
         sleep(1)
 
-        // First step after selecting a mystery is "Sign of the Cross".
+        // Assertion 1: title changed at least once.
         XCTAssertFalse(app.staticTexts["Sign of the Cross"].exists)
+
+        // Assertion 2: still on the Rosary screen.
+        XCTAssertTrue(app.switches["Auto"].exists)
+        XCTAssertTrue(app.buttons["Next"].exists)
+
+        // Assertion 3: a Speak/Pause control is still available.
+        assertAnyButtonExists(app, names: ["Speak", "Pause", "Resume"])
+
         XCTAssertTrue(app.exists)
     }
 
@@ -43,20 +69,33 @@ final class prayers_Watch_AppUITests: XCTestCase {
 
         app.buttons["Prayer Library"].tap()
 
-        // Pick any visible prayer-like entry and open it (detail view autoplays).
         let firstCell = app.cells.element(boundBy: 0)
-        XCTAssertTrue(firstCell.waitForExistence(timeout: 5))
-        firstCell.tap()
-
-        // Immediately go back and pick a different entry while speech is still active.
-        app.navigationBars.buttons.element(boundBy: 0).tap()
-
         let secondCell = app.cells.element(boundBy: 1)
+
+        XCTAssertTrue(firstCell.waitForExistence(timeout: 5))
+        XCTAssertTrue(secondCell.waitForExistence(timeout: 5))
+
+        let prayer1Title = firstCell.label
+        let prayer2Title = secondCell.label
+        XCTAssertNotEqual(prayer1Title, "")
+        XCTAssertNotEqual(prayer2Title, "")
+
+        // Start playback on prayer 1 (detail view autoplays on appear).
+        firstCell.tap()
+        // Avoid long waits while speech starts; just verify we navigated to a detail screen.
+        XCTAssertTrue(app.navigationBars.buttons.element(boundBy: 0).waitForExistence(timeout: 5))
+
+        // Switch to prayer 2 while audio is active.
+        app.navigationBars.buttons.element(boundBy: 0).tap()
         XCTAssertTrue(secondCell.waitForExistence(timeout: 5))
         secondCell.tap()
 
-        // New detail should be visible (headline is the prayer title).
-        XCTAssertTrue(app.staticTexts.element(boundBy: 0).exists)
+        // Assert title changed to prayer 2 (best-effort; should be fast).
+        XCTAssertTrue(app.staticTexts[prayer2Title].waitForExistence(timeout: 5))
+
+        // Playback control should be present.
+        assertAnyButtonExists(app, names: ["Speak", "Pause", "Resume"])
+
         XCTAssertTrue(app.exists)
     }
 }
