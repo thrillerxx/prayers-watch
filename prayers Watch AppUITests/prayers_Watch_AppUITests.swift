@@ -121,6 +121,9 @@ final class prayers_Watch_AppUITests: XCTestCase {
         XCTAssertTrue(firstCell.waitForExistence(timeout: 10))
         firstCell.tap()
 
+        // Prayer Detail screenshot
+        writeScreenshot(XCUIScreen.main.screenshot(), name: "prayer_detail")
+
         // Wait for toolbar to show pause (playback started).
         let pauseButton = app.buttons["Pause"].firstMatch
         XCTAssertTrue(pauseButton.waitForExistence(timeout: 20))

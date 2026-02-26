@@ -98,6 +98,10 @@ struct PrayerDetailView: View {
             VStack(alignment: .leading, spacing: 12) {
                 Text(prayer.title)
                     .font(.headline)
+                    .multilineTextAlignment(.center)
+                    .lineLimit(2)
+                    .frame(maxWidth: .infinity, alignment: .center)
+                    .padding(.top, 2)
 
                 if text.isEmpty {
                     Text("No text for this prayer in the selected language.")

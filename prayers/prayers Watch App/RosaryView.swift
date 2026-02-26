@@ -43,6 +43,13 @@ struct RosaryView: View {
                     }
                 }
             } else {
+                Text(displayTitle)
+                    .font(.headline)
+                    .multilineTextAlignment(.center)
+                    .lineLimit(2)
+                    .frame(maxWidth: .infinity, alignment: .center)
+                    .padding(.top, 2)
+
                 if let label = hailMaryCounterLabel {
                     Text(label)
                         .font(.subheadline.weight(.semibold))
@@ -80,7 +87,7 @@ struct RosaryView: View {
             }
         }
         .padding()
-        .navigationTitle(selectedMystery == nil ? "Choose Mystery" : displayTitle)
+        .navigationTitle(selectedMystery == nil ? "Choose Mystery" : "Rosary")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .cancellationAction) {
