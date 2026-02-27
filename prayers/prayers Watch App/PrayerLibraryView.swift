@@ -10,6 +10,10 @@ struct PrayerLibraryView: View {
 
     var body: some View {
         VStack(spacing: 8) {
+            if speech.isSpeaking || speech.isPaused {
+                TransportRow(speech: speech)
+                    .padding(.top, 2)
+            }
             if let errorText {
                 Text(errorText)
                     .font(.footnote)
@@ -31,37 +35,6 @@ struct PrayerLibraryView: View {
             }
         }
         .navigationTitle("Prayers")
-        .toolbar {
-            if speech.isSpeaking || speech.isPaused {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button { speech.stop() } label: {
-                        Image(systemName: "stop.fill")
-                            .font(.body.weight(.semibold))
-                            .frame(width: 28, height: 28)
-                    }
-                    .buttonStyle(.plain)
-                    .accessibilityLabel("Stop")
-                    .accessibilityIdentifier("Stop")
-                }
-
-                ToolbarItem(placement: .confirmationAction) {
-                    Button {
-                        if speech.isSpeaking {
-                            speech.pause()
-                        } else {
-                            speech.resume()
-                        }
-                    } label: {
-                        Image(systemName: speech.isSpeaking ? "pause.fill" : "play.fill")
-                            .font(.body.weight(.semibold))
-                            .frame(width: 28, height: 28)
-                    }
-                    .buttonStyle(.plain)
-                    .accessibilityLabel(speech.isSpeaking ? "Pause" : "Play")
-                    .accessibilityIdentifier(speech.isSpeaking ? "Pause" : "Play")
-                }
-            }
-        }
         .onAppear {
             do {
                 prayers = try PrayerStore.load().filter { prayer in
@@ -77,6 +50,35 @@ struct PrayerLibraryView: View {
             } catch {
                 errorText = error.localizedDescription
             }
+        }
+    }
+}
+
+private struct TransportRow: View {
+    @ObservedObject var speech: SpeechManager
+
+    var body: some View {
+        HStack(spacing: 10) {
+            Button {
+                if speech.isSpeaking {
+                    speech.pause()
+                } else {
+                    speech.resume()
+                }
+            } label: {
+                Label(speech.isSpeaking ? "Pause" : "Play", systemImage: speech.isSpeaking ? "pause.fill" : "play.fill")
+                    .frame(maxWidth: .infinity)
+            }
+            .buttonStyle(.borderedProminent)
+            .accessibilityIdentifier("TransportPlayPause")
+
+            Button {
+                speech.stop()
+            } label: {
+                Image(systemName: "stop.fill")
+            }
+            .buttonStyle(.bordered)
+            .accessibilityIdentifier("TransportStop")
         }
     }
 }
@@ -103,6 +105,11 @@ struct PrayerDetailView: View {
                     .frame(maxWidth: .infinity, alignment: .center)
                     .padding(.top, 2)
 
+                if speech.isSpeaking || speech.isPaused {
+                    TransportRow(speech: speech)
+                        .padding(.top, 4)
+                }
+
                 if text.isEmpty {
                     Text("No text for this prayer in the selected language.")
                         .font(.footnote)
@@ -128,37 +135,6 @@ struct PrayerDetailView: View {
             .padding(.horizontal)
         }
         .navigationTitle("Prayer")
-        .toolbar {
-            if speech.isSpeaking || speech.isPaused {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button { speech.stop() } label: {
-                        Image(systemName: "stop.fill")
-                            .font(.body.weight(.semibold))
-                            .frame(width: 28, height: 28)
-                    }
-                    .buttonStyle(.plain)
-                    .accessibilityLabel("Stop")
-                    .accessibilityIdentifier("Stop")
-                }
-
-                ToolbarItem(placement: .confirmationAction) {
-                    Button {
-                        if speech.isSpeaking {
-                            speech.pause()
-                        } else {
-                            speech.resume()
-                        }
-                    } label: {
-                        Image(systemName: speech.isSpeaking ? "pause.fill" : "play.fill")
-                            .font(.body.weight(.semibold))
-                            .frame(width: 28, height: 28)
-                    }
-                    .buttonStyle(.plain)
-                    .accessibilityLabel(speech.isSpeaking ? "Pause" : "Play")
-                    .accessibilityIdentifier(speech.isSpeaking ? "Pause" : "Play")
-                }
-            }
-        }
         .onAppear {
             // Always interrupt any current playback and start this prayer immediately.
             if !didAutoplay {

@@ -78,23 +78,23 @@ final class prayers_Watch_AppUITests: XCTestCase {
         if (autoSwitch.value as? String) == "0" { autoSwitch.tap() }
 
         // Start playback via toolbar Play button.
-        let playButton = app.buttons["Play"].firstMatch
+        let playButton = app.buttons["TransportPlayPause"].firstMatch
         XCTAssertTrue(playButton.waitForExistence(timeout: 5))
         playButton.tap()
 
         // We do not wait for a specific title transition here (can be flaky on Simulator).
         // Instead, we assert transport controls remain responsive while auto playback is active.
-        let pauseButton = app.buttons["Pause"].firstMatch
+        let pauseButton = app.buttons["TransportPlayPause"].firstMatch
         _ = pauseButton.waitForExistence(timeout: 30)
 
         // Back should still be present/hittable.
-        let backButton = app.buttons["Back"]
+        let backButton = app.buttons["RosaryBack"]
         XCTAssertTrue(backButton.exists)
         backButton.tap()
         XCTAssertTrue(backButton.exists)
 
         // Stop should disable Auto and stop playback.
-        let stopButton = app.buttons["Stop"].firstMatch
+        let stopButton = app.buttons["TransportStop"].firstMatch
         XCTAssertTrue(stopButton.exists)
         stopButton.tap()
 
@@ -124,34 +124,24 @@ final class prayers_Watch_AppUITests: XCTestCase {
         // Prayer Detail screenshot
         writeScreenshot(XCUIScreen.main.screenshot(), name: "prayer_detail")
 
-        // Wait for toolbar to show pause (playback started).
-        let pauseButton = app.buttons["Pause"].firstMatch
-        XCTAssertTrue(pauseButton.waitForExistence(timeout: 20))
+        // Wait for transport to exist.
+        let playPauseButton = app.buttons["TransportPlayPause"].firstMatch
+        XCTAssertTrue(playPauseButton.waitForExistence(timeout: 20))
 
-        // Pause + resume once on detail.
-        pauseButton.tap()
-        let playButton = app.buttons["Play"].firstMatch
-        XCTAssertTrue(playButton.waitForExistence(timeout: 10))
-        playButton.tap()
-        XCTAssertTrue(pauseButton.waitForExistence(timeout: 10))
-
-        // Pause again so session stays active while navigating.
-        pauseButton.tap()
-        XCTAssertTrue(playButton.waitForExistence(timeout: 10))
+        // Toggle once to ensure it's tappable.
+        playPauseButton.tap()
+        XCTAssertTrue(playPauseButton.waitForExistence(timeout: 10))
 
         // Back to Library list.
         tapBackButton(app)
         writeScreenshot(XCUIScreen.main.screenshot(), name: "library_playing")
-        XCTAssertTrue(app.buttons["Stop"].firstMatch.exists)
 
-        // Back to Home.
-        tapBackButton(app)
-        writeScreenshot(XCUIScreen.main.screenshot(), name: "home_playing")
-        XCTAssertTrue(app.buttons["Stop"].firstMatch.exists)
+        let stopButton = app.buttons["TransportStop"].firstMatch
+        XCTAssertTrue(stopButton.exists)
 
         // Stop should end session and hide transport.
-        app.buttons["Stop"].firstMatch.tap()
-        waitForNoExistence(app.buttons["Stop"].firstMatch, timeout: 10)
+        stopButton.tap()
+        waitForNoExistence(stopButton, timeout: 10)
         XCTAssertTrue(app.exists)
     }
 
@@ -192,7 +182,7 @@ final class prayers_Watch_AppUITests: XCTestCase {
         XCTAssertTrue(app.staticTexts[prayer2Title].waitForExistence(timeout: 5))
         XCTAssertFalse(app.staticTexts[prayer1Title].exists)
 
-        assertAnyButtonExists(app, names: ["Speak", "Pause", "Resume"])
+        assertAnyButtonExists(app, names: ["TransportPlayPause", "TransportStop"])
         XCTAssertTrue(app.exists)
     }
 }

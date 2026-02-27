@@ -1,6 +1,34 @@
 import SwiftUI
 
 struct RosaryView: View {
+
+    private struct RosaryTransportRow: View {
+        @ObservedObject var speech: SpeechManager
+        let playPauseTapped: () -> Void
+        let stopTapped: () -> Void
+
+        var body: some View {
+            HStack(spacing: 10) {
+                Button {
+                    playPauseTapped()
+                } label: {
+                    Label(speech.isSpeaking ? "Pause" : "Play", systemImage: speech.isSpeaking ? "pause.fill" : "play.fill")
+                        .frame(maxWidth: .infinity)
+                }
+                .buttonStyle(.borderedProminent)
+                .accessibilityIdentifier("TransportPlayPause")
+
+                Button {
+                    stopTapped()
+                } label: {
+                    Image(systemName: "stop.fill")
+                }
+                .buttonStyle(.bordered)
+                .accessibilityIdentifier("TransportStop")
+            }
+        }
+    }
+
     @State private var prayersById: [String: Prayer] = [:]
     @State private var errorText: String?
 
@@ -69,57 +97,36 @@ struct RosaryView: View {
                 Toggle("Auto", isOn: $autoAdvance)
                     .toggleStyle(.switch)
 
-                HStack {
-                    Button("Back") { back() }
-                        .disabled(index == 0)
-                }
-                .buttonStyle(.bordered)
+                RosaryTransportRow(
+                    speech: speech,
+                    playPauseTapped: { Task { @MainActor in playPauseTapped() } },
+                    stopTapped: { Task { @MainActor in stopPlayback() } }
+                )
+                .padding(.top, 4)
 
-                Button("Change Mystery") {
-                    playbackGeneration &+= 1
-                    selectedMystery = nil
-                    steps = []
-                    index = 0
-                    speech.stop()
+                HStack(spacing: 10) {
+                    Button("Back") { back() }
+                        .accessibilityIdentifier("RosaryBack")
+                        .frame(maxWidth: .infinity)
+                        .disabled(index == 0)
+
+                    Button("Change Mystery") {
+                        playbackGeneration &+= 1
+                        selectedMystery = nil
+                        steps = []
+                        index = 0
+                        speech.stop()
+                    }
+                    .accessibilityIdentifier("RosaryChangeMystery")
+                    .frame(maxWidth: .infinity)
+                    .disabled(speech.isSpeaking)
                 }
                 .buttonStyle(.bordered)
-                .disabled(speech.isSpeaking)
             }
         }
         .padding()
         .navigationTitle(selectedMystery == nil ? "Choose Mystery" : "Rosary")
         .navigationBarTitleDisplayMode(.inline)
-        .toolbar {
-            ToolbarItem(placement: .cancellationAction) {
-                Button {
-                    Task { @MainActor in
-                        stopPlayback()
-                    }
-                } label: {
-                    Image(systemName: "stop.fill")
-                        .font(.body.weight(.semibold))
-                        .frame(width: 28, height: 28)
-                }
-                .buttonStyle(.plain)
-                .accessibilityLabel("Stop")
-                .disabled(selectedMystery == nil)
-            }
-
-            ToolbarItem(placement: .confirmationAction) {
-                Button {
-                    Task { @MainActor in
-                        playPauseTapped()
-                    }
-                } label: {
-                    Image(systemName: speech.isSpeaking ? "pause.fill" : "play.fill")
-                        .font(.body.weight(.semibold))
-                        .frame(width: 28, height: 28)
-                }
-                .buttonStyle(.plain)
-                .accessibilityLabel(speech.isSpeaking ? "Pause" : "Play")
-                .disabled(selectedMystery == nil || currentText == nil)
-            }
-        }
         .onAppear {
             loadPrayers()
             autostartIfRequested()
