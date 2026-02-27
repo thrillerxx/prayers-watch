@@ -12,8 +12,9 @@ struct RosaryView: View {
                 Button {
                     playPauseTapped()
                 } label: {
-                    Label(speech.isSpeaking ? "Pause" : "Play", systemImage: speech.isSpeaking ? "pause.fill" : "play.fill")
-                        .frame(maxWidth: .infinity)
+                    Image(systemName: speech.isSpeaking ? "pause.fill" : "play.fill")
+                        .font(.body.weight(.semibold))
+                        .frame(width: 36, height: 36)
                 }
                 .buttonStyle(.borderedProminent)
                 .accessibilityIdentifier("TransportPlayPause")
@@ -22,6 +23,8 @@ struct RosaryView: View {
                     stopTapped()
                 } label: {
                     Image(systemName: "stop.fill")
+                        .font(.body.weight(.semibold))
+                        .frame(width: 36, height: 36)
                 }
                 .buttonStyle(.bordered)
                 .accessibilityIdentifier("TransportStop")
@@ -55,7 +58,7 @@ struct RosaryView: View {
     @StateObject private var speech = SpeechManager.shared
 
     var body: some View {
-        VStack(spacing: 10) {
+        VStack(spacing: 8) {
             if let errorText {
                 Text(errorText)
                     .font(.footnote)
@@ -72,11 +75,13 @@ struct RosaryView: View {
                 }
             } else {
                 Text(displayTitle)
-                    .font(.headline)
+                    .font(.subheadline)
                     .multilineTextAlignment(.center)
                     .lineLimit(2)
+                    .lineSpacing(1)
+                    .truncationMode(.tail)
                     .frame(maxWidth: .infinity, alignment: .center)
-                    .padding(.top, 2)
+                    .padding(.top, 8)
 
                 if let label = hailMaryCounterLabel {
                     Text(label)
@@ -115,7 +120,7 @@ struct RosaryView: View {
             }
         }
         .padding()
-        .navigationTitle(selectedMystery == nil ? "Choose Mystery" : "Rosary")
+        .navigationTitle("Rosary")
         .navigationBarTitleDisplayMode(.inline)
         .onAppear {
             loadPrayers()
