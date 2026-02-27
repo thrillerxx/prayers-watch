@@ -110,16 +110,6 @@ struct RosaryView: View {
                         .frame(maxWidth: .infinity)
                         .disabled(index == 0)
 
-                    Button("Change Mystery") {
-                        playbackGeneration &+= 1
-                        selectedMystery = nil
-                        steps = []
-                        index = 0
-                        speech.stop()
-                    }
-                    .accessibilityIdentifier("RosaryChangeMystery")
-                    .frame(maxWidth: .infinity)
-                    .disabled(speech.isSpeaking)
                 }
                 .buttonStyle(.bordered)
             }

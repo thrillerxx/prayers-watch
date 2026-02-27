@@ -73,6 +73,11 @@ final class prayers_Watch_AppUITests: XCTestCase {
         // Rosary screenshot
         writeScreenshot(XCUIScreen.main.screenshot(), name: "rosary")
 
+        // Wait for a long mystery title step to confirm layout on small screens.
+        let longTitle = app.staticTexts["The Presentation of the Child Jesus in the Temple"]
+        _ = longTitle.waitForExistence(timeout: 30)
+        writeScreenshot(XCUIScreen.main.screenshot(), name: "rosary_long")
+
         let autoSwitch = app.switches["Auto"]
         XCTAssertTrue(autoSwitch.waitForExistence(timeout: 5))
         if (autoSwitch.value as? String) == "0" { autoSwitch.tap() }
@@ -99,7 +104,7 @@ final class prayers_Watch_AppUITests: XCTestCase {
         stopButton.tap()
 
         XCTAssertEqual(autoSwitch.value as? String, "0")
-        XCTAssertTrue(app.buttons["Play"].firstMatch.exists)
+        XCTAssertTrue(app.buttons["TransportPlayPause"].firstMatch.exists)
         XCTAssertTrue(app.exists)
     }
 

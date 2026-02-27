@@ -119,18 +119,6 @@ struct PrayerDetailView: View {
                         .font(.body)
                 }
 
-                Button {
-                    if speech.isSpeaking {
-                        speech.pause()
-                    } else if speech.isPaused {
-                        speech.resume()
-                    } else {
-                        speak()
-                    }
-                } label: {
-                    Text(speech.isSpeaking ? "Pause" : (speech.isPaused ? "Resume" : "Speak"))
-                }
-                .disabled(text.isEmpty)
             }
             .padding(.horizontal)
         }
