@@ -55,7 +55,7 @@ That older workspace was confirmed to be stale / wrong for current work and **sh
 ## Current Validated RC Line
 
 - **Tag:** `rosary-watch-en-final-ui-rc`
-- **Commit:** `21fde32`
+- **Commit:** `405490ed` (tag target)
 
 That is the RC you should think of as the **current pinned baseline** for the project.
 
@@ -161,7 +161,7 @@ Headless watch UI tests were added and improved. They give basic automated proof
 
 ## Important Commits and Tags
 
-**Current key tag:** `rosary-watch-en-final-ui-rc` → `21fde32` — the most important checkpoint. Earlier RC tags exist for intermediate stabilization; unless bisecting, the final UI RC is the one that matters.
+**Current key tag:** `rosary-watch-en-final-ui-rc` → `405490ed` — the most important checkpoint. Earlier RC tags exist for intermediate stabilization; unless bisecting, the final UI RC is the one that matters.
 
 ---
 
@@ -209,7 +209,7 @@ The most important thing is a **clean baseline** instead of chaos.
 
 1. **Freeze v1 scope** — No Spanish, mystery picker redesign, or schema expansion right now.
 2. **Run final real-device or simulator sanity pass** on the tagged RC: Rosary playback, Auto pacing, Back, Play/Pause, Stop, Library selection mid-playback, long text readability.
-3. **Complete audio capture on the correct RC** — On MacBook Air, commit/tag 21fde32, canonical repo; BlackHole or other audio routing on the Mac if needed.
+3. **Complete audio capture on the correct RC** — On MacBook Air, tag `rosary-watch-en-final-ui-rc` (commit `405490ed`), canonical repo; BlackHole or other audio routing on the Mac if needed.
 4. **Preserve artifacts if needed** — Move screenshots, xcresults, or audio out of `/tmp`.
 5. **Prepare distribution** — After final sanity checks, internal distribution / TestFlight prep.
 
@@ -218,7 +218,7 @@ The most important thing is a **clean baseline** instead of chaos.
 ## Recommended Instruction for Agents
 
 - **Use** `/home/car/dev/prayers-watch`
-- **Pin to** `rosary-watch-en-final-ui-rc` / `21fde32`
+- **Pin to** `rosary-watch-en-final-ui-rc` / `405490ed`
 - **Do not** start Spanish
 - **Do not** start Mystery Picker
 - **Do not** work from stale workspace copies
@@ -228,4 +228,4 @@ The most important thing is a **clean baseline** instead of chaos.
 
 ## One-Line Summary
 
-**Divinity Prayers Watch** is now at a stable EN-only Apple Watch RC, built in Swift/SwiftUI, with deterministic prayer content from `rosary_prayers_en.json`, cleaned-up watch UI, stable single-session prayer playback, passing headless watch UI tests, and the current pinned release candidate at **rosary-watch-en-final-ui-rc** → **21fde32**.
+**Divinity Prayers Watch** is now at a stable EN-only Apple Watch RC, built in Swift/SwiftUI, with deterministic prayer content from `rosary_prayers_en.json`, cleaned-up watch UI, stable single-session prayer playback, passing headless watch UI tests, and the current pinned release candidate at **rosary-watch-en-final-ui-rc** → **405490ed**.
