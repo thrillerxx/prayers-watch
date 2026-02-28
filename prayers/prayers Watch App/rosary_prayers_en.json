@@ -413,6 +413,13 @@
       }
     },
     {
+      "id": "st_joseph_after_rosary",
+      "title": "Prayer to St. Joseph (After Rosary)",
+      "translations": {
+        "en": "Saint Joseph, guardian of the Redeemer, protector of the Holy Family—pray for us. Amen."
+      }
+    },
+    {
       "id": "memorare",
       "title": "Memorare",
       "translations": {

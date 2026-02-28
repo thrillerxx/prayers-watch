@@ -9,11 +9,16 @@ struct SettingsView: View {
     @AppStorage(AppSettings.autoAdvanceKey) private var autoAdvance: Bool = AppSettings.defaultAutoAdvance
     @AppStorage(AppSettings.hapticsKey) private var haptics: Bool = AppSettings.defaultHaptics
 
+    @AppStorage(AppSettings.includeFatimaKey) private var includeFatima: Bool = AppSettings.defaultIncludeFatima
+    @AppStorage(AppSettings.includeStJosephKey) private var includeStJoseph: Bool = AppSettings.defaultIncludeStJoseph
+
     var body: some View {
         List {
             Section("Rosary") {
                 Toggle("Auto-advance", isOn: $autoAdvance)
                 Toggle("Haptics", isOn: $haptics)
+                Toggle("Fatima after each decade", isOn: $includeFatima)
+                Toggle("St. Joseph after Rosary", isOn: $includeStJoseph)
             }
 
             Section("Speech") {

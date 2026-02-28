@@ -86,7 +86,11 @@ struct RosaryStep: Identifiable, Codable {
 }
 
 enum RosaryScripts {
-    static func full(mystery: RosaryMystery) -> [RosaryStep] {
+    static func full(
+        mystery: RosaryMystery,
+        includeFatima: Bool,
+        includeStJoseph: Bool
+    ) -> [RosaryStep] {
         var steps: [RosaryStep] = []
 
         func prayer(_ id: String, title: String) {
@@ -118,7 +122,9 @@ enum RosaryScripts {
                 prayer("hail_mary", title: "Hail Mary")
             }
             prayer("glory_be", title: "Glory Be")
-            prayer("fatima", title: "Fatima Prayer")
+            if includeFatima {
+                prayer("fatima", title: "Fatima Prayer")
+            }
         }
 
         // Closing
@@ -129,6 +135,11 @@ enum RosaryScripts {
         text("R. That we may be made worthy of the promises of Christ.", title: "Prayer")
 
         prayer("rosary_prayer", title: "Let us pray")
+
+        if includeStJoseph {
+            prayer("st_joseph_after_rosary", title: "St. Joseph")
+        }
+
         prayer("sign_of_cross", title: "Sign of the Cross")
 
         return steps

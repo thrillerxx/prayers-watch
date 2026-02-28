@@ -51,6 +51,9 @@ struct RosaryView: View {
 
     @AppStorage(AppSettings.autoAdvanceKey) private var autoAdvance: Bool = AppSettings.defaultAutoAdvance
     @AppStorage(AppSettings.hapticsKey) private var hapticsOn: Bool = AppSettings.defaultHaptics
+    @AppStorage(AppSettings.includeFatimaKey) private var includeFatima: Bool = AppSettings.defaultIncludeFatima
+    @AppStorage(AppSettings.includeStJosephKey) private var includeStJoseph: Bool = AppSettings.defaultIncludeStJoseph
+
     @AppStorage(AppSettings.voiceLanguageKey) private var voiceLanguage: String = AppSettings.defaultVoiceLanguage
     @AppStorage(AppSettings.speechSpeedKey) private var speechSpeed: String = AppSettings.defaultSpeechSpeed
     @AppStorage(AppSettings.pauseBetweenPartsKey) private var pauseBetweenPartsSeconds: Int = AppSettings.defaultPauseBetweenPartsSeconds
@@ -75,13 +78,17 @@ struct RosaryView: View {
                 }
             } else {
                 Text(displayTitle)
-                    .font(.subheadline)
+                    .font(.system(.headline, design: .serif))
                     .multilineTextAlignment(.center)
                     .lineLimit(2)
                     .lineSpacing(1)
                     .truncationMode(.tail)
                     .frame(maxWidth: .infinity, alignment: .center)
                     .padding(.top, 8)
+
+                Divider()
+                    .padding(.horizontal, 18)
+                    .opacity(0.35)
 
                 if let label = hailMaryCounterLabel {
                     Text(label)
@@ -94,9 +101,11 @@ struct RosaryView: View {
 
                 ScrollView {
                     Text(currentText ?? "")
-                        .font(.caption)
+                        .font(.system(.caption, design: .serif))
                         .multilineTextAlignment(.center)
+                        .lineSpacing(2)
                         .frame(maxWidth: .infinity)
+                        .padding(.horizontal, 2)
                 }
 
                 Toggle("Auto", isOn: $autoAdvance)
@@ -202,7 +211,11 @@ struct RosaryView: View {
     private func start(_ mystery: RosaryMystery) {
         playbackGeneration &+= 1
         selectedMystery = mystery
-        steps = RosaryScripts.full(mystery: mystery)
+        steps = RosaryScripts.full(
+            mystery: mystery,
+            includeFatima: includeFatima,
+            includeStJoseph: includeStJoseph
+        )
         index = 0
 
         // Verification log: we expect 10 ids per set (5 titles + 5 meditations).

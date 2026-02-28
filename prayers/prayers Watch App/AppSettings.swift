@@ -15,10 +15,16 @@ enum AppSettings {
     static let autoAdvanceKey = "settings.rosary.autoAdvance"   // Bool
     static let hapticsKey = "settings.rosary.haptics"           // Bool
 
+    // Rosary completeness toggles
+    static let includeFatimaKey = "settings.rosary.includeFatima" // Bool
+    static let includeStJosephKey = "settings.rosary.includeStJoseph" // Bool
+
     // Defaults
     static let defaultVoiceLanguage = "en-US"
     static let defaultSpeechSpeed = "slow" // veryslow|slow|normal
     static let defaultPauseBetweenPartsSeconds = 2
     static let defaultAutoAdvance = true
     static let defaultHaptics = true
+    static let defaultIncludeFatima = true
+    static let defaultIncludeStJoseph = false
 }
