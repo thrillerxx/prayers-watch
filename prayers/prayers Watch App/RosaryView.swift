@@ -2,6 +2,87 @@ import SwiftUI
 
 struct RosaryView: View {
 
+    private struct MarqueeTitle: View {
+        let text: String
+
+        @State private var textWidth: CGFloat = 0
+        @State private var containerWidth: CGFloat = 0
+        @State private var offsetX: CGFloat = 0
+
+        private var shouldScroll: Bool {
+            textWidth > 0 && containerWidth > 0 && textWidth > containerWidth
+        }
+
+        var body: some View {
+            GeometryReader { geo in
+                let w = geo.size.width
+                ZStack(alignment: .leading) {
+                    if shouldScroll {
+                        HStack(spacing: 18) {
+                            titleText
+                            titleText
+                        }
+                        .offset(x: offsetX)
+                        .onAppear {
+                            containerWidth = w
+                            restartAnimation()
+                        }
+                        .onChange(of: w) { _, newW in
+                            containerWidth = newW
+                            restartAnimation()
+                        }
+                        .onChange(of: text) { _, _ in
+                            restartAnimation(resetWidths: true)
+                        }
+                    } else {
+                        titleText
+                            .frame(maxWidth: .infinity, alignment: .center)
+                            .onAppear { containerWidth = w }
+                            .onChange(of: w) { _, newW in containerWidth = newW }
+                    }
+                }
+                .clipped()
+            }
+            .frame(height: 22)
+        }
+
+        private var titleText: some View {
+            Text(text)
+                .font(.system(.headline, design: .serif))
+                .lineLimit(1)
+                .fixedSize(horizontal: true, vertical: false)
+                .background(
+                    GeometryReader { textGeo in
+                        Color.clear
+                            .onAppear { textWidth = textGeo.size.width }
+                            .onChange(of: textGeo.size.width) { _, newW in textWidth = newW }
+                    }
+                )
+        }
+
+        private func restartAnimation(resetWidths: Bool = false) {
+            offsetX = 0
+
+            if resetWidths {
+                textWidth = 0
+            }
+
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
+                guard shouldScroll else { return }
+
+                // Scroll speed: ~28 px/sec, clamp to a watch-friendly duration.
+                let distance = textWidth + 18
+                let duration = max(6.0, min(18.0, Double(distance / 28.0)))
+
+                // Scroll left by one full text width.
+                offsetX = 0
+                withAnimation(.linear(duration: duration).repeatForever(autoreverses: false)) {
+                    offsetX = -distance
+                }
+            }
+        }
+    }
+
     private struct RosaryTransportRow: View {
         @ObservedObject var speech: SpeechManager
         let playPauseTapped: () -> Void
@@ -77,15 +158,8 @@ struct RosaryView: View {
                     }
                 }
             } else {
-                Text(displayTitle)
-                    .font(.system(.headline, design: .serif))
-                    .multilineTextAlignment(.center)
-                    .lineLimit(2)
-                    .lineSpacing(1)
-                    .truncationMode(.tail)
-                    .frame(maxWidth: .infinity, alignment: .center)
+                MarqueeTitle(text: displayTitle)
                     // Keep clear of the back chevron hit-area (watchOS overlay).
-                    // Move slightly lower but keep centered.
                     .padding(.top, 28)
                     // Reserve space on the left for the back chevron.
                     .padding(.leading, 32)
