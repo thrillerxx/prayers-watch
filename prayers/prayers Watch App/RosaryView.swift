@@ -84,7 +84,8 @@ struct RosaryView: View {
                     .lineSpacing(1)
                     .truncationMode(.tail)
                     .frame(maxWidth: .infinity, alignment: .center)
-                    .padding(.top, 8)
+                    // Extra top padding to avoid overlapping the inline nav title on watch.
+                    .padding(.top, 16)
 
                 Divider()
                     .padding(.horizontal, 18)
@@ -128,7 +129,8 @@ struct RosaryView: View {
                 .buttonStyle(.bordered)
             }
         }
-        .padding()
+        .padding(.horizontal)
+        .padding(.bottom)
         .navigationTitle("Rosary")
         .navigationBarTitleDisplayMode(.inline)
         .onAppear {
