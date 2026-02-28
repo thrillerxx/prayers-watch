@@ -34,9 +34,7 @@ v1 is currently scoped as:
 
 **Canonical repo/worktree:**
 
-```
-/home/car/dev/prayers-watch
-```
+`<repo-root>`
 
 This is the repo that should be treated as the **source of truth** going forward.
 
@@ -44,9 +42,7 @@ This is the repo that should be treated as the **source of truth** going forward
 
 **Stale workspace (do not use):**
 
-```
-/home/car/.openclaw/workspace/prayers-watch
-```
+`<stale-duplicate-workspace>`
 
 That older workspace was confirmed to be stale / wrong for current work and **should not be used** for active development.
 
@@ -62,7 +58,7 @@ That is the RC you should think of as the **current pinned baseline** for the pr
 
 There are newer branches / older stale work references floating around; the safest thing is:
 
-**Use the canonical repo at `/home/car/dev/prayers-watch` and pin to tag `rosary-watch-en-final-ui-rc` unless we intentionally decide to move forward from there.**
+**Use the canonical repo at `<repo-root>` and pin to tag `rosary-watch-en-final-ui-rc` unless we intentionally decide to move forward from there.**
 
 ---
 
@@ -72,19 +68,19 @@ This is a **macOS / Xcode** project targeting watchOS Simulator and real Apple W
 
 **Core environment pieces:**
 
-- Xcode on the MacBook Air
+- Xcode on the designated macOS development machine
 - watchOS Simulator
 - Swift / SwiftUI
 - Git / GitHub remote
-- Tailscale access path to the MacBook Air
-- OpenClaw / omarchy access used to orchestrate or SSH into the Mac environment
+- secure remote access path to the designated macOS development machine
+- remote orchestration access for running Mac-specific build/test tasks
 
 **Important operational detail:** The assistant/agent can only do Mac-specific work when it has an actual path to the Mac, either by:
 
-- the Mac node being connected in OpenClaw, or
-- SSH from omarchy to the MacBook Air
+- a direct connection to the designated macOS development machine, or
+- authenticated SSH access to the designated macOS development machine
 
-Mac-specific work (Xcode builds, simulator runs, audio capture, BlackHole setup) **must happen on the MacBook Air**.
+Mac-specific work (Xcode builds, simulator runs, audio capture, BlackHole setup) **must happen on the designated macOS development machine**.
 
 ---
 
@@ -168,7 +164,7 @@ Headless watch UI tests were added and improved. They give basic automated proof
 
 ## Screenshots and Temporary Artifacts
 
-Screenshots during UI test and polish work were commonly saved under `/tmp/screenshots/` (e.g. Rosary, prayer detail, home, library while playing, small/large watch). These are useful for review but `/tmp` is not permanent; preserve by copying into repo docs or a shared folder if needed.
+Screenshots during UI test and polish work were commonly saved under a temporary screenshots directory. These are useful for review but temp storage is not permanent; preserve by copying into repo docs or a shared folder if needed.
 
 ---
 
@@ -182,11 +178,11 @@ Screenshots during UI test and polish work were commonly saved under `/tmp/scree
 
 | What | Path |
 |------|------|
-| Canonical code and content | `/home/car/dev/prayers-watch` |
-| Canonical English prayer JSON | `/home/car/dev/prayers-watch/prayers/prayers Watch App/rosary_prayers_en.json` |
-| UI tests | `/home/car/dev/prayers-watch/prayers Watch AppUITests/prayers_Watch_AppUITests.swift` |
-| Temporary logs/screenshots | `/tmp/uitest.log`, `/tmp/uitest-results.xcresult`, `/tmp/screenshots/...` |
-| **Stale workspace (avoid)** | `/home/car/.openclaw/workspace/prayers-watch` |
+| Canonical code and content | `<repo-root>` |
+| Canonical English prayer JSON | `prayers/prayers Watch App/rosary_prayers_en.json` |
+| UI tests | `prayers Watch AppUITests/prayers_Watch_AppUITests.swift` |
+| Temporary logs/screenshots | `<temp logs and screenshots>` |
+| **Stale workspace (avoid)** | `<stale-duplicate-workspace>` |
 
 ---
 
@@ -210,7 +206,7 @@ The most important thing is a **clean baseline** instead of chaos.
 
 1. **Freeze v1 scope** — No Spanish, mystery picker redesign, or schema expansion right now.
 2. **Run final real-device or simulator sanity pass** on the tagged RC: Rosary playback, Auto pacing, Back, Play/Pause, Stop, Library selection mid-playback, long text readability.
-3. **Complete audio capture on the correct RC** — On MacBook Air, tag `rosary-watch-en-final-ui-rc` (peeled commit `21fde32`), canonical repo; BlackHole or other audio routing on the Mac if needed.
+3. **Complete audio capture on the correct RC** — On the designated macOS development machine, tag `rosary-watch-en-final-ui-rc` (peeled commit `21fde32`), canonical repo; BlackHole or other audio routing on the Mac if needed.
 4. **Preserve artifacts if needed** — Move screenshots, xcresults, or audio out of `/tmp`.
 5. **Prepare distribution** — After final sanity checks, internal distribution / TestFlight prep.
 
@@ -218,11 +214,11 @@ The most important thing is a **clean baseline** instead of chaos.
 
 ## Recommended Instruction for Agents
 
-- **Use** `/home/car/dev/prayers-watch`
+- **Use** the canonical repository root for this project
 - **Pin to** `rosary-watch-en-final-ui-rc` / `21fde32` (peeled)
 - **Do not** start Spanish
 - **Do not** start Mystery Picker
-- **Do not** work from stale workspace copies
+- **Do not** work from stale duplicate workspace copies
 - **Do not** drift into unrelated branches or older commits
 
 ---

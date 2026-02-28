@@ -19,7 +19,7 @@ Runtime probe captured from the watch simulator app container:
 
 ```
 [PrayerStore] Probe: starting
-[PrayerStore] Resolved: /Users/thrillerx/Library/Developer/CoreSimulator/Devices/E28019DD-F968-4087-8E1D-0A9DC2BA44D5/data/Containers/Bundle/Application/F6BC396B-D3F0-42BC-920B-641C052C1F61/prayers Watch App.app/rosary_prayers_en.json | Bytes: 1685
+[PrayerStore] Resolved: <simulator-app-bundle>/prayers Watch App.app/rosary_prayers_en.json | Bytes: 1685
 [PrayerStore] Decode: OK
 [PrayerStore] Entries: 9
 [PrayerStore] Probe: done

@@ -2,6 +2,11 @@
 
 A watchOS (and companion iOS) app for Catholic prayers and guided Rosary. Built with Swift and SwiftUI. Project planning and conventions are in **`llm/`** — see [llm/project/setup.md](llm/project/setup.md) and [llm/project/project-overview.md](llm/project/project-overview.md).
 
+## Current Scope (v1 RC)
+- **In scope:** English-only prayer content, Rosary flow, prayer library playback, settings, watch-first UI polish, and baseline watch UI tests.
+- **Out of scope:** Spanish localization, mystery picker redesign, and schema expansion beyond the current v1 data model.
+- **Release baseline:** `rosary-watch-en-final-ui-rc` (peeled commit `21fde32`).
+
 ## Features
 - **Rosary** — Guided Rosary with mysteries and steps; optional text-to-speech (play/pause/stop).
 - **Prayer Library** — Browse prayers, read full text, and speak aloud with shared transport controls.

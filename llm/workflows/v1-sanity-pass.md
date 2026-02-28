@@ -3,9 +3,9 @@ Purpose: Step-by-step sanity pass checklist for Divinity Prayers Watch v1 on the
 # v1 Sanity Pass (RC)
 
 ## Preconditions
-- Canonical repo: `/home/car/dev/prayers-watch`
+- Canonical repo: this repository root.
 - Check out the pinned RC tag/commit (do not run this on a random HEAD unless explicitly intended).
-- Use Xcode on the MacBook Air.
+- Use Xcode on the designated macOS development machine.
 
 ## 0) Confirm you are on the correct baseline
 From repo root:

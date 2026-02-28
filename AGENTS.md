@@ -32,11 +32,11 @@ All files require descriptive names, a short header explaining contents, and doc
 **Dev environment:** This project is developed in **Cursor**. Assume Cursor as the primary IDE and agent context.
 
 **Operational rules (keep on track):**
-- Use **canonical repo:** `/home/car/dev/prayers-watch`. Do not work from `/home/car/.openclaw/workspace/prayers-watch` (stale).
+- Use **canonical repo:** this repository root. Do not work from stale duplicate workspaces.
 - Pin to **RC:** `rosary-watch-en-final-ui-rc` → commit `21fde32` unless we intentionally move forward.
 - Do **not** start Spanish, Mystery Picker redesign, or schema expansion for v1.
 - Do **not** drift into unrelated branches or older commits.
-- Mac-specific work (Xcode builds, simulator, audio capture) must happen on the MacBook Air (OpenClaw or SSH).
+- Mac-specific work (Xcode builds, simulator, audio capture) must happen on the designated macOS development machine.
 
 **One-line summary:** Divinity Prayers Watch is at a stable EN-only Apple Watch RC (Swift/SwiftUI), with deterministic content from `rosary_prayers_en.json`, cleaned-up watch UI, single-session prayer playback, passing headless watch UI tests, pinned at **rosary-watch-en-final-ui-rc** → **21fde32**.
 
