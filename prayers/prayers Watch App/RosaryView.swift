@@ -84,10 +84,10 @@ struct RosaryView: View {
                     .lineSpacing(1)
                     .truncationMode(.tail)
                     .frame(maxWidth: .infinity, alignment: .center)
-                    // Keep clear of the back chevron hit-area.
-                    .padding(.top, 14)
-                    .padding(.leading, 18)
-                    .padding(.trailing, 8)
+                    // Keep clear of the back chevron hit-area (watchOS overlay).
+                    .padding(.top, 26)
+                    .padding(.leading, 34)
+                    .padding(.trailing, 10)
 
                 Divider()
                     .padding(.horizontal, 18)
