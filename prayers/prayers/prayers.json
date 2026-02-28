@@ -4,14 +4,14 @@
       "id": "our_father_en",
       "title": "Our Father",
       "translations": {
-        "en": "Our Father, who art in heaven, hallowed be thy name..."
+        "en": "Our Father, who art in heaven, hallowed be thy name; thy kingdom come; thy will be done on earth as it is in heaven. Give us this day our daily bread; and forgive us our trespasses as we forgive those who trespass against us; and lead us not into temptation, but deliver us from evil. Amen."
       }
     },
     {
       "id": "hail_mary_en",
       "title": "Hail Mary",
       "translations": {
-        "en": "Hail Mary, full of grace, the Lord is with thee..."
+        "en": "Hail Mary, full of grace, the Lord is with thee; blessed art thou among women, and blessed is the fruit of thy womb, Jesus. Holy Mary, Mother of God, pray for us sinners, now and at the hour of our death. Amen."
       }
     }
   ]
