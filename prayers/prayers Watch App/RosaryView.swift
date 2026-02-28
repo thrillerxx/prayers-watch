@@ -84,8 +84,10 @@ struct RosaryView: View {
                     .lineSpacing(1)
                     .truncationMode(.tail)
                     .frame(maxWidth: .infinity, alignment: .center)
-                    // Extra top padding to avoid overlapping the inline nav title on watch.
-                    .padding(.top, 16)
+                    // Keep clear of the back chevron hit-area.
+                    .padding(.top, 14)
+                    .padding(.leading, 18)
+                    .padding(.trailing, 8)
 
                 Divider()
                     .padding(.horizontal, 18)
