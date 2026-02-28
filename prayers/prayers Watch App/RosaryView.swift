@@ -85,9 +85,11 @@ struct RosaryView: View {
                     .truncationMode(.tail)
                     .frame(maxWidth: .infinity, alignment: .center)
                     // Keep clear of the back chevron hit-area (watchOS overlay).
-                    .padding(.top, 26)
-                    .padding(.leading, 34)
-                    .padding(.trailing, 10)
+                    // Move slightly lower but keep centered.
+                    .padding(.top, 28)
+                    // Reserve space on the left for the back chevron.
+                    .padding(.leading, 32)
+                    .padding(.trailing, 32)
 
                 Divider()
                     .padding(.horizontal, 18)
