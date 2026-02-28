@@ -121,8 +121,14 @@ enum RosaryScripts {
             prayer("fatima", title: "Fatima Prayer")
         }
 
-        // Closing (minimal)
+        // Closing
         prayer("hail_holy_queen", title: "Hail Holy Queen")
+
+        // Dialogue (USCCB)
+        text("V. Pray for us, O holy Mother of God.", title: "Prayer")
+        text("R. That we may be made worthy of the promises of Christ.", title: "Prayer")
+
+        prayer("rosary_prayer", title: "Let us pray")
         prayer("sign_of_cross", title: "Sign of the Cross")
 
         return steps
