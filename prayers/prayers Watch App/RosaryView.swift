@@ -131,7 +131,7 @@ struct RosaryView: View {
         }
         .padding(.horizontal)
         .padding(.bottom)
-        .navigationTitle("Rosary")
+        .navigationTitle("")
         .navigationBarTitleDisplayMode(.inline)
         .onAppear {
             loadPrayers()
