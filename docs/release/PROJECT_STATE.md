@@ -2,6 +2,8 @@
 
 ## Canonical repo/worktree
 - `/home/car/dev/prayers-watch`
+- Canonical Xcode project: `/home/car/dev/prayers-watch/prayers/prayers.xcodeproj`
+- Canonical watch app source folder: `/home/car/dev/prayers-watch/prayers/prayers Watch App`
 
 ## Validated release candidate (RC)
 - Tag: `rosary-watch-en-final-ui-rc`
@@ -23,7 +25,7 @@
 
 ## Build command (watchOS Simulator)
 ```bash
-cd ~/dev/prayers-watch
+cd ~/dev/prayers-watch/prayers
 xcodebuild -project prayers.xcodeproj \
   -scheme "prayers Watch App" \
   -destination 'platform=watchOS Simulator,name=Apple Watch Series 11 (42mm)' \
