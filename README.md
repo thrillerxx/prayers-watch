@@ -33,7 +33,7 @@ xcodebuild -project prayers.xcodeproj -scheme "prayers Watch App" \
 Adjust simulator `name` and `OS` to match your installed runtimes.
 
 ## Conventions and docs
-- **Source of truth:** All project definition, phases, and runbooks live in **`llm/`** ([pleb-devs/new-project-boilerplate](https://github.com/pleb-devs/new-project-boilerplate)).
+- **Source of truth:** All project definition, phases, and runbooks live in **`llm/`** ([thrillerxx/new-project-boilerplate](https://github.com/thrillerxx/new-project-boilerplate)).
 - **Local dev:** Full runbook in [llm/workflows/dev-env-local.md](llm/workflows/dev-env-local.md).
 - **Agents:** See [AGENTS.md](AGENTS.md) for AI-assistant rules and project structure.
 

@@ -16,6 +16,15 @@ Use this workflow when a contributor (human or agent) needs to build and run the
 3. Choose a destination (e.g. **Apple Watch Series 11 (46mm)** or current simulator).
 4. Run (⌘R).
 
+## Remote Xcode (MacBook Air)
+- Canonical remote machine: `thrillerx@thrillerxs-macbook-air`
+- Canonical remote project path: `/Users/thrillerx/dev/prayers-watch/prayers/prayers.xcodeproj`
+- From Omarchy, use the automation runner:
+```bash
+cd /home/car/dev/prayers-watch
+scripts/remote_mac_xcode.sh main
+```
+
 ## CLI build (watchOS Simulator)
 From repo root:
 ```bash
