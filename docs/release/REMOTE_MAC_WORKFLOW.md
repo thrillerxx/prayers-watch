@@ -18,7 +18,7 @@ What it does:
 - SSHes to `thrillerx@thrillerxs-macbook-air`.
 - Ensures Mac repo exists and points `origin` to the same remote URL as Omarchy.
 - Switches Mac repo to the same branch and hard-resets to `origin/<branch>`.
-- Runs build via `xcodebuild` using default scheme `prayers`.
+- Runs watch build via `xcodebuild` target `prayers Watch App`.
 - Runs tests via default scheme `prayers-watch-uitests` (override with `TEST_SCHEME=...`).
 
 ## Common usage
@@ -45,4 +45,4 @@ DESTINATION='platform=watchOS Simulator,name=Apple Watch Ultra 3 (49mm)' scripts
 
 ## Notes
 - If local Omarchy changes are not committed/pushed, the Mac builds the latest pushed commit only.
-- Script defaults can be overridden via env vars: `MAC_HOST`, `MAC_REPO_DIR`, `MAC_PROJECT_SUBDIR`, `PROJECT_FILE`, `BUILD_SCHEME`, `TEST_SCHEME`, `DESTINATION`, `RUN_TESTS`, `PUSH_FIRST`.
+- Script defaults can be overridden via env vars: `MAC_HOST`, `MAC_REPO_DIR`, `MAC_PROJECT_SUBDIR`, `PROJECT_FILE`, `BUILD_TARGET`, `TEST_SCHEME`, `DESTINATION`, `RUN_TESTS`, `PUSH_FIRST`.
