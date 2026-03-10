@@ -18,8 +18,8 @@ What it does:
 - SSHes to `thrillerx@thrillerxs-macbook-air`.
 - Ensures Mac repo exists and points `origin` to the same remote URL as Omarchy.
 - Switches Mac repo to the same branch and hard-resets to `origin/<branch>`.
-- Runs watchOS build via `xcodebuild`.
-- Runs tests via the default `prayers Watch App` scheme (override with `TEST_SCHEME=...`).
+- Runs build via `xcodebuild` using default scheme `prayers`.
+- Runs tests via default scheme `prayers-watch-uitests` (override with `TEST_SCHEME=...`).
 
 ## Common usage
 
