@@ -49,6 +49,7 @@ Tag: `rosary-watch-en-qa-rc`
 Scheme: `prayers-watch-uitests`
 
 ```bash
+cd /home/car/dev/prayers-watch/prayers
 rm -rf /tmp/uitest-results.xcresult /tmp/uitest.log
 xcodebuild test -project prayers.xcodeproj \
   -scheme prayers-watch-uitests \
@@ -66,7 +67,7 @@ Tests included:
 ## Known limitations / TODOs
 - EN-only for now; Spanish UI toggles removed/disabled in the stabilized watch app.
 - UI tests are best-effort on Simulator; they validate navigation + non-freeze behavior, but do not verify actual audio output.
-- Consider removing the legacy top-level `prayers Watch App/` directory after confirming nothing references it.
+- Legacy root-level duplicate app/test directories were archived on 2026-03-10 under `archive/legacy-root-layout-2026-03-10/`.
 - Consider migrating `xcresulttool get` usage away from `--legacy` when convenient.
 
 ## Optional: TestFlight / internal distribution (no code changes)

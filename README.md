@@ -25,7 +25,7 @@ A watchOS (and companion iOS) app for Catholic prayers and guided Rosary. Built 
 
 ### CLI build
 ```bash
-cd prayers
+cd /home/car/dev/prayers-watch/prayers
 xcodebuild -project prayers.xcodeproj -scheme "prayers Watch App" \
   -destination 'platform=watchOS Simulator,name=Apple Watch Series 11 (46mm),OS=26.2' \
   -configuration Debug build

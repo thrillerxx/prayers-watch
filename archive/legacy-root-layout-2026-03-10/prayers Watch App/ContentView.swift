@@ -11,6 +11,10 @@ struct ContentView: View {
                 NavigationLink("Prayer Library") {
                     PrayerLibraryView()
                 }
+
+                NavigationLink("Mass Responses & Prayers") {
+                    MassResponsesView()
+                }
             }
             .navigationTitle("Divinity")
         }
