@@ -19,9 +19,14 @@ struct Prayer: Codable, Identifiable {
 enum PrayerStore {
     static func load() throws -> [Prayer] {
         // Deterministic: load the watch app’s single canonical resource.
-        let resourceName = "rosary_prayers_en"
-        let resourceExt = "json"
+        try loadCatalog(resourceName: "rosary_prayers_en", resourceExt: "json")
+    }
 
+    static func loadMassPrayers() throws -> [Prayer] {
+        try loadCatalog(resourceName: "mass_prayers_en", resourceExt: "json")
+    }
+
+    private static func loadCatalog(resourceName: String, resourceExt: String) throws -> [Prayer] {
         #if DEBUG
         let dups = (Bundle.main.urls(forResourcesWithExtension: resourceExt, subdirectory: nil) ?? [])
             .filter { $0.lastPathComponent == "\(resourceName).\(resourceExt)" }

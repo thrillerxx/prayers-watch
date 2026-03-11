@@ -3,8 +3,8 @@ import AVFoundation
 
 struct PrayerLibraryView: View {
     @State private var prayers: [Prayer] = []
+    @State private var massPrayers: [Prayer] = []
     @State private var errorText: String?
-    private let lang: String = "en"
 
     @StateObject private var speech = SpeechManager.shared
 
@@ -19,38 +19,68 @@ struct PrayerLibraryView: View {
                     .font(.footnote)
                     .foregroundStyle(.red)
                     .padding(.horizontal)
-            } else if prayers.isEmpty {
+            } else if prayers.isEmpty && massPrayers.isEmpty {
                 Text("No prayers found")
                     .font(.footnote)
                     .foregroundStyle(.secondary)
                     .padding(.horizontal)
             } else {
-                List(prayers) { prayer in
-                    NavigationLink {
-                        PrayerDetailView(prayer: prayer)
-                    } label: {
-                        Text(prayer.title)
+                List {
+                    if !massPrayers.isEmpty {
+                        Section {
+                            NavigationLink {
+                                PrayerCategoryListView(title: "Mass Prayers", prayers: massPrayers)
+                            } label: {
+                                Label("Mass Prayers", systemImage: "building.columns")
+                            }
+                        }
+                    }
+
+                    Section("Prayers") {
+                        ForEach(prayers) { prayer in
+                            NavigationLink {
+                                PrayerDetailView(prayer: prayer)
+                            } label: {
+                                Text(prayer.title)
+                            }
+                        }
                     }
                 }
             }
         }
         .navigationTitle("Prayers")
         .onAppear {
-            do {
-                prayers = try PrayerStore.load().filter { prayer in
-                    let id = prayer.id
-                    // Keep only prayable text entries.
-                    // Hide any metadata/title helper rows.
-                    if id.hasPrefix("mysteryset_") { return false }
-                    if id.hasSuffix("_title") { return false }
-                    if id.hasSuffix("_alt_title") { return false }
-                    // keep everything else (including *_meditation + core prayers)
-                    return true
-                }
-            } catch {
-                errorText = error.localizedDescription
-            }
+            loadPrayers()
         }
+    }
+
+    private func loadPrayers() {
+        var errors: [String] = []
+
+        do {
+            prayers = try PrayerStore.load().filter { prayer in
+                let id = prayer.id
+                // Keep only prayable text entries.
+                // Hide any metadata/title helper rows.
+                if id.hasPrefix("mysteryset_") { return false }
+                if id.hasSuffix("_title") { return false }
+                if id.hasSuffix("_alt_title") { return false }
+                // keep everything else (including *_meditation + core prayers)
+                return true
+            }
+        } catch {
+            prayers = []
+            errors.append("Prayers: \(error.localizedDescription)")
+        }
+
+        do {
+            massPrayers = try PrayerStore.loadMassPrayers()
+        } catch {
+            massPrayers = []
+            errors.append("Mass Prayers: \(error.localizedDescription)")
+        }
+
+        errorText = errors.isEmpty ? nil : errors.joined(separator: "\n")
     }
 }
 
@@ -137,6 +167,22 @@ struct PrayerDetailView: View {
         guard !text.isEmpty else { return }
 
         speech.speak(text: text, voiceLanguage: "en-US", rate: 0.45)
+    }
+}
+
+private struct PrayerCategoryListView: View {
+    let title: String
+    let prayers: [Prayer]
+
+    var body: some View {
+        List(prayers) { prayer in
+            NavigationLink {
+                PrayerDetailView(prayer: prayer)
+            } label: {
+                Text(prayer.title)
+            }
+        }
+        .navigationTitle(title)
     }
 }
 

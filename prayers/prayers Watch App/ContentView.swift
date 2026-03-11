@@ -12,10 +12,6 @@ struct ContentView: View {
                     PrayerLibraryView()
                 }
 
-                NavigationLink("Mass Responses & Prayers") {
-                    MassResponsesView()
-                }
-
                 NavigationLink("Settings") {
                     SettingsView()
                 }
