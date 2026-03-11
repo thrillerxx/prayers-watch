@@ -122,10 +122,14 @@ final class prayers_Watch_AppUITests: XCTestCase {
 
         app.buttons["Prayer Library"].tap()
 
-        // "Mass Prayers" is now a category row. Open a concrete prayer detail.
-        let corePrayerCell = app.cells.containing(.staticText, identifier: "Apostles' Creed").firstMatch
-        XCTAssertTrue(corePrayerCell.waitForExistence(timeout: 10))
-        corePrayerCell.tap()
+        // Enter Mass Prayers category, then open the first concrete prayer detail.
+        let massCategoryCell = app.cells.containing(.staticText, identifier: "Mass Prayers").firstMatch
+        XCTAssertTrue(massCategoryCell.waitForExistence(timeout: 10))
+        massCategoryCell.tap()
+
+        let firstCell = app.cells.element(boundBy: 0)
+        XCTAssertTrue(firstCell.waitForExistence(timeout: 10))
+        firstCell.tap()
 
         // Prayer Detail screenshot
         writeScreenshot(XCUIScreen.main.screenshot(), name: "prayer_detail")
