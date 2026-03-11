@@ -142,12 +142,15 @@ final class prayers_Watch_AppUITests: XCTestCase {
         playPauseButton.tap()
         XCTAssertTrue(playPauseButton.waitForExistence(timeout: 10))
 
-        // Back to Library list.
+        // Back out to a screen that hosts global transport (Prayer Library root).
         tapBackButton(app)
+        if !app.buttons["TransportStop"].firstMatch.exists {
+            tapBackButton(app)
+        }
         writeScreenshot(XCUIScreen.main.screenshot(), name: "library_playing")
 
         let stopButton = app.buttons["TransportStop"].firstMatch
-        XCTAssertTrue(stopButton.exists)
+        XCTAssertTrue(stopButton.waitForExistence(timeout: 10))
 
         // Stop should end session and hide transport.
         stopButton.tap()
