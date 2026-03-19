@@ -17,11 +17,11 @@ Use this workflow when a contributor (human or agent) needs to build and run the
 4. Run (⌘R).
 
 ## Remote Xcode (MacBook Air)
-- Canonical remote machine: `thrillerx@thrillerxs-macbook-air`
+- Canonical remote machine: `thrillerx@100.81.139.50` (or `thrillerx@thrillerxs-macbook-air` if local SSH alias exists)
 - Canonical remote project path: `/Users/thrillerx/dev/prayers-watch/prayers/prayers.xcodeproj`
 - From Omarchy, use the automation runner:
 ```bash
-cd /home/car/dev/prayers-watch
+cd /home/car/.openclaw/workspace/prayers-watch
 scripts/remote_mac_xcode.sh main
 ```
 

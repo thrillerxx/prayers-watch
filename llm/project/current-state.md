@@ -34,7 +34,7 @@ v1 is currently scoped as:
 
 **Canonical repo/worktree:**
 
-`<repo-root>`
+`/home/car/.openclaw/workspace/prayers-watch`
 
 This is the repo that should be treated as the **source of truth** going forward.
 
@@ -42,7 +42,8 @@ This is the repo that should be treated as the **source of truth** going forward
 
 **Stale workspace (do not use):**
 
-`<stale-duplicate-workspace>`
+`/home/car/dev/prayers-watch` (archived)
+`/home/car/.openclaw/workspace/divinity-app-work` (archived)
 
 That older workspace was confirmed to be stale / wrong for current work and **should not be used** for active development.
 
@@ -58,7 +59,7 @@ That is the RC you should think of as the **current pinned baseline** for the pr
 
 There are newer branches / older stale work references floating around; the safest thing is:
 
-**Use the canonical repo at `<repo-root>` and pin to tag `rosary-watch-en-final-ui-rc` unless we intentionally decide to move forward from there.**
+**Use the canonical repo at `/home/car/.openclaw/workspace/prayers-watch` and pin to tag `rosary-watch-en-final-ui-rc` unless we intentionally decide to move forward from there.**
 
 ---
 
@@ -178,11 +179,11 @@ Screenshots during UI test and polish work were commonly saved under a temporary
 
 | What | Path |
 |------|------|
-| Canonical code and content | `<repo-root>` |
+| Canonical code and content | `/home/car/.openclaw/workspace/prayers-watch` |
 | Canonical English prayer JSON | `prayers/prayers Watch App/rosary_prayers_en.json` |
 | UI tests | `prayers Watch AppUITests/prayers_Watch_AppUITests.swift` |
-| Temporary logs/screenshots | `<temp logs and screenshots>` |
-| **Stale workspace (avoid)** | `<stale-duplicate-workspace>` |
+| Temporary logs/screenshots | `/tmp` and repo-local temp outputs unless explicitly preserved |
+| **Stale workspace (avoid)** | `/home/car/dev/prayers-watch` and `/home/car/.openclaw/workspace/divinity-app-work` (archived under `/home/car/archive/prayers-workspace-duplicates-20260319-143035/`) |
 
 ---
 

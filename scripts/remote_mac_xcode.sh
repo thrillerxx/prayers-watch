@@ -6,7 +6,7 @@ set -euo pipefail
 # - sync Mac clone to that branch
 # - run Xcode build + optional UI tests on Mac
 
-MAC_HOST="${MAC_HOST:-thrillerx@thrillerxs-macbook-air}"
+MAC_HOST="${MAC_HOST:-thrillerx@100.81.139.50}"
 MAC_REPO_DIR="${MAC_REPO_DIR:-/Users/thrillerx/dev/prayers-watch}"
 MAC_PROJECT_SUBDIR="${MAC_PROJECT_SUBDIR:-prayers}"
 PROJECT_FILE="${PROJECT_FILE:-prayers.xcodeproj}"
