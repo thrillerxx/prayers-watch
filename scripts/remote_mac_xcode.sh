@@ -10,7 +10,7 @@ MAC_HOST="${MAC_HOST:-thrillerx@100.81.139.50}"
 MAC_REPO_DIR="${MAC_REPO_DIR:-/Users/thrillerx/dev/prayers-watch}"
 MAC_PROJECT_SUBDIR="${MAC_PROJECT_SUBDIR:-prayers}"
 PROJECT_FILE="${PROJECT_FILE:-prayers.xcodeproj}"
-BUILD_TARGET="${BUILD_TARGET:-prayers Watch App}"
+APP_SCHEME="${APP_SCHEME:-prayers Watch App}"
 TEST_SCHEME="${TEST_SCHEME:-prayers-watch-uitests}"
 DESTINATION="${DESTINATION:-platform=watchOS Simulator,name=Apple Watch Series 11 (42mm)}"
 
@@ -62,7 +62,7 @@ ssh -o BatchMode=yes -o StrictHostKeyChecking=accept-new "$MAC_HOST" \
    MAC_REPO_DIR='$MAC_REPO_DIR'; \
    MAC_PROJECT_SUBDIR='$MAC_PROJECT_SUBDIR'; \
    PROJECT_FILE='$PROJECT_FILE'; \
-   BUILD_TARGET='$BUILD_TARGET'; \
+   APP_SCHEME='$APP_SCHEME'; \
    TEST_SCHEME='$TEST_SCHEME'; \
    DESTINATION='$DESTINATION'; \
    BRANCH='$BRANCH'; \
@@ -101,7 +101,7 @@ ssh -o BatchMode=yes -o StrictHostKeyChecking=accept-new "$MAC_HOST" \
    cd \"$MAC_REPO_DIR/$MAC_PROJECT_SUBDIR\"; \
    echo '[remote] running xcodebuild build...'; \
    xcodebuild -project \"$PROJECT_FILE\" \
-     -target \"$BUILD_TARGET\" \
+     -scheme \"$APP_SCHEME\" \
      -destination \"$DESTINATION\" \
      CODE_SIGNING_ALLOWED=NO \
      -configuration Debug \
