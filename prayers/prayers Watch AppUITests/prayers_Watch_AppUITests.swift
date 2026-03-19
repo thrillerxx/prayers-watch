@@ -51,6 +51,23 @@ final class prayers_Watch_AppUITests: XCTestCase {
         try? screenshot.pngRepresentation.write(to: url)
     }
 
+    private func openMassPrayerDetail(_ app: XCUIApplication) {
+        let massCategoryCell = app.cells.containing(.staticText, identifier: "Mass Prayers").firstMatch
+        XCTAssertTrue(massCategoryCell.waitForExistence(timeout: 10))
+        massCategoryCell.tap()
+
+        // Prefer a long prayer so playback is still active after navigating back to Home.
+        let preferred = app.cells.containing(.staticText, identifier: "The Lord's Prayer (Doxology Response)").firstMatch
+        if preferred.waitForExistence(timeout: 5) {
+            preferred.tap()
+            return
+        }
+
+        let fallback = app.cells.element(boundBy: 0)
+        XCTAssertTrue(fallback.waitForExistence(timeout: 10))
+        fallback.tap()
+    }
+
     /// Rosary transport sanity:
     /// - Auto ON should advance without manual Next
     /// - Back should remain present/hittable during auto playback
@@ -121,26 +138,17 @@ final class prayers_Watch_AppUITests: XCTestCase {
         app.launch()
 
         app.buttons["Prayer Library"].tap()
-
-        // Enter Mass Prayers category, then open the first concrete prayer detail.
-        let massCategoryCell = app.cells.containing(.staticText, identifier: "Mass Prayers").firstMatch
-        XCTAssertTrue(massCategoryCell.waitForExistence(timeout: 10))
-        massCategoryCell.tap()
-
-        let firstCell = app.cells.element(boundBy: 0)
-        XCTAssertTrue(firstCell.waitForExistence(timeout: 10))
-        firstCell.tap()
+        openMassPrayerDetail(app)
 
         // Prayer Detail screenshot
         writeScreenshot(XCUIScreen.main.screenshot(), name: "prayer_detail")
 
-        // Wait for transport to exist.
+        // Wait for transport to exist and ensure an active session is visible.
         let playPauseButton = app.buttons["TransportPlayPause"].firstMatch
         XCTAssertTrue(playPauseButton.waitForExistence(timeout: 20))
-
-        // Toggle once to ensure it's tappable.
         playPauseButton.tap()
         XCTAssertTrue(playPauseButton.waitForExistence(timeout: 10))
+        XCTAssertTrue(app.buttons["TransportStop"].firstMatch.waitForExistence(timeout: 10))
 
         // Back out to a screen that hosts global transport (Prayer Library root).
         tapBackButton(app)

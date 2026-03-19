@@ -55,7 +55,11 @@ That older workspace was confirmed to be stale / wrong for current work and **sh
 - **Commit (peeled):** `21fde32` (this is the commit the tag points to)
 - **Tag object:** `405490ed` (annotated tag object SHA; do not use as the code baseline)
 
-That is the RC you should think of as the **current pinned baseline** for the project.
+That is the RC you should think of as the **current pinned release-validation baseline** for the project.
+
+**Baseline decision (March 19, 2026):**
+- Keep release validation and audio capture pinned to `rosary-watch-en-final-ui-rc` (`21fde32`) until intentionally re-baselined.
+- Continue normal development on `main`; only promote a new baseline by explicit tag/update.
 
 There are newer branches / older stale work references floating around; the safest thing is:
 

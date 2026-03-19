@@ -1,0 +1,75 @@
+name: Xcode Watch CI
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "prayers/**"
+      - ".github/workflows/xcode-watch-ci.yml"
+  pull_request:
+    paths:
+      - "prayers/**"
+      - ".github/workflows/xcode-watch-ci.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-test-watch:
+    runs-on: macos-latest
+    timeout-minutes: 45
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Xcode version
+        run: xcodebuild -version
+
+      - name: Build + test (watchOS simulator)
+        working-directory: prayers
+        env:
+          TEST_SCHEME: prayers-watch-uitests
+          APP_SCHEME: prayers Watch App
+        run: |
+          set -euo pipefail
+
+          DEST_LINE="$(xcodebuild -project prayers.xcodeproj -scheme "$TEST_SCHEME" -showdestinations | grep 'platform:watchOS Simulator' | head -n 1 || true)"
+          if [[ -z "$DEST_LINE" ]]; then
+            echo "No watchOS Simulator destination found for scheme: $TEST_SCHEME"
+            xcodebuild -project prayers.xcodeproj -scheme "$TEST_SCHEME" -showdestinations
+            exit 1
+          fi
+
+          SIM_NAME="$(echo "$DEST_LINE" | sed -E 's/.*name:([^,}]+).*/\1/' | xargs)"
+          SIM_OS="$(echo "$DEST_LINE" | sed -nE 's/.*OS:([^,}]+).*/\1/p' | xargs)"
+
+          DESTINATION="platform=watchOS Simulator,name=$SIM_NAME"
+          if [[ -n "$SIM_OS" ]]; then
+            DESTINATION="$DESTINATION,OS=$SIM_OS"
+          fi
+
+          echo "Using destination: $DESTINATION"
+
+          xcodebuild -project prayers.xcodeproj \
+            -scheme "$APP_SCHEME" \
+            -destination "$DESTINATION" \
+            CODE_SIGNING_ALLOWED=NO \
+            -configuration Debug \
+            build
+
+          xcodebuild test \
+            -project prayers.xcodeproj \
+            -scheme "$TEST_SCHEME" \
+            -destination "$DESTINATION" \
+            -resultBundlePath ./artifacts/TestResults.xcresult \
+            CODE_SIGNING_ALLOWED=NO
+
+      - name: Upload xcresult
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: watch-ui-test-results
+          path: prayers/artifacts/TestResults.xcresult
+          if-no-files-found: ignore
