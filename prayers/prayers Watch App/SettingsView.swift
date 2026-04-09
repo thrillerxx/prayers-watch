@@ -56,7 +56,7 @@ struct SettingsView: View {
             }
 
             Section {
-                Text("More settings + complications coming next.")
+                Text("Add the Divinity complication to your watch face for quick access.")
                     .font(.footnote)
                     .foregroundStyle(.secondary)
             }

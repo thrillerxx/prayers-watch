@@ -16,6 +16,8 @@ DESTINATION="${DESTINATION:-platform=watchOS Simulator,name=Apple Watch Series 1
 
 RUN_TESTS="${RUN_TESTS:-1}"
 PUSH_FIRST="${PUSH_FIRST:-1}"
+SIGN="${SIGN:-0}"
+DEVELOPMENT_TEAM="${DEVELOPMENT_TEAM:-}"
 
 LOCAL_ROOT="$(git rev-parse --show-toplevel)"
 cd "$LOCAL_ROOT"
@@ -99,11 +101,16 @@ ssh -o BatchMode=yes -o StrictHostKeyChecking=accept-new "$MAC_HOST" \
    echo \"[remote] branch: \$(git -C \"$MAC_REPO_DIR\" rev-parse --abbrev-ref HEAD)\"; \
    echo \"[remote] head: \$(git -C \"$MAC_REPO_DIR\" rev-parse --short HEAD)\"; \
    cd \"$MAC_REPO_DIR/$MAC_PROJECT_SUBDIR\"; \
+   SIGN_FLAGS='CODE_SIGNING_ALLOWED=NO'; \
+   if [ \"$SIGN\" = '1' ] && [ -n \"$DEVELOPMENT_TEAM\" ]; then \
+     SIGN_FLAGS=\"CODE_SIGN_STYLE=Automatic DEVELOPMENT_TEAM=$DEVELOPMENT_TEAM\"; \
+     echo \"[remote] signing enabled (team=$DEVELOPMENT_TEAM)\"; \
+   fi; \
    echo '[remote] running xcodebuild build...'; \
    xcodebuild -project \"$PROJECT_FILE\" \
      -target \"$BUILD_TARGET\" \
      -destination \"$DESTINATION\" \
-     CODE_SIGNING_ALLOWED=NO \
+     \$SIGN_FLAGS \
      -configuration Debug \
      build; \
    if [ \"$RUN_TESTS\" = '1' ]; then \
@@ -111,7 +118,7 @@ ssh -o BatchMode=yes -o StrictHostKeyChecking=accept-new "$MAC_HOST" \
      xcodebuild test -project \"$PROJECT_FILE\" \
        -scheme \"$TEST_SCHEME\" \
        -destination \"$DESTINATION\" \
-       CODE_SIGNING_ALLOWED=NO; \
+       \$SIGN_FLAGS; \
    fi"
 
 echo "[done] remote build workflow completed."

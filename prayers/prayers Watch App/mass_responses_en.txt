@@ -98,7 +98,7 @@ and the life of the world to come. Amen.
 Profession of Faith (Apostles’ Creed)
 
 Invitation to Prayer
-P riest: Pray, brethren ... acceptable to God,
+Priest: Pray, brethren ... acceptable to God,
 the almighty Father.
 People: May the Lord accept the sacrifice at your hands
 for the praise and glory of his name,
@@ -106,15 +106,15 @@ for our good
 and the good of all his holy Church.
 
 Preface Dialogue
-P riest: The Lord be with you.
-P eople: And with your spirit.
-P riest: Lift up your hearts.
-P eople: We lift them up to the Lord.
-P riest: Let us give thanks to the Lord our God.
-P eople: It is right and just.
+Priest: The Lord be with you.
+People: And with your spirit.
+Priest: Lift up your hearts.
+People: We lift them up to the Lord.
+Priest: Let us give thanks to the Lord our God.
+People: It is right and just.
 
 Priest: The mystery of faith.
-P eople: A – We proclaim your Death, O Lord,
+People: A – We proclaim your Death, O Lord,
 and profess your Resurrection
 until you come again.
 B – When we eat this Bread and drink this Cup,
@@ -125,18 +125,18 @@ for by your Cross and Resurrection,
 you have set us free.
 
 The Lord’s Prayer
-P EOP LE: Our Father ...
-P riest: ... and the coming of our Savior, Jesus Christ.
-P eople: For the kingdom,
+People: Our Father ...
+Priest: ... and the coming of our Savior, Jesus Christ.
+People: For the kingdom,
 the power and the glory are yours
 now and for ever.
 
 Sign of Peace
-P riest: The peace of the Lord be with you always.
-P eople: And with your spirit.
+Priest: The peace of the Lord be with you always.
+People: And with your spirit.
 
 Invitation to Communion
-P riest: Behold the Lamb of God,
+Priest: Behold the Lamb of God,
 behold him who takes away the sins of the world.
 Blessed are those called to the supper of the Lamb.
 All: Lord, I am not worthy
@@ -145,13 +145,13 @@ but only say the word
 and my soul shall be healed.
 
 Concluding Rites
-P riest: The Lord be with you.
-P eople: And with your spirit.
-P riest (or Deacon): Go forth, the Mass is ended.
-oR Go and announce the Gospel of the Lord.
-oR Go in peace, glorifying the Lord by your life.
-oR Go in peace.
-P eople: Thanks be to God.
+Priest: The Lord be with you.
+People: And with your spirit.
+Priest (or Deacon): Go forth, the Mass is ended.
+Or Go and announce the Gospel of the Lord.
+Or Go in peace, glorifying the Lord by your life.
+Or Go in peace.
+People: Thanks be to God.
 
 Preface Acclamation
 Holy, Holy, Holy Lord God of hosts.
@@ -159,13 +159,6 @@ Heaven and earth are full of your glory.
 Hosanna in the highest.
 Blessed is he who comes in the name of the Lord.
 Hosanna in the highest.
-
-www.FAITHCatholic.com
-Excerpts from the English translation of The Roman Missal
-© 2011, International Committee on English in the Liturgy,
-Inc. All rights reserved. Published with the approval of the Committee on Divine
-Worship, United States Conference of Catholic Bishops.
-
 
 I believe in God,
 the Father almighty,
@@ -189,3 +182,5 @@ and life everlasting. Amen.
 
 The Mystery of Faith
 
+
+Excerpts from the English translation of The Roman Missal © 2010, International Commission on English in the Liturgy Corporation. All rights reserved.
