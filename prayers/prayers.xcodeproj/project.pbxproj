@@ -971,7 +971,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = PrayersComplications/Info.plist;
+				INFOPLIST_FILE = "PrayersComplications-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = PrayersComplications;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -998,7 +998,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = PrayersComplications/Info.plist;
+				INFOPLIST_FILE = "PrayersComplications-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = PrayersComplications;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
