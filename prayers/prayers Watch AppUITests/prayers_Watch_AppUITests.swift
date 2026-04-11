@@ -51,59 +51,38 @@ final class prayers_Watch_AppUITests: XCTestCase {
         try? screenshot.pngRepresentation.write(to: url)
     }
 
-    /// Rosary transport sanity:
-    /// - Auto ON should advance without manual Next
-    /// - Back should remain present/hittable during auto playback
-    /// - Stop should halt playback and set Auto OFF
+    /// Rosary now-playing player: prev / play / next / stop (auto-advance lives in Settings only).
     @MainActor
-    func testRosaryAutoBackStopTransport() throws {
+    func testRosaryPlayerTransport() throws {
         let app = XCUIApplication()
         app.launch()
 
-        // Home screenshot
         writeScreenshot(XCUIScreen.main.screenshot(), name: "home")
 
         app.buttons["Rosary"].tap()
-
-        // Choose Mystery screenshot
         writeScreenshot(XCUIScreen.main.screenshot(), name: "choose_mystery")
 
         app.buttons["Joyful"].tap()
-
-        // Rosary screenshot
         writeScreenshot(XCUIScreen.main.screenshot(), name: "rosary")
 
-        // Wait for a long mystery title step to confirm layout on small screens.
         let longTitle = app.staticTexts["The Presentation of the Child Jesus in the Temple"]
         _ = longTitle.waitForExistence(timeout: 30)
         writeScreenshot(XCUIScreen.main.screenshot(), name: "rosary_long")
 
-        let autoSwitch = app.switches["Auto-advance"]
-        XCTAssertTrue(autoSwitch.waitForExistence(timeout: 5))
-        if (autoSwitch.value as? String) == "0" { autoSwitch.tap() }
-
-        // Start playback via toolbar Play button.
         let playButton = app.buttons["TransportPlayPause"].firstMatch
         XCTAssertTrue(playButton.waitForExistence(timeout: 5))
         playButton.tap()
 
-        // We do not wait for a specific title transition here (can be flaky on Simulator).
-        // Instead, we assert transport controls remain responsive while auto playback is active.
-        let pauseButton = app.buttons["TransportPlayPause"].firstMatch
-        _ = pauseButton.waitForExistence(timeout: 30)
+        let prev = app.buttons["TransportPrevious"].firstMatch
+        let next = app.buttons["TransportNext"].firstMatch
+        XCTAssertTrue(prev.waitForExistence(timeout: 10))
+        XCTAssertTrue(next.waitForExistence(timeout: 5))
+        prev.tap()
 
-        // Back should still be present/hittable.
-        let backButton = app.buttons["RosaryBack"]
-        XCTAssertTrue(backButton.exists)
-        backButton.tap()
-        XCTAssertTrue(backButton.exists)
-
-        // Stop should disable Auto and stop playback.
         let stopButton = app.buttons["TransportStop"].firstMatch
-        XCTAssertTrue(stopButton.exists)
+        XCTAssertTrue(stopButton.waitForExistence(timeout: 5))
         stopButton.tap()
 
-        XCTAssertEqual(autoSwitch.value as? String, "0")
         XCTAssertTrue(app.buttons["TransportPlayPause"].firstMatch.exists)
         XCTAssertTrue(app.exists)
     }

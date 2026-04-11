@@ -2,53 +2,18 @@ import SwiftUI
 
 struct RosaryView: View {
 
-    private struct RosaryTransportRow: View {
-        @ObservedObject var speech: SpeechManager
-        let playPauseTapped: () -> Void
-        let stopTapped: () -> Void
-
-        var body: some View {
-            HStack(spacing: 12) {
-                Button {
-                    playPauseTapped()
-                } label: {
-                    Image(systemName: speech.isSpeaking ? "pause.fill" : "play.fill")
-                        .font(.body.weight(.semibold))
-                        .frame(width: 40, height: 40)
-                }
-                .buttonStyle(.borderedProminent)
-                .accessibilityIdentifier("TransportPlayPause")
-
-                Button {
-                    stopTapped()
-                } label: {
-                    Image(systemName: "stop.fill")
-                        .font(.body.weight(.semibold))
-                        .frame(width: 40, height: 40)
-                }
-                .buttonStyle(.bordered)
-                .accessibilityIdentifier("TransportStop")
-            }
-            .padding(.vertical, 4)
-        }
-    }
-
     @State private var prayersById: [String: Prayer] = [:]
     @State private var errorText: String?
 
-    // v1: English-only until Spanish copy is verified.
     private let lang: String = "en"
 
     @State private var selectedMystery: RosaryMystery? = nil
     @State private var steps: [RosaryStep] = []
     @State private var index: Int = 0
 
-    // Playback state machine guards
     @State private var playbackGeneration: Int = 0
     @State private var isTransitioningStep: Bool = false
-
-    // Cancellable auto-advance work
-    @State private var autoAdvanceTask: Task<Void, Never>? = nil
+    @State private var autoAdvanceTask: Task<Void, Never>?
 
     @AppStorage(AppSettings.autoAdvanceKey) private var autoAdvance: Bool = AppSettings.defaultAutoAdvance
     @AppStorage(AppSettings.hapticsKey) private var hapticsOn: Bool = AppSettings.defaultHaptics
@@ -67,69 +32,9 @@ struct RosaryView: View {
                     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
                     .padding(.horizontal, 10)
             } else if selectedMystery == nil {
-                List {
-                    ForEach(RosaryMystery.allCases) { mystery in
-                        Button {
-                            start(mystery)
-                        } label: {
-                            Text(mystery.title)
-                        }
-                    }
-                }
+                mysteryPicker
             } else {
-                VStack(spacing: 12) {
-                    VStack(alignment: .center, spacing: 6) {
-                        Text(displayTitle)
-                            .font(.subheadline)
-                            .multilineTextAlignment(.center)
-                            .lineLimit(2)
-                            .lineSpacing(2)
-                            .truncationMode(.tail)
-                            .frame(maxWidth: .infinity, alignment: .center)
-
-                        if let label = hailMaryCounterLabel {
-                            Text(label)
-                                .font(.subheadline.weight(.semibold))
-                                .foregroundStyle(.primary)
-                                .frame(maxWidth: .infinity, alignment: .center)
-                                .minimumScaleFactor(0.7)
-                                .lineLimit(1)
-                        }
-                    }
-                    .padding(.top, 2)
-
-                    ScrollView {
-                        Text(currentText ?? "")
-                            .font(.callout)
-                            .multilineTextAlignment(.center)
-                            .lineSpacing(5)
-                            .minimumScaleFactor(0.85)
-                            .frame(maxWidth: .infinity)
-                            .padding(.horizontal, 8)
-                            .padding(.vertical, 8)
-                    }
-
-                    VStack(spacing: 14) {
-                        Toggle("Auto-advance", isOn: $autoAdvance)
-                            .toggleStyle(.switch)
-
-                        RosaryTransportRow(
-                            speech: speech,
-                            playPauseTapped: { Task { @MainActor in playPauseTapped() } },
-                            stopTapped: { Task { @MainActor in stopPlayback() } }
-                        )
-
-                        HStack(spacing: 12) {
-                            Button("Back") { back() }
-                                .accessibilityIdentifier("RosaryBack")
-                                .frame(maxWidth: .infinity)
-                                .disabled(index == 0)
-                        }
-                        .buttonStyle(.bordered)
-                    }
-                }
-                .padding(.horizontal, 12)
-                .padding(.vertical, 10)
+                nowPlayingSession
             }
         }
         .navigationTitle("Rosary")
@@ -140,20 +45,195 @@ struct RosaryView: View {
         }
     }
 
+    private var mysteryPicker: some View {
+        List {
+            ForEach(RosaryMystery.allCases) { mystery in
+                Button {
+                    start(mystery)
+                } label: {
+                    Label(mystery.title, systemImage: "circle.fill")
+                }
+            }
+        }
+    }
+
+    private var nowPlayingSession: some View {
+        VStack(spacing: 0) {
+            sessionHeader
+                .padding(.horizontal, 12)
+                .padding(.top, 6)
+                .padding(.bottom, 4)
+
+            ScrollView {
+                Text(currentText ?? "")
+                    .font(.callout)
+                    .multilineTextAlignment(.center)
+                    .lineSpacing(5)
+                    .minimumScaleFactor(0.85)
+                    .frame(maxWidth: .infinity)
+                    .padding(.horizontal, 10)
+                    .padding(.vertical, 12)
+            }
+            .safeAreaInset(edge: .bottom, spacing: 0) {
+                playerChrome
+            }
+        }
+    }
+
+    private var sessionHeader: some View {
+        VStack(alignment: .center, spacing: 6) {
+            if let mystery = selectedMystery {
+                Text(mystery.title)
+                    .font(.caption2.weight(.semibold))
+                    .foregroundStyle(.secondary)
+                    .textCase(.uppercase)
+                    .tracking(0.5)
+            }
+
+            Text(displayTitle)
+                .font(.subheadline)
+                .multilineTextAlignment(.center)
+                .lineLimit(2)
+                .lineSpacing(2)
+                .truncationMode(.tail)
+                .frame(maxWidth: .infinity, alignment: .center)
+
+            if let label = hailMaryCounterLabel {
+                Text(label)
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(.secondary)
+                    .minimumScaleFactor(0.7)
+                    .lineLimit(1)
+            }
+        }
+        .onLongPressGesture(minimumDuration: 0.55) {
+            Task { @MainActor in
+                exitToMysteryPicker()
+            }
+        }
+    }
+
+    private var playerChrome: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            progressSection
+
+            HStack(spacing: 10) {
+                Button {
+                    previousStep()
+                } label: {
+                    Image(systemName: "backward.fill")
+                        .font(.body.weight(.semibold))
+                        .frame(width: 40, height: 40)
+                        .frame(maxWidth: .infinity)
+                }
+                .buttonStyle(.bordered)
+                .disabled(index == 0)
+                .accessibilityLabel("Previous")
+                .accessibilityIdentifier("TransportPrevious")
+
+                Button {
+                    Task { @MainActor in playPauseTapped() }
+                } label: {
+                    Image(systemName: speech.isSpeaking ? "pause.fill" : "play.fill")
+                        .font(.body.weight(.semibold))
+                        .frame(width: 44, height: 44)
+                        .frame(maxWidth: .infinity)
+                }
+                .buttonStyle(.borderedProminent)
+                .accessibilityIdentifier("TransportPlayPause")
+
+                Button {
+                    nextStep()
+                } label: {
+                    Image(systemName: "forward.fill")
+                        .font(.body.weight(.semibold))
+                        .frame(width: 40, height: 40)
+                        .frame(maxWidth: .infinity)
+                }
+                .buttonStyle(.bordered)
+                .disabled(steps.isEmpty || index >= steps.count - 1)
+                .accessibilityLabel("Next")
+                .accessibilityIdentifier("TransportNext")
+            }
+
+            Button {
+                Task { @MainActor in stopPlayback() }
+            } label: {
+                Label("Stop", systemImage: "stop.fill")
+                    .frame(maxWidth: .infinity)
+            }
+            .buttonStyle(.bordered)
+            .accessibilityIdentifier("TransportStop")
+        }
+        .padding(.horizontal, 10)
+        .padding(.top, 10)
+        .padding(.bottom, 8)
+        .background(.ultraThinMaterial)
+    }
+
+    private var progressSection: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            if let decade = decadeProgressFraction {
+                Text("Decade")
+                    .font(.caption2)
+                    .foregroundStyle(.tertiary)
+                ThinProgressBar(value: decade)
+            }
+
+            Text("Rosary")
+                .font(.caption2)
+                .foregroundStyle(.tertiary)
+            ThinProgressBar(value: overallProgressFraction)
+        }
+    }
+
+    private struct ThinProgressBar: View {
+        let value: Double
+
+        var body: some View {
+            GeometryReader { geo in
+                ZStack(alignment: .leading) {
+                    Capsule()
+                        .fill(Color.secondary.opacity(0.22))
+                    Capsule()
+                        .fill(Color.accentColor)
+                        .frame(width: max(3, geo.size.width * min(1, max(0, value))))
+                }
+            }
+            .frame(height: 3)
+        }
+    }
+
+    private var overallProgressFraction: Double {
+        guard !steps.isEmpty else { return 0 }
+        return Double(index + 1) / Double(steps.count)
+    }
+
+    /// Progress through the current decade’s Hail Mary run (1...10), when applicable.
+    private var decadeProgressFraction: Double? {
+        guard let step = currentStep, step.title == "Hail Mary" else { return nil }
+        var startIndex = index
+        while startIndex > 0 {
+            let prev = steps[startIndex - 1]
+            if prev.title == "Our Father" { break }
+            if prev.title != "Hail Mary" { break }
+            startIndex -= 1
+        }
+        let pos = (index - startIndex) + 1
+        guard pos >= 1, pos <= 10 else { return nil }
+        return Double(pos) / 10.0
+    }
+
     private func autostartIfRequested() {
-        // Allows automation without UI taps (e.g. simulator launches).
-        // Usage: xcrun simctl launch ... --args --autoplay
         guard ProcessInfo.processInfo.arguments.contains("--autoplay") else { return }
 
         let mystery = RosaryMystery.defaultForToday()
         start(mystery)
 
-        // Speak after state updates land
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
             transition(to: index, reason: .manualStart)
         }
     }
-
 
     private var currentStep: RosaryStep? {
         guard steps.indices.contains(index) else { return nil }
@@ -161,7 +241,12 @@ struct RosaryView: View {
     }
 
     private var currentText: String? {
-        guard let step = currentStep else { return nil }
+        textForStep(at: index)
+    }
+
+    private func textForStep(at i: Int) -> String? {
+        guard steps.indices.contains(i) else { return nil }
+        let step = steps[i]
         switch step.content {
         case .text(let t):
             return t
@@ -175,7 +260,6 @@ struct RosaryView: View {
 
     private var displayTitle: String {
         guard let step = currentStep else { return "Rosary" }
-        // If this is a mystery meditation step, show the mystery title loaded from JSON.
         if case .prayerId(let prayerId) = step.content,
            prayerId.hasPrefix("mystery_"),
            prayerId.hasSuffix("_meditation") {
@@ -191,16 +275,12 @@ struct RosaryView: View {
 
     private var hailMaryCounterLabel: String? {
         guard let step = currentStep else { return nil }
-        // Show counter only during the 10 Hail Mary steps of a decade.
         guard step.title == "Hail Mary" else { return nil }
 
-        // Find the start of this decade's Hail Mary run by scanning backwards
-        // until we hit the preceding Our Father.
         var startIndex = index
         while startIndex > 0 {
             let prev = steps[startIndex - 1]
             if prev.title == "Our Father" { break }
-            // Stop if we hit another non-Hail Mary prayer (safety)
             if prev.title != "Hail Mary" { break }
             startIndex -= 1
         }
@@ -216,15 +296,6 @@ struct RosaryView: View {
         selectedMystery = mystery
         steps = RosaryScripts.full(mystery: mystery)
         index = 0
-
-        // Verification log: we expect 10 ids per set (5 titles + 5 meditations).
-        let ids = (1...5).flatMap { i in
-            [
-                "mystery_\(mystery.contentKey)_\(i)_title",
-                "mystery_\(mystery.contentKey)_\(i)_meditation"
-            ]
-        }
-        print("[Mysteries] set=\(mystery.rawValue) count=\(ids.count) first=\(ids.first ?? "") last=\(ids.last ?? "")")
     }
 
     private func loadPrayers() {
@@ -238,6 +309,7 @@ struct RosaryView: View {
 
     private enum TransitionReason {
         case manualBack
+        case manualForward
         case manualStart
         case autoCompletion
     }
@@ -252,7 +324,7 @@ struct RosaryView: View {
     }
 
     @MainActor
-    private func transition(to newIndex: Int, reason: TransitionReason, spokenIndex: Int? = nil, callbackGeneration: Int? = nil) {
+    private func transition(to newIndex: Int, reason: TransitionReason) {
         if isTransitioningStep {
             #if DEBUG
             print("[Rosary] transition ignored (reentry) reason=\(reason) gen=\(playbackGeneration) idx=\(index)")
@@ -278,17 +350,20 @@ struct RosaryView: View {
         print("[Rosary] transition reason=\(reason) gen=\(playbackGeneration) idx=\(index)")
         #endif
 
-        // Start speech once (auto or manual start).
-        guard autoAdvance || reason == .manualStart else { return }
-        speakStep(at: index)
+        switch reason {
+        case .manualBack, .manualForward, .manualStart:
+            speakStep(at: index)
+        case .autoCompletion:
+            if autoAdvance {
+                speakStep(at: index)
+            }
+        }
     }
 
     @MainActor
     private func speakStep(at idx: Int) {
-        guard steps.indices.contains(idx) else { return }
-        guard let text = currentText, !text.isEmpty else { return }
+        guard let text = textForStep(at: idx), !text.isEmpty else { return }
 
-        // Cancel any scheduled auto advance before starting a new utterance.
         cancelAutoTask(reason: "speakStep")
 
         let g = playbackGeneration
@@ -298,65 +373,49 @@ struct RosaryView: View {
         switch speechSpeed {
         case "veryslow": rate = 0.35
         case "slow": rate = 0.42
-        default: rate = 0.50 // normal
+        default: rate = 0.50
         }
 
         speech.speak(text: text, voiceLanguage: voiceLanguage, rate: rate) {
             DispatchQueue.main.async {
-                // Completion callback hard gate.
-                if g != playbackGeneration {
-                    #if DEBUG
-                    print("[Rosary] callback ignored (gen mismatch) cbGen=\(g) gen=\(playbackGeneration)")
-                    #endif
-                    return
-                }
-                if isTransitioningStep {
-                    #if DEBUG
-                    print("[Rosary] callback ignored (transitioning) gen=\(playbackGeneration)")
-                    #endif
-                    return
-                }
-                if index != spokenIdx {
-                    #if DEBUG
-                    print("[Rosary] callback ignored (idx changed) spoken=\(spokenIdx) idx=\(index)")
-                    #endif
-                    return
-                }
-                if !autoAdvance {
-                    #if DEBUG
-                    print("[Rosary] callback ignored (auto off)")
-                    #endif
-                    return
-                }
+                if g != playbackGeneration { return }
+                if isTransitioningStep { return }
+                if index != spokenIdx { return }
+                if !autoAdvance { return }
 
                 if index >= steps.count - 1 {
                     if hapticsOn { Haptics.success() }
                     return
                 }
 
-                // Schedule next step with cancellable task.
                 let delay = Double(max(1, min(10, pauseBetweenPartsSeconds)))
                 cancelAutoTask(reason: "schedule")
                 autoAdvanceTask = Task { @MainActor in
                     try? await Task.sleep(nanoseconds: UInt64(delay * 1_000_000_000))
                     guard !Task.isCancelled else { return }
-                    // Guard again.
                     guard g == playbackGeneration else { return }
                     guard autoAdvance else { return }
-                    transition(to: index + 1, reason: .autoCompletion, spokenIndex: spokenIdx, callbackGeneration: g)
+                    transition(to: index + 1, reason: .autoCompletion)
                 }
             }
         }
     }
 
-    
-
     @MainActor
     private func stopPlayback() {
         cancelAutoTask(reason: "stop")
-        autoAdvance = false
         playbackGeneration &+= 1
         speech.stop()
+    }
+
+    @MainActor
+    private func exitToMysteryPicker() {
+        if hapticsOn { Haptics.click() }
+        cancelAutoTask(reason: "exit")
+        playbackGeneration &+= 1
+        speech.stop()
+        selectedMystery = nil
+        steps = []
         index = 0
     }
 
@@ -373,10 +432,19 @@ struct RosaryView: View {
         transition(to: index, reason: .manualStart)
     }
 
-    private func back() {
+    private func previousStep() {
         Task { @MainActor in
-            cancelAutoTask(reason: "manualBack")
+            guard index > 0 else { return }
+            if hapticsOn { Haptics.click() }
             transition(to: index - 1, reason: .manualBack)
+        }
+    }
+
+    private func nextStep() {
+        Task { @MainActor in
+            guard index < steps.count - 1 else { return }
+            if hapticsOn { Haptics.click() }
+            transition(to: index + 1, reason: .manualForward)
         }
     }
 }

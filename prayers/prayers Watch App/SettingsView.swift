@@ -14,6 +14,9 @@ struct SettingsView: View {
             Section("Rosary") {
                 Toggle("Auto-advance", isOn: $autoAdvance)
                 Toggle("Haptics", isOn: $haptics)
+                Text("Long-press the title on the Rosary screen to choose another mystery.")
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
             }
 
             Section("Speech") {
