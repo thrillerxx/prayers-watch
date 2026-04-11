@@ -8,13 +8,13 @@ struct RosaryView: View {
         let stopTapped: () -> Void
 
         var body: some View {
-            HStack(spacing: 10) {
+            HStack(spacing: 12) {
                 Button {
                     playPauseTapped()
                 } label: {
                     Image(systemName: speech.isSpeaking ? "pause.fill" : "play.fill")
                         .font(.body.weight(.semibold))
-                        .frame(width: 36, height: 36)
+                        .frame(width: 40, height: 40)
                 }
                 .buttonStyle(.borderedProminent)
                 .accessibilityIdentifier("TransportPlayPause")
@@ -24,11 +24,12 @@ struct RosaryView: View {
                 } label: {
                     Image(systemName: "stop.fill")
                         .font(.body.weight(.semibold))
-                        .frame(width: 36, height: 36)
+                        .frame(width: 40, height: 40)
                 }
                 .buttonStyle(.bordered)
                 .accessibilityIdentifier("TransportStop")
             }
+            .padding(.vertical, 4)
         }
     }
 
@@ -76,13 +77,13 @@ struct RosaryView: View {
                     }
                 }
             } else {
-                VStack(spacing: 0) {
-                    VStack(alignment: .center, spacing: 4) {
+                VStack(spacing: 12) {
+                    VStack(alignment: .center, spacing: 6) {
                         Text(displayTitle)
                             .font(.subheadline)
                             .multilineTextAlignment(.center)
                             .lineLimit(2)
-                            .lineSpacing(1)
+                            .lineSpacing(2)
                             .truncationMode(.tail)
                             .frame(maxWidth: .infinity, alignment: .center)
 
@@ -95,20 +96,20 @@ struct RosaryView: View {
                                 .lineLimit(1)
                         }
                     }
-                    .padding(.bottom, 6)
+                    .padding(.top, 2)
 
                     ScrollView {
                         Text(currentText ?? "")
                             .font(.callout)
                             .multilineTextAlignment(.center)
-                            .lineSpacing(3)
+                            .lineSpacing(5)
                             .minimumScaleFactor(0.85)
                             .frame(maxWidth: .infinity)
-                            .padding(.horizontal, 6)
-                            .padding(.vertical, 2)
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 8)
                     }
 
-                    VStack(spacing: 8) {
+                    VStack(spacing: 14) {
                         Toggle("Auto-advance", isOn: $autoAdvance)
                             .toggleStyle(.switch)
 
@@ -118,7 +119,7 @@ struct RosaryView: View {
                             stopTapped: { Task { @MainActor in stopPlayback() } }
                         )
 
-                        HStack(spacing: 10) {
+                        HStack(spacing: 12) {
                             Button("Back") { back() }
                                 .accessibilityIdentifier("RosaryBack")
                                 .frame(maxWidth: .infinity)
@@ -126,10 +127,9 @@ struct RosaryView: View {
                         }
                         .buttonStyle(.bordered)
                     }
-                    .padding(.top, 4)
                 }
-                .padding(.horizontal, 10)
-                .padding(.vertical, 6)
+                .padding(.horizontal, 12)
+                .padding(.vertical, 10)
             }
         }
         .navigationTitle("Rosary")
