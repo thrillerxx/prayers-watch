@@ -4,20 +4,32 @@ struct ContentView: View {
     var body: some View {
         NavigationStack {
             List {
-                NavigationLink("Rosary") {
-                    RosaryView()
+                Section {
+                    NavigationLink {
+                        RosaryView()
+                    } label: {
+                        Label("Rosary", systemImage: "cross.fill")
+                    }
+
+                    NavigationLink {
+                        PrayerLibraryView()
+                    } label: {
+                        Label("Prayer Library", systemImage: "books.vertical.fill")
+                    }
                 }
 
-                NavigationLink("Prayer Library") {
-                    PrayerLibraryView()
-                }
+                Section {
+                    NavigationLink {
+                        MassResponsesView()
+                    } label: {
+                        Label("Mass Responses & Prayers", systemImage: "text.book.closed.fill")
+                    }
 
-                NavigationLink("Mass Responses & Prayers") {
-                    MassResponsesView()
-                }
-
-                NavigationLink("Settings") {
-                    SettingsView()
+                    NavigationLink {
+                        SettingsView()
+                    } label: {
+                        Label("Settings", systemImage: "gearshape.fill")
+                    }
                 }
             }
             .navigationTitle("Divinity")

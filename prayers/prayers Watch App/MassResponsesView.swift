@@ -8,7 +8,9 @@ struct MassResponsesView: View {
             Text(text.isEmpty ? "Loading…" : text)
                 .font(.system(.body, design: .serif))
                 .multilineTextAlignment(.leading)
+                .lineSpacing(4)
                 .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.horizontal, 4)
                 .padding(.vertical, 8)
         }
         .navigationTitle("Mass Responses")

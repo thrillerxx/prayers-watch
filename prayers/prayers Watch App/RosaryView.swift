@@ -94,12 +94,15 @@ struct RosaryView: View {
 
                 ScrollView {
                     Text(currentText ?? "")
-                        .font(.caption)
+                        .font(.callout)
                         .multilineTextAlignment(.center)
+                        .lineSpacing(3)
+                        .minimumScaleFactor(0.85)
                         .frame(maxWidth: .infinity)
+                        .padding(.horizontal, 2)
                 }
 
-                Toggle("Auto", isOn: $autoAdvance)
+                Toggle("Auto-advance", isOn: $autoAdvance)
                     .toggleStyle(.switch)
 
                 RosaryTransportRow(
