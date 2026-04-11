@@ -78,7 +78,7 @@ final class prayers_Watch_AppUITests: XCTestCase {
         _ = longTitle.waitForExistence(timeout: 30)
         writeScreenshot(XCUIScreen.main.screenshot(), name: "rosary_long")
 
-        let autoSwitch = app.switches["Auto"]
+        let autoSwitch = app.switches["Auto-advance"]
         XCTAssertTrue(autoSwitch.waitForExistence(timeout: 5))
         if (autoSwitch.value as? String) == "0" { autoSwitch.tap() }
 
