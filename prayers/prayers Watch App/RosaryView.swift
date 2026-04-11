@@ -58,11 +58,13 @@ struct RosaryView: View {
     @StateObject private var speech = SpeechManager.shared
 
     var body: some View {
-        VStack(spacing: 8) {
+        Group {
             if let errorText {
                 Text(errorText)
                     .font(.footnote)
                     .foregroundStyle(.red)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+                    .padding(.horizontal, 10)
             } else if selectedMystery == nil {
                 List {
                     ForEach(RosaryMystery.allCases) { mystery in
@@ -74,55 +76,62 @@ struct RosaryView: View {
                     }
                 }
             } else {
-                Text(displayTitle)
-                    .font(.subheadline)
-                    .multilineTextAlignment(.center)
-                    .lineLimit(2)
-                    .lineSpacing(1)
-                    .truncationMode(.tail)
-                    .frame(maxWidth: .infinity, alignment: .center)
-                    .padding(.top, 8)
+                VStack(spacing: 0) {
+                    VStack(alignment: .center, spacing: 4) {
+                        Text(displayTitle)
+                            .font(.subheadline)
+                            .multilineTextAlignment(.center)
+                            .lineLimit(2)
+                            .lineSpacing(1)
+                            .truncationMode(.tail)
+                            .frame(maxWidth: .infinity, alignment: .center)
 
-                if let label = hailMaryCounterLabel {
-                    Text(label)
-                        .font(.subheadline.weight(.semibold))
-                        .foregroundStyle(.primary)
-                        .frame(maxWidth: .infinity, alignment: .center)
-                        .minimumScaleFactor(0.7)
-                        .lineLimit(1)
+                        if let label = hailMaryCounterLabel {
+                            Text(label)
+                                .font(.subheadline.weight(.semibold))
+                                .foregroundStyle(.primary)
+                                .frame(maxWidth: .infinity, alignment: .center)
+                                .minimumScaleFactor(0.7)
+                                .lineLimit(1)
+                        }
+                    }
+                    .padding(.bottom, 6)
+
+                    ScrollView {
+                        Text(currentText ?? "")
+                            .font(.callout)
+                            .multilineTextAlignment(.center)
+                            .lineSpacing(3)
+                            .minimumScaleFactor(0.85)
+                            .frame(maxWidth: .infinity)
+                            .padding(.horizontal, 6)
+                            .padding(.vertical, 2)
+                    }
+
+                    VStack(spacing: 8) {
+                        Toggle("Auto-advance", isOn: $autoAdvance)
+                            .toggleStyle(.switch)
+
+                        RosaryTransportRow(
+                            speech: speech,
+                            playPauseTapped: { Task { @MainActor in playPauseTapped() } },
+                            stopTapped: { Task { @MainActor in stopPlayback() } }
+                        )
+
+                        HStack(spacing: 10) {
+                            Button("Back") { back() }
+                                .accessibilityIdentifier("RosaryBack")
+                                .frame(maxWidth: .infinity)
+                                .disabled(index == 0)
+                        }
+                        .buttonStyle(.bordered)
+                    }
+                    .padding(.top, 4)
                 }
-
-                ScrollView {
-                    Text(currentText ?? "")
-                        .font(.callout)
-                        .multilineTextAlignment(.center)
-                        .lineSpacing(3)
-                        .minimumScaleFactor(0.85)
-                        .frame(maxWidth: .infinity)
-                        .padding(.horizontal, 2)
-                }
-
-                Toggle("Auto-advance", isOn: $autoAdvance)
-                    .toggleStyle(.switch)
-
-                RosaryTransportRow(
-                    speech: speech,
-                    playPauseTapped: { Task { @MainActor in playPauseTapped() } },
-                    stopTapped: { Task { @MainActor in stopPlayback() } }
-                )
-                .padding(.top, 4)
-
-                HStack(spacing: 10) {
-                    Button("Back") { back() }
-                        .accessibilityIdentifier("RosaryBack")
-                        .frame(maxWidth: .infinity)
-                        .disabled(index == 0)
-
-                }
-                .buttonStyle(.bordered)
+                .padding(.horizontal, 10)
+                .padding(.vertical, 6)
             }
         }
-        .padding()
         .navigationTitle("Rosary")
         .navigationBarTitleDisplayMode(.inline)
         .onAppear {

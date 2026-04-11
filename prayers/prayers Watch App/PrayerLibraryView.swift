@@ -9,21 +9,24 @@ struct PrayerLibraryView: View {
     @StateObject private var speech = SpeechManager.shared
 
     var body: some View {
-        VStack(spacing: 8) {
+        VStack(spacing: 0) {
             if speech.isSpeaking || speech.isPaused {
                 TransportRow(speech: speech)
-                    .padding(.top, 2)
+                    .padding(.horizontal, 8)
+                    .padding(.bottom, 6)
             }
             if let errorText {
                 Text(errorText)
                     .font(.footnote)
                     .foregroundStyle(.red)
-                    .padding(.horizontal)
+                    .padding(.horizontal, 10)
+                    .padding(.bottom, 6)
             } else if prayers.isEmpty {
                 Text("No prayers found")
                     .font(.footnote)
                     .foregroundStyle(.secondary)
-                    .padding(.horizontal)
+                    .padding(.horizontal, 10)
+                    .padding(.vertical, 8)
             } else {
                 List(prayers) { prayer in
                     NavigationLink {
@@ -97,17 +100,15 @@ struct PrayerDetailView: View {
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 12) {
+            VStack(alignment: .leading, spacing: 10) {
                 Text(prayer.title)
                     .font(.headline)
                     .multilineTextAlignment(.center)
                     .lineLimit(2)
                     .frame(maxWidth: .infinity, alignment: .center)
-                    .padding(.top, 2)
 
                 if speech.isSpeaking || speech.isPaused {
                     TransportRow(speech: speech)
-                        .padding(.top, 4)
                 }
 
                 if text.isEmpty {
@@ -117,10 +118,11 @@ struct PrayerDetailView: View {
                 } else {
                     Text(text)
                         .font(.body)
+                        .fixedSize(horizontal: false, vertical: true)
                 }
-
             }
-            .padding(.horizontal)
+            .padding(.horizontal, 10)
+            .padding(.vertical, 6)
         }
         .navigationTitle("Prayer")
         .onAppear {
