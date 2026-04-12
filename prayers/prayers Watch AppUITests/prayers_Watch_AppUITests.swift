@@ -47,10 +47,13 @@ final class prayers_Watch_AppUITests: XCTestCase {
             return u
         }
         let dirFile = "/tmp/prayers_ui_capture_dir"
-        if let s = try? String(contentsOfFile: dirFile, encoding: .utf8)?.trimmingCharacters(in: .whitespacesAndNewlines), !s.isEmpty {
-            let u = URL(fileURLWithPath: s, isDirectory: true)
-            try? FileManager.default.createDirectory(at: u, withIntermediateDirectories: true)
-            return u
+        if let raw = try? String(contentsOfFile: dirFile, encoding: .utf8) {
+            let s = raw.trimmingCharacters(in: .whitespacesAndNewlines)
+            if !s.isEmpty {
+                let u = URL(fileURLWithPath: s, isDirectory: true)
+                try? FileManager.default.createDirectory(at: u, withIntermediateDirectories: true)
+                return u
+            }
         }
         return URL(fileURLWithPath: "/tmp/screenshots", isDirectory: true)
     }
