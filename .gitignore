@@ -101,4 +101,8 @@ iOSInjectionProject/
 # Local signing overrides (never commit real team IDs)
 prayers/Signing.local.xcconfig
 
+# Simulator UI capture runs (see scripts/capture_watch_ui_flow.sh, docs/ui-capture.md)
+prayers/artifacts/ui-capture/**/*
+!prayers/artifacts/ui-capture/README.md
+
 # End of https://www.toptal.com/developers/gitignore/api/xcode,swift

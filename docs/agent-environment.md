@@ -44,6 +44,15 @@ xcodebuild -project prayers.xcodeproj \
 
 Install the app from **`prayers/build/Debug-watchsimulator/prayers Watch App.app`** with `xcrun simctl install` / `launch`, or run from Xcode.
 
+### UI/UX capture for agents (screenshots + video)
+
+Agents on **omarchy** cannot see the Simulator. To produce **PNGs + optional mp4** on the Mac:
+
+- **Runbook:** `docs/ui-capture.md`
+- **Script:** `scripts/capture_watch_ui_flow.sh` (run on the Mac; sets `PRAYERS_UI_CAPTURE=1` and writes under `prayers/artifacts/ui-capture/<timestamp>/`).
+- **Tools:** `xcodebuild` + UITest `testUIReferenceFlowCapture`; optional `RECORD_VIDEO=1` uses `xcrun simctl io <UDID> recordVideo`; **`xcbeautify`** (`brew install xcbeautify`) for readable logs; **`ffmpeg`** optional for GIFs from PNGs.
+- Sync artifact folders back to omarchy (e.g. `scp`) if an agent should inspect images in the workspace.
+
 ## Homebrew on the Mac (`/opt/homebrew`)
 
 In **non-interactive SSH**, `brew` and tools are **not** on `PATH` until:
@@ -70,5 +79,6 @@ To **verify** audio, produce a **file** on the Mac (e.g. `wav`/`mp3` under `/Use
 ## Related docs
 
 - `README.md` — open project, CLI build, signing, licensing.
+- `docs/ui-capture.md` — Simulator screenshot/video capture for UX review.
 - `docs/licensing/mass-responses-licensing.md` — Mass Responses text.
 - `docs/design/mystery-art-ai-prompts.md` — mystery art + UI notes.

@@ -39,8 +39,18 @@ final class prayers_Watch_AppUITests: XCTestCase {
         wait(for: [exp], timeout: timeout)
     }
 
+    /// When `PRAYERS_UI_CAPTURE_DIR` is set (see `scripts/capture_watch_ui_flow.sh`), screenshots go there; otherwise `/tmp/screenshots`.
+    private func screenshotRootDirectory() -> URL {
+        if let env = ProcessInfo.processInfo.environment["PRAYERS_UI_CAPTURE_DIR"], !env.isEmpty {
+            let u = URL(fileURLWithPath: env, isDirectory: true)
+            try? FileManager.default.createDirectory(at: u, withIntermediateDirectories: true)
+            return u
+        }
+        return URL(fileURLWithPath: "/tmp/screenshots", isDirectory: true)
+    }
+
     private func writeScreenshot(_ screenshot: XCUIScreenshot, name: String) {
-        let dir = URL(fileURLWithPath: "/tmp/screenshots", isDirectory: true)
+        let dir = screenshotRootDirectory()
         try? FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
 
         let device = (ProcessInfo.processInfo.environment["SIMULATOR_DEVICE_NAME"] ?? "watch")
@@ -49,6 +59,10 @@ final class prayers_Watch_AppUITests: XCTestCase {
 
         let url = dir.appendingPathComponent("\(name)_\(device).png")
         try? screenshot.pngRepresentation.write(to: url)
+    }
+
+    private func snapshot(_ app: XCUIApplication, _ name: String) {
+        writeScreenshot(XCUIScreen.main.screenshot(), name: name)
     }
 
     /// Opens the first prayer row in Prayer Library (detail view autoplays).
@@ -169,6 +183,60 @@ final class prayers_Watch_AppUITests: XCTestCase {
         XCTAssertFalse(app.staticTexts[prayer1Title].exists)
 
         assertAnyButtonExists(app, names: ["TransportPlayPause", "TransportStop"])
+        XCTAssertTrue(app.exists)
+    }
+
+    /// Full shell UX walkthrough for agents / humans. Run only when `PRAYERS_UI_CAPTURE=1` (see `scripts/capture_watch_ui_flow.sh`).
+    /// Writes ordered PNGs into `PRAYERS_UI_CAPTURE_DIR` when set.
+    @MainActor
+    func testUIReferenceFlowCapture() throws {
+        guard ProcessInfo.processInfo.environment["PRAYERS_UI_CAPTURE"] == "1" else {
+            throw XCTSkip("Set PRAYERS_UI_CAPTURE=1 to record reference screenshots (see scripts/capture_watch_ui_flow.sh).")
+        }
+
+        let app = XCUIApplication()
+        app.launch()
+
+        snapshot(app, "01_home_divinity")
+
+        app.buttons["Prayer Library"].tap()
+        XCTAssertTrue(app.navigationBars.firstMatch.waitForExistence(timeout: 10))
+        snapshot(app, "02_prayer_library")
+
+        let firstCell = app.cells.element(boundBy: 0)
+        XCTAssertTrue(firstCell.waitForExistence(timeout: 15))
+        snapshot(app, "03_prayer_library_list")
+
+        firstCell.tap()
+        XCTAssertTrue(app.buttons["TransportPlayPause"].waitForExistence(timeout: 20))
+        snapshot(app, "04_prayer_detail")
+
+        tapBackButton(app)
+        snapshot(app, "05_prayer_library_after_detail")
+
+        tapBackButton(app)
+        snapshot(app, "06_home_after_library")
+
+        app.buttons["Mass Responses & Prayers"].tap()
+        XCTAssertTrue(app.navigationBars.firstMatch.waitForExistence(timeout: 10))
+        snapshot(app, "07_mass_responses")
+
+        tapBackButton(app)
+
+        app.buttons["Settings"].tap()
+        XCTAssertTrue(app.navigationBars.firstMatch.waitForExistence(timeout: 10))
+        snapshot(app, "08_settings")
+
+        tapBackButton(app)
+
+        app.buttons["Rosary"].tap()
+        XCTAssertTrue(app.buttons["Joyful"].waitForExistence(timeout: 10))
+        snapshot(app, "09_rosary_pick_mystery")
+
+        app.buttons["Joyful"].tap()
+        XCTAssertTrue(app.buttons["TransportPlayPause"].waitForExistence(timeout: 10))
+        snapshot(app, "10_rosary_session")
+
         XCTAssertTrue(app.exists)
     }
 }
