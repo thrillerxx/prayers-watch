@@ -6,8 +6,6 @@ struct PrayerLibraryView: View {
     @State private var massPrayers: [Prayer] = []
     @State private var errorText: String?
 
-    private let lang: String = "en"
-
     @ObservedObject private var speech = SpeechManager.shared
 
     @Environment(\.appColorTheme) private var theme
@@ -16,6 +14,12 @@ struct PrayerLibraryView: View {
 
     private var accent: Color {
         theme.accentColor(reduceTransparency: reduceTransparency, increaseContrast: differentiateWithoutColor)
+    }
+
+    /// Catalog prayers excluding rows also listed under Mass (avoid duplicate rows).
+    private var catalogPrayersExcludingMass: [Prayer] {
+        let massIds = Set(massPrayers.map(\.id))
+        return prayers.filter { !massIds.contains($0.id) }
     }
 
     var body: some View {
@@ -31,38 +35,73 @@ struct PrayerLibraryView: View {
                     .foregroundStyle(.red)
                     .padding(.horizontal, 10)
                     .padding(.bottom, 6)
-            } else if prayers.isEmpty {
+            } else if prayers.isEmpty && massPrayers.isEmpty {
                 Text("No prayers found")
                     .font(DivinityFont.caption(12))
                     .foregroundStyle(.secondary)
                     .padding(.horizontal, 10)
                     .padding(.vertical, 8)
             } else {
-                List(prayers) { prayer in
-                    NavigationLink {
-                        PrayerDetailView(prayer: prayer)
-                    } label: {
-                        Text(prayer.title)
-                            .font(DivinityFont.title(14))
+                List {
+                    if !massPrayers.isEmpty {
+                        Section {
+                            ForEach(massPrayers) { prayer in
+                                NavigationLink {
+                                    PrayerDetailView(prayer: prayer)
+                                } label: {
+                                    prayerRowLabel(title: prayer.title, icon: "building.columns")
+                                }
+                            }
+                        } header: {
+                            Text("Mass")
+                                .font(DivinityFont.caption(10))
+                                .foregroundStyle(.secondary)
+                                .textCase(.uppercase)
+                        }
+                    }
+
+                    if !catalogPrayersExcludingMass.isEmpty {
+                        Section {
+                            ForEach(catalogPrayersExcludingMass) { prayer in
+                                NavigationLink {
+                                    PrayerDetailView(prayer: prayer)
+                                } label: {
+                                    prayerRowLabel(title: prayer.title, icon: "book.pages")
+                                }
+                            }
+                        } header: {
+                            Text(massPrayers.isEmpty ? "Prayers" : "More prayers")
+                                .font(DivinityFont.caption(10))
+                                .foregroundStyle(.secondary)
+                                .textCase(.uppercase)
+                        }
                     }
                 }
+                .listSectionSpacing(6)
             }
         }
-        .navigationTitle("Prayers")
+        .navigationTitle("Prayer Library")
         .tint(accent)
         .onAppear {
-            do {
-                prayers = try PrayerStore.load().filter { prayer in
-                    let id = prayer.id
-                    if id.hasPrefix("mysteryset_") { return false }
-                    if id.hasSuffix("_title") { return false }
-                    if id.hasSuffix("_alt_title") { return false }
-                    return true
-                }
-            } catch {
-                errorText = error.localizedDescription
-            }
+            loadPrayers()
         }
+    }
+
+    @ViewBuilder
+    private func prayerRowLabel(title: String, icon: String) -> some View {
+        HStack(alignment: .firstTextBaseline, spacing: 8) {
+            Image(systemName: icon)
+                .font(.system(size: 12, weight: .semibold))
+                .foregroundStyle(.tertiary)
+                .frame(width: 16, alignment: .center)
+            Text(title)
+                .font(DivinityFont.title(14))
+                .lineLimit(3)
+                .minimumScaleFactor(0.82)
+                .multilineTextAlignment(.leading)
+                .frame(maxWidth: .infinity, alignment: .leading)
+        }
+        .padding(.vertical, 2)
     }
 
     private func loadPrayers() {
@@ -71,12 +110,9 @@ struct PrayerLibraryView: View {
         do {
             prayers = try PrayerStore.load().filter { prayer in
                 let id = prayer.id
-                // Keep only prayable text entries.
-                // Hide any metadata/title helper rows.
                 if id.hasPrefix("mysteryset_") { return false }
                 if id.hasSuffix("_title") { return false }
                 if id.hasSuffix("_alt_title") { return false }
-                // keep everything else (including *_meditation + core prayers)
                 return true
             }
         } catch {
@@ -151,12 +187,6 @@ struct PrayerDetailView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 10) {
-                Text(prayer.title)
-                    .font(DivinityFont.title(16))
-                    .multilineTextAlignment(.center)
-                    .lineLimit(2)
-                    .frame(maxWidth: .infinity, alignment: .center)
-
                 if speech.isSpeaking || speech.isPaused {
                     TransportRow(speech: speech, accent: accent)
                 }
@@ -175,7 +205,8 @@ struct PrayerDetailView: View {
             .padding(.horizontal, 10)
             .padding(.vertical, 6)
         }
-        .navigationTitle("Prayer")
+        .navigationTitle(prayer.title)
+        .navigationBarTitleDisplayMode(.inline)
         .tint(accent)
         .onAppear {
             if !didAutoplay {
@@ -190,22 +221,6 @@ struct PrayerDetailView: View {
         guard !text.isEmpty else { return }
 
         speech.speak(text: text, voiceLanguage: "en-US", rate: 0.45)
-    }
-}
-
-private struct PrayerCategoryListView: View {
-    let title: String
-    let prayers: [Prayer]
-
-    var body: some View {
-        List(prayers) { prayer in
-            NavigationLink {
-                PrayerDetailView(prayer: prayer)
-            } label: {
-                Text(prayer.title)
-            }
-        }
-        .navigationTitle(title)
     }
 }
 
