@@ -98,4 +98,7 @@ iOSInjectionProject/
 /*.gcno
 **/xcshareddata/WorkspaceSettings.xcsettings
 
+# Local signing overrides (never commit real team IDs)
+prayers/Signing.local.xcconfig
+
 # End of https://www.toptal.com/developers/gitignore/api/xcode,swift

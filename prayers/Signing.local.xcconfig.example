@@ -1,0 +1,9 @@
+// Signing.local.xcconfig
+//
+// Fill in your Apple Developer Team ID below to enable
+// real-device builds and App Store distribution.
+//
+// This file should be copied to Signing.local.xcconfig
+// and NOT committed to version control.
+
+DEVELOPMENT_TEAM = XXXXXXXXXX

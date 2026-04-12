@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		167C33292F34767100DD1377 /* prayers Watch App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 167C33282F34767100DD1377 /* prayers Watch App.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		AA00010A2F34767300DD1377 /* PrayersComplications.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = AA0001012F34767300DD1377 /* PrayersComplications.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -46,6 +47,13 @@
 			remoteGlobalIDString = 167C33272F34767100DD1377;
 			remoteInfo = "prayers Watch App";
 		};
+		AA00010B2F34767300DD1377 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 167C32FA2F34766F00DD1377 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = AA0001062F34767300DD1377;
+			remoteInfo = PrayersComplications;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -60,6 +68,17 @@
 			name = "Embed Watch Content";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		AA00010D2F34767300DD1377 /* Embed App Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				AA00010A2F34767300DD1377 /* PrayersComplications.appex in Embed App Extensions */,
+			);
+			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
@@ -69,6 +88,7 @@
 		167C33282F34767100DD1377 /* prayers Watch App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "prayers Watch App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		167C333A2F34767200DD1377 /* prayers Watch AppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "prayers Watch AppTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		167C33442F34767200DD1377 /* prayers Watch AppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "prayers Watch AppUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		AA0001012F34767300DD1377 /* PrayersComplications.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = PrayersComplications.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -100,6 +120,11 @@
 		167C33472F34767200DD1377 /* prayers Watch AppUITests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = "prayers Watch AppUITests";
+			sourceTree = "<group>";
+		};
+		AA0001022F34767300DD1377 /* PrayersComplications */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = PrayersComplications;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -147,6 +172,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		AA0001042F34767300DD1377 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -159,6 +191,7 @@
 				167C332C2F34767100DD1377 /* prayers Watch App */,
 				167C333D2F34767200DD1377 /* prayers Watch AppTests */,
 				167C33472F34767200DD1377 /* prayers Watch AppUITests */,
+				AA0001022F34767300DD1377 /* PrayersComplications */,
 				167C33032F34766F00DD1377 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -172,6 +205,7 @@
 				167C33282F34767100DD1377 /* prayers Watch App.app */,
 				167C333A2F34767200DD1377 /* prayers Watch AppTests.xctest */,
 				167C33442F34767200DD1377 /* prayers Watch AppUITests.xctest */,
+				AA0001012F34767300DD1377 /* PrayersComplications.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -256,10 +290,12 @@
 				167C33242F34767100DD1377 /* Sources */,
 				167C33252F34767100DD1377 /* Frameworks */,
 				167C33262F34767100DD1377 /* Resources */,
+				AA00010D2F34767300DD1377 /* Embed App Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				AA00010C2F34767300DD1377 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				167C332C2F34767100DD1377 /* prayers Watch App */,
@@ -317,6 +353,28 @@
 			productReference = 167C33442F34767200DD1377 /* prayers Watch AppUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
+		AA0001062F34767300DD1377 /* PrayersComplications */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AA0001092F34767300DD1377 /* Build configuration list for PBXNativeTarget "PrayersComplications" */;
+			buildPhases = (
+				AA0001032F34767300DD1377 /* Sources */,
+				AA0001042F34767300DD1377 /* Frameworks */,
+				AA0001052F34767300DD1377 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				AA0001022F34767300DD1377 /* PrayersComplications */,
+			);
+			name = PrayersComplications;
+			packageProductDependencies = (
+			);
+			productName = PrayersComplications;
+			productReference = AA0001012F34767300DD1377 /* PrayersComplications.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -338,10 +396,13 @@
 						CreatedOnToolsVersion = 16.2;
 						TestTargetID = 167C33012F34766F00DD1377;
 					};
-					167C33272F34767100DD1377 = {
-						CreatedOnToolsVersion = 16.2;
-					};
-					167C33392F34767200DD1377 = {
+				167C33272F34767100DD1377 = {
+					CreatedOnToolsVersion = 16.2;
+				};
+				AA0001062F34767300DD1377 = {
+					CreatedOnToolsVersion = 16.2;
+				};
+				167C33392F34767200DD1377 = {
 						CreatedOnToolsVersion = 16.2;
 						TestTargetID = 167C33272F34767100DD1377;
 					};
@@ -371,6 +432,7 @@
 				167C33272F34767100DD1377 /* prayers Watch App */,
 				167C33392F34767200DD1377 /* prayers Watch AppTests */,
 				167C33432F34767200DD1377 /* prayers Watch AppUITests */,
+				AA0001062F34767300DD1377 /* PrayersComplications */,
 			);
 		};
 /* End PBXProject section */
@@ -412,6 +474,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		167C33422F34767200DD1377 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AA0001052F34767300DD1377 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -463,6 +532,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		AA0001032F34767300DD1377 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -490,6 +566,11 @@
 			isa = PBXTargetDependency;
 			target = 167C33272F34767100DD1377 /* prayers Watch App */;
 			targetProxy = 167C33452F34767200DD1377 /* PBXContainerItemProxy */;
+		};
+		AA00010C2F34767300DD1377 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = AA0001062F34767300DD1377 /* PrayersComplications */;
+			targetProxy = AA00010B2F34767300DD1377 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -621,6 +702,11 @@
 				INFOPLIST_KEY_CFBundleDisplayName = prayers;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.divinityapp.prayers;
+				INFOPLIST_KEY_UIAppFonts = (
+					Fonts/Cormorant-Regular.ttf,
+					Fonts/Cormorant-Medium.ttf,
+					Fonts/Cinzel-SemiBold.ttf,
+				);
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -650,6 +736,11 @@
 				INFOPLIST_KEY_CFBundleDisplayName = prayers;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.divinityapp.prayers;
+				INFOPLIST_KEY_UIAppFonts = (
+					Fonts/Cormorant-Regular.ttf,
+					Fonts/Cormorant-Medium.ttf,
+					Fonts/Cinzel-SemiBold.ttf,
+				);
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -882,6 +973,61 @@
 			};
 			name = Release;
 		};
+		AA0001072F34767300DD1377 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "PrayersComplications-Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = PrayersComplications;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.divinityapp.prayers.watchkitapp.complications;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 11.2;
+			};
+			name = Debug;
+		};
+		AA0001082F34767300DD1377 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "PrayersComplications-Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = PrayersComplications;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.divinityapp.prayers.watchkitapp.complications;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				VALIDATE_PRODUCT = YES;
+				WATCHOS_DEPLOYMENT_TARGET = 11.2;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -944,6 +1090,15 @@
 			buildConfigurations = (
 				167C335F2F34767200DD1377 /* Debug */,
 				167C33602F34767200DD1377 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		AA0001092F34767300DD1377 /* Build configuration list for PBXNativeTarget "PrayersComplications" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AA0001072F34767300DD1377 /* Debug */,
+				AA0001082F34767300DD1377 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

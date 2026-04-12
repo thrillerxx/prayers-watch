@@ -13,6 +13,8 @@ A watchOS (and companion iOS) app for Catholic prayers and guided Rosary. Built 
 - **Settings** — User preferences (e.g. speech, display).
 - **Watch-first** — Layout and interactions tuned for watchOS (marquee for long titles, compact controls).
 
+**Agents / automation:** read **`docs/agent-environment.md`** (SSH to Mac, Xcode Simulator, Homebrew PATH, BlackHole, canonical paths). The full tailnet reference on omarchy is **`/home/car/.openclaw/workspace/OPENCLAW_ENVIRONMENT.md`** (§5 prayers-watch).
+
 ## Open in Xcode
 - **Project:** `prayers/prayers.xcodeproj`
 - **Watch scheme:** `prayers Watch App`
@@ -24,20 +26,42 @@ A watchOS (and companion iOS) app for Catholic prayers and guided Rosary. Built 
 4. Run (⌘R).
 
 ### CLI build
+
+Use **`-sdk watchsimulator`** so the product is a Simulator build (see `docs/agent-environment.md`).
+
 ```bash
-cd /home/car/.openclaw/workspace/prayers-watch/prayers
-xcodebuild -project prayers.xcodeproj -scheme "prayers Watch App" \
+cd prayers
+xcodebuild -project prayers.xcodeproj \
+  -target "prayers Watch App" \
+  -sdk watchsimulator \
   -destination 'platform=watchOS Simulator,name=Apple Watch Series 11 (46mm),OS=26.2' \
-  -configuration Debug build
+  -configuration Debug \
+  CODE_SIGNING_ALLOWED=NO \
+  build
 ```
 Adjust simulator `name` and `OS` to match your installed runtimes.
 
-## Conventions and docs
-- **Source of truth:** All project definition, phases, and runbooks live in **`llm/`** ([thrillerxx/new-project-boilerplate](https://github.com/thrillerxx/new-project-boilerplate)).
-- **Local dev:** Full runbook in [llm/workflows/dev-env-local.md](llm/workflows/dev-env-local.md).
-- **Agents:** See [AGENTS.md](AGENTS.md) for AI-assistant rules and project structure.
+## Complications (Watch Face Widget)
 
-## Notes
-- **Complications:** Require a Widget Extension target (WidgetKit) in Xcode.
-- **Real device:** Requires signing and a paired Apple Watch.
-- **TTS:** On Simulator, speech may be muted; test on device for reliable audio.
+The `PrayersComplications` Widget Extension is wired into the project. After building, you can add the "Divinity" complication to any watch face for quick app access.
+
+## Real-Device Signing
+
+Simulator builds use `CODE_SIGNING_ALLOWED=NO`. For real Apple Watch deployment:
+
+1. Copy `prayers/Signing.local.xcconfig.example` to `prayers/Signing.local.xcconfig`
+2. Fill in your Apple Developer Team ID
+3. In Xcode, set each target's signing team, or use the remote script:
+
+```bash
+SIGN=1 DEVELOPMENT_TEAM=YOUR_TEAM_ID bash scripts/remote_mac_xcode.sh
+```
+
+Requirements:
+- Active Apple Developer Program membership ($99/year)
+- Paired Apple Watch connected to the Mac
+- Automatic signing will create provisioning profiles for all targets
+
+## Licensing
+
+Mass Responses text is from The Roman Missal (ICEL). See `docs/licensing/mass-responses-licensing.md` for details. The app includes the required ICEL copyright notice. Keep the app **free** to avoid royalty obligations.
