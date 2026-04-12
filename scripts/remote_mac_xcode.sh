@@ -10,7 +10,8 @@ MAC_HOST="${MAC_HOST:-thrillerx@100.81.139.50}"
 MAC_REPO_DIR="${MAC_REPO_DIR:-/Users/thrillerx/dev/prayers-watch}"
 MAC_PROJECT_SUBDIR="${MAC_PROJECT_SUBDIR:-prayers}"
 PROJECT_FILE="${PROJECT_FILE:-prayers.xcodeproj}"
-APP_SCHEME="${APP_SCHEME:-prayers Watch App}"
+# Shared CLI builds use the watch app *target*; the scheme is not always checked in.
+BUILD_TARGET="${BUILD_TARGET:-prayers Watch App}"
 TEST_SCHEME="${TEST_SCHEME:-prayers-watch-uitests}"
 DESTINATION="${DESTINATION:-platform=watchOS Simulator,name=Apple Watch Series 11 (42mm)}"
 # Required for Simulator: without -sdk watchsimulator, xcodebuild may emit Debug-watchos
@@ -68,7 +69,7 @@ ssh -o BatchMode=yes -o StrictHostKeyChecking=accept-new "$MAC_HOST" \
    MAC_REPO_DIR='$MAC_REPO_DIR'; \
    MAC_PROJECT_SUBDIR='$MAC_PROJECT_SUBDIR'; \
    PROJECT_FILE='$PROJECT_FILE'; \
-   APP_SCHEME='$APP_SCHEME'; \
+   BUILD_TARGET='$BUILD_TARGET'; \
    TEST_SCHEME='$TEST_SCHEME'; \
    DESTINATION='$DESTINATION'; \
    WATCH_SDK='$WATCH_SDK'; \
@@ -113,7 +114,7 @@ ssh -o BatchMode=yes -o StrictHostKeyChecking=accept-new "$MAC_HOST" \
    fi; \
    echo '[remote] running xcodebuild build...'; \
    xcodebuild -project \"$PROJECT_FILE\" \
-     -scheme \"$APP_SCHEME\" \
+     -target \"$BUILD_TARGET\" \
      -sdk \"\$WATCH_SDK\" \
      -destination \"$DESTINATION\" \
      \$SIGN_FLAGS \
