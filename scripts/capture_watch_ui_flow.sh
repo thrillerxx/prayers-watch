@@ -28,6 +28,15 @@ mkdir -p "$OUT/screenshots"
 export PRAYERS_UI_CAPTURE=1
 export PRAYERS_UI_CAPTURE_DIR="$OUT/screenshots"
 
+# xcodebuild often does not pass env into the UI-test runner; tests read these files.
+MARKER="/tmp/prayers_ui_capture_enabled"
+DIR_FILE="/tmp/prayers_ui_capture_dir"
+rm -f "$MARKER" "$DIR_FILE"
+touch "$MARKER"
+printf '%s\n' "$OUT/screenshots" > "$DIR_FILE"
+cleanup() { rm -f "$MARKER" "$DIR_FILE"; }
+trap cleanup EXIT
+
 DESTINATION="${DESTINATION:-platform=watchOS Simulator,name=Apple Watch Series 11 (42mm),OS=26.2}"
 
 pick_watch_udid() {

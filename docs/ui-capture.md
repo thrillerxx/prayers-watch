@@ -40,12 +40,14 @@ RECORD_VIDEO=1 ./scripts/capture_watch_ui_flow.sh
 
 Produces `flow.mp4` (H.264) via `xcrun simctl io <Watch-UDID> recordVideo` for the **Apple Watch Series 11 (42mm)** simulator. Recording stops when the test run ends (script sends SIGINT to finalize the movie).
 
-### Environment variables (UITest)
+### Environment variables and marker file (UITest)
 
-| Variable | Purpose |
+| Variable / file | Purpose |
 | --- | --- |
-| `PRAYERS_UI_CAPTURE=1` | Enables `testUIReferenceFlowCapture` (otherwise skipped in full test runs). |
-| `PRAYERS_UI_CAPTURE_DIR` | Directory for PNGs; the script sets this under `artifacts/ui-capture/`. |
+| `PRAYERS_UI_CAPTURE=1` | Enables `testUIReferenceFlowCapture` when forwarded to the test process (unreliable with `xcodebuild`). |
+| `/tmp/prayers_ui_capture_enabled` | **Marker file** created by `capture_watch_ui_flow.sh`; the test also checks this because `xcodebuild` often does **not** pass env vars to the UI-test runner. Removed when the script exits. |
+| `/tmp/prayers_ui_capture_dir` | One-line path to the screenshot directory (same reason as the marker). |
+| `PRAYERS_UI_CAPTURE_DIR` | Directory for PNGs when env forwarding works; otherwise the test reads `/tmp/prayers_ui_capture_dir`. |
 
 Other UITests still write to `/tmp/screenshots` unless `PRAYERS_UI_CAPTURE_DIR` is set (when set, **all** `writeScreenshot` calls in that process use it).
 

@@ -39,10 +39,16 @@ final class prayers_Watch_AppUITests: XCTestCase {
         wait(for: [exp], timeout: timeout)
     }
 
-    /// When `PRAYERS_UI_CAPTURE_DIR` is set (see `scripts/capture_watch_ui_flow.sh`), screenshots go there; otherwise `/tmp/screenshots`.
+    /// Prefers env `PRAYERS_UI_CAPTURE_DIR`, then `/tmp/prayers_ui_capture_dir` (written by `capture_watch_ui_flow.sh`); else `/tmp/screenshots`.
     private func screenshotRootDirectory() -> URL {
         if let env = ProcessInfo.processInfo.environment["PRAYERS_UI_CAPTURE_DIR"], !env.isEmpty {
             let u = URL(fileURLWithPath: env, isDirectory: true)
+            try? FileManager.default.createDirectory(at: u, withIntermediateDirectories: true)
+            return u
+        }
+        let dirFile = "/tmp/prayers_ui_capture_dir"
+        if let s = try? String(contentsOfFile: dirFile).trimmingCharacters(in: .whitespacesAndNewlines), !s.isEmpty {
+            let u = URL(fileURLWithPath: s, isDirectory: true)
             try? FileManager.default.createDirectory(at: u, withIntermediateDirectories: true)
             return u
         }
@@ -186,12 +192,19 @@ final class prayers_Watch_AppUITests: XCTestCase {
         XCTAssertTrue(app.exists)
     }
 
-    /// Full shell UX walkthrough for agents / humans. Run only when `PRAYERS_UI_CAPTURE=1` (see `scripts/capture_watch_ui_flow.sh`).
+    /// Whether the capture script is driving this test (`scripts/capture_watch_ui_flow.sh`).
+    /// Note: `xcodebuild` often does not forward env vars to the UI-test runner; the script also touches `/tmp/prayers_ui_capture_enabled`.
+    private var isUICaptureRun: Bool {
+        if ProcessInfo.processInfo.environment["PRAYERS_UI_CAPTURE"] == "1" { return true }
+        return FileManager.default.fileExists(atPath: "/tmp/prayers_ui_capture_enabled")
+    }
+
+    /// Full shell UX walkthrough for agents / humans. Activated by the capture script only.
     /// Writes ordered PNGs into `PRAYERS_UI_CAPTURE_DIR` when set.
     @MainActor
     func testUIReferenceFlowCapture() throws {
-        guard ProcessInfo.processInfo.environment["PRAYERS_UI_CAPTURE"] == "1" else {
-            throw XCTSkip("Set PRAYERS_UI_CAPTURE=1 to record reference screenshots (see scripts/capture_watch_ui_flow.sh).")
+        guard isUICaptureRun else {
+            throw XCTSkip("Run scripts/capture_watch_ui_flow.sh on the Mac (or export PRAYERS_UI_CAPTURE=1 with the marker file).")
         }
 
         let app = XCUIApplication()
