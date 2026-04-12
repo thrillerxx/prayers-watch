@@ -43,6 +43,14 @@ final class RosarySessionController: ObservableObject {
         return AppSettings.defaultPauseBetweenPartsSeconds
     }
 
+    private var includeFatima: Bool {
+        (defaults.object(forKey: AppSettings.includeFatimaKey) as? Bool) ?? AppSettings.defaultIncludeFatima
+    }
+
+    private var includeStJoseph: Bool {
+        (defaults.object(forKey: AppSettings.includeStJosephKey) as? Bool) ?? AppSettings.defaultIncludeStJoseph
+    }
+
     var isRosaryActive: Bool {
         selectedMystery != nil && !steps.isEmpty
     }
@@ -132,7 +140,11 @@ final class RosarySessionController: ObservableObject {
     func start(_ mystery: RosaryMystery) {
         playbackGeneration &+= 1
         selectedMystery = mystery
-        steps = RosaryScripts.full(mystery: mystery)
+        steps = RosaryScripts.full(
+            mystery: mystery,
+            includeFatima: includeFatima,
+            includeStJoseph: includeStJoseph
+        )
         index = 0
     }
 

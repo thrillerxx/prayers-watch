@@ -113,7 +113,7 @@ ssh -o BatchMode=yes -o StrictHostKeyChecking=accept-new "$MAC_HOST" \
    fi; \
    echo '[remote] running xcodebuild build...'; \
    xcodebuild -project \"$PROJECT_FILE\" \
-     -target \"$BUILD_TARGET\" \
+     -scheme \"$APP_SCHEME\" \
      -sdk \"\$WATCH_SDK\" \
      -destination \"$DESTINATION\" \
      \$SIGN_FLAGS \

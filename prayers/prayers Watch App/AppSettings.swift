@@ -14,6 +14,8 @@ enum AppSettings {
     // Rosary
     static let autoAdvanceKey = "settings.rosary.autoAdvance"   // Bool
     static let hapticsKey = "settings.rosary.haptics"           // Bool
+    static let includeFatimaKey = "settings.rosary.includeFatima" // Bool
+    static let includeStJosephKey = "settings.rosary.includeStJoseph" // Bool
 
     // Appearance (named presets)
     static let colorThemeKey = "settings.appearance.colorTheme" // String rawValue AppColorTheme
@@ -24,6 +26,8 @@ enum AppSettings {
     static let defaultPauseBetweenPartsSeconds = 2
     static let defaultAutoAdvance = true
     static let defaultHaptics = true
+    static let defaultIncludeFatima = true
+    static let defaultIncludeStJoseph = false
 
     static let defaultColorTheme = AppColorTheme.marian.rawValue
 }

@@ -88,8 +88,8 @@ struct RosaryStep: Identifiable, Codable {
 enum RosaryScripts {
     static func full(
         mystery: RosaryMystery,
-        includeFatima: Bool,
-        includeStJoseph: Bool
+        includeFatima: Bool = true,
+        includeStJoseph: Bool = false
     ) -> [RosaryStep] {
         var steps: [RosaryStep] = []
 

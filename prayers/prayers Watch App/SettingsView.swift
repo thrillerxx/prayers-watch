@@ -9,6 +9,8 @@ struct SettingsView: View {
 
     @AppStorage(AppSettings.autoAdvanceKey) private var autoAdvance: Bool = AppSettings.defaultAutoAdvance
     @AppStorage(AppSettings.hapticsKey) private var haptics: Bool = AppSettings.defaultHaptics
+    @AppStorage(AppSettings.includeFatimaKey) private var includeFatima: Bool = AppSettings.defaultIncludeFatima
+    @AppStorage(AppSettings.includeStJosephKey) private var includeStJoseph: Bool = AppSettings.defaultIncludeStJoseph
 
     @AppStorage(AppSettings.colorThemeKey) private var colorThemeRaw: String = AppSettings.defaultColorTheme
 
@@ -34,6 +36,8 @@ struct SettingsView: View {
             Section("Rosary") {
                 Toggle("Auto-advance", isOn: $autoAdvance)
                 Toggle("Haptics", isOn: $haptics)
+                Toggle("Fatima after each decade", isOn: $includeFatima)
+                Toggle("St. Joseph after Rosary", isOn: $includeStJoseph)
                 Text("Long-press the title on the Rosary screen to choose another mystery.")
                     .font(DivinityFont.caption(11))
                     .foregroundStyle(.secondary)

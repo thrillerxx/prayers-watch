@@ -41,6 +41,11 @@ xcodebuild -project prayers.xcodeproj \
 ```
 Adjust simulator `name` and `OS` to match your installed runtimes.
 
+## Conventions
+
+- **Project docs:** Phases and runbooks live under **`llm/`** (see links at top).
+- **Agents:** [AGENTS.md](AGENTS.md) — AI-assistant rules and repo layout.
+
 ## Complications (Watch Face Widget)
 
 The `PrayersComplications` Widget Extension is wired into the project. After building, you can add the "Divinity" complication to any watch face for quick app access.
