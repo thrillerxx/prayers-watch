@@ -47,7 +47,7 @@ final class prayers_Watch_AppUITests: XCTestCase {
             return u
         }
         let dirFile = "/tmp/prayers_ui_capture_dir"
-        if let s = try? String(contentsOfFile: dirFile).trimmingCharacters(in: .whitespacesAndNewlines), !s.isEmpty {
+        if let s = try? String(contentsOfFile: dirFile, encoding: .utf8)?.trimmingCharacters(in: .whitespacesAndNewlines), !s.isEmpty {
             let u = URL(fileURLWithPath: s, isDirectory: true)
             try? FileManager.default.createDirectory(at: u, withIntermediateDirectories: true)
             return u
@@ -69,6 +69,17 @@ final class prayers_Watch_AppUITests: XCTestCase {
 
     private func snapshot(_ app: XCUIApplication, _ name: String) {
         writeScreenshot(XCUIScreen.main.screenshot(), name: name)
+    }
+
+    /// Home menu uses `NavigationLink` + `Label`; watchOS often exposes rows as cells/staticText, not `buttons["Title"]`.
+    private func tapHomeMenuItem(_ app: XCUIApplication, _ title: String, file: StaticString = #filePath, line: UInt = #line) {
+        if app.buttons[title].waitForExistence(timeout: 2) {
+            app.buttons[title].tap()
+            return
+        }
+        let text = app.staticTexts[title].firstMatch
+        XCTAssertTrue(text.waitForExistence(timeout: 10), "Home menu item not found: \(title)", file: file, line: line)
+        text.tap()
     }
 
     /// Opens the first prayer row in Prayer Library (detail view autoplays).
@@ -158,38 +169,6 @@ final class prayers_Watch_AppUITests: XCTestCase {
     @MainActor
     func testLibraryInterruptSwitchesActivePrayer() throws {
         throw XCTSkip("Flaky under global transport toolbar; covered by other tests")
-        let app = XCUIApplication()
-        app.launch()
-
-        app.buttons["Prayer Library"].tap()
-
-        let firstCell = app.cells.element(boundBy: 0)
-        let secondCell = app.cells.element(boundBy: 1)
-
-        XCTAssertTrue(firstCell.waitForExistence(timeout: 5))
-        XCTAssertTrue(secondCell.waitForExistence(timeout: 5))
-
-        let prayer1Title = firstCell.label
-        let prayer2Title = secondCell.label
-        XCTAssertNotEqual(prayer1Title, "")
-        XCTAssertNotEqual(prayer2Title, "")
-
-        firstCell.tap()
-
-        // Pause if needed (autoplay) before navigating back to list.
-        let maybePause = app.buttons["Pause"].firstMatch
-        if maybePause.waitForExistence(timeout: 5) { maybePause.tap() }
-
-        tapBackButton(app)
-        let secondCellAfterBack = app.cells.element(boundBy: 1)
-        XCTAssertTrue(secondCellAfterBack.waitForExistence(timeout: 10))
-        secondCellAfterBack.tap()
-
-        XCTAssertTrue(app.staticTexts[prayer2Title].waitForExistence(timeout: 5))
-        XCTAssertFalse(app.staticTexts[prayer1Title].exists)
-
-        assertAnyButtonExists(app, names: ["TransportPlayPause", "TransportStop"])
-        XCTAssertTrue(app.exists)
     }
 
     /// Whether the capture script is driving this test (`scripts/capture_watch_ui_flow.sh`).
@@ -230,19 +209,19 @@ final class prayers_Watch_AppUITests: XCTestCase {
         tapBackButton(app)
         snapshot(app, "06_home_after_library")
 
-        app.buttons["Mass Responses & Prayers"].tap()
+        tapHomeMenuItem(app, "Mass Responses & Prayers")
         XCTAssertTrue(app.navigationBars.firstMatch.waitForExistence(timeout: 10))
         snapshot(app, "07_mass_responses")
 
         tapBackButton(app)
 
-        app.buttons["Settings"].tap()
+        tapHomeMenuItem(app, "Settings")
         XCTAssertTrue(app.navigationBars.firstMatch.waitForExistence(timeout: 10))
         snapshot(app, "08_settings")
 
         tapBackButton(app)
 
-        app.buttons["Rosary"].tap()
+        tapHomeMenuItem(app, "Rosary")
         XCTAssertTrue(app.buttons["Joyful"].waitForExistence(timeout: 10))
         snapshot(app, "09_rosary_pick_mystery")
 
