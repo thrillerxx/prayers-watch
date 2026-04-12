@@ -28,6 +28,20 @@
             buildForAnalyzing = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
+               BlueprintIdentifier = "167C33392F34767200DD1377"
+               BuildableName = "prayers Watch AppTests.xctest"
+               BlueprintName = "prayers Watch AppTests"
+               ReferencedContainer = "container:prayers.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "NO"
+            buildForProfiling = "NO"
+            buildForArchiving = "NO"
+            buildForAnalyzing = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
                BlueprintIdentifier = "167C33432F34767200DD1377"
                BuildableName = "prayers Watch AppUITests.xctest"
                BlueprintName = "prayers Watch AppUITests"
@@ -42,6 +56,16 @@
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "167C33392F34767200DD1377"
+               BuildableName = "prayers Watch AppTests.xctest"
+               BlueprintName = "prayers Watch AppTests"
+               ReferencedContainer = "container:prayers.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
          <TestableReference
             skipped = "NO">
             <BuildableReference
