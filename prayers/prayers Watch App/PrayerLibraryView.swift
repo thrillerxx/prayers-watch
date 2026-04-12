@@ -1,29 +1,38 @@
 import SwiftUI
-import AVFoundation
 
 struct PrayerLibraryView: View {
+
     @State private var prayers: [Prayer] = []
     @State private var errorText: String?
+
     private let lang: String = "en"
 
-    @StateObject private var speech = SpeechManager.shared
+    @ObservedObject private var speech = SpeechManager.shared
+
+    @Environment(\.appColorTheme) private var theme
+    @Environment(\.accessibilityReduceTransparency) private var reduceTransparency
+    @Environment(\.accessibilityDifferentiateWithoutColor) private var differentiateWithoutColor
+
+    private var accent: Color {
+        theme.accentColor(reduceTransparency: reduceTransparency, increaseContrast: differentiateWithoutColor)
+    }
 
     var body: some View {
         VStack(spacing: 0) {
             if speech.isSpeaking || speech.isPaused {
-                TransportRow(speech: speech)
+                TransportRow(speech: speech, accent: accent)
                     .padding(.horizontal, 8)
                     .padding(.bottom, 6)
             }
             if let errorText {
                 Text(errorText)
-                    .font(.footnote)
+                    .font(DivinityFont.caption(11))
                     .foregroundStyle(.red)
                     .padding(.horizontal, 10)
                     .padding(.bottom, 6)
             } else if prayers.isEmpty {
                 Text("No prayers found")
-                    .font(.footnote)
+                    .font(DivinityFont.caption(12))
                     .foregroundStyle(.secondary)
                     .padding(.horizontal, 10)
                     .padding(.vertical, 8)
@@ -33,21 +42,20 @@ struct PrayerLibraryView: View {
                         PrayerDetailView(prayer: prayer)
                     } label: {
                         Text(prayer.title)
+                            .font(DivinityFont.title(14))
                     }
                 }
             }
         }
         .navigationTitle("Prayers")
+        .tint(accent)
         .onAppear {
             do {
                 prayers = try PrayerStore.load().filter { prayer in
                     let id = prayer.id
-                    // Keep only prayable text entries.
-                    // Hide any metadata/title helper rows.
                     if id.hasPrefix("mysteryset_") { return false }
                     if id.hasSuffix("_title") { return false }
                     if id.hasSuffix("_alt_title") { return false }
-                    // keep everything else (including *_meditation + core prayers)
                     return true
                 }
             } catch {
@@ -59,6 +67,7 @@ struct PrayerLibraryView: View {
 
 private struct TransportRow: View {
     @ObservedObject var speech: SpeechManager
+    var accent: Color
 
     var body: some View {
         HStack(spacing: 10) {
@@ -70,9 +79,11 @@ private struct TransportRow: View {
                 }
             } label: {
                 Label(speech.isSpeaking ? "Pause" : "Play", systemImage: speech.isSpeaking ? "pause.fill" : "play.fill")
+                    .font(DivinityFont.caption(13))
                     .frame(maxWidth: .infinity)
             }
             .buttonStyle(.borderedProminent)
+            .tint(accent)
             .accessibilityIdentifier("TransportPlayPause")
 
             Button {
@@ -81,6 +92,7 @@ private struct TransportRow: View {
                 Image(systemName: "stop.fill")
             }
             .buttonStyle(.bordered)
+            .tint(accent)
             .accessibilityIdentifier("TransportStop")
         }
     }
@@ -90,7 +102,15 @@ struct PrayerDetailView: View {
     let prayer: Prayer
     private let lang: String = "en"
 
-    @StateObject private var speech = SpeechManager.shared
+    @ObservedObject private var speech = SpeechManager.shared
+
+    @Environment(\.appColorTheme) private var theme
+    @Environment(\.accessibilityReduceTransparency) private var reduceTransparency
+    @Environment(\.accessibilityDifferentiateWithoutColor) private var differentiateWithoutColor
+
+    private var accent: Color {
+        theme.accentColor(reduceTransparency: reduceTransparency, increaseContrast: differentiateWithoutColor)
+    }
 
     @State private var didAutoplay = false
 
@@ -102,22 +122,23 @@ struct PrayerDetailView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 10) {
                 Text(prayer.title)
-                    .font(.headline)
+                    .font(DivinityFont.title(16))
                     .multilineTextAlignment(.center)
                     .lineLimit(2)
                     .frame(maxWidth: .infinity, alignment: .center)
 
                 if speech.isSpeaking || speech.isPaused {
-                    TransportRow(speech: speech)
+                    TransportRow(speech: speech, accent: accent)
                 }
 
                 if text.isEmpty {
                     Text("No text for this prayer in the selected language.")
-                        .font(.footnote)
+                        .font(DivinityFont.caption(11))
                         .foregroundStyle(.secondary)
                 } else {
                     Text(text)
-                        .font(.body)
+                        .font(DivinityFont.prayer(14))
+                        .foregroundStyle(.primary)
                         .fixedSize(horizontal: false, vertical: true)
                 }
             }
@@ -125,8 +146,8 @@ struct PrayerDetailView: View {
             .padding(.vertical, 6)
         }
         .navigationTitle("Prayer")
+        .tint(accent)
         .onAppear {
-            // Always interrupt any current playback and start this prayer immediately.
             if !didAutoplay {
                 didAutoplay = true
                 speech.stop()

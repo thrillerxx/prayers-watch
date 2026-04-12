@@ -65,10 +65,6 @@ final class prayers_Watch_AppUITests: XCTestCase {
         app.buttons["Joyful"].tap()
         writeScreenshot(XCUIScreen.main.screenshot(), name: "rosary")
 
-        let longTitle = app.staticTexts["The Presentation of the Child Jesus in the Temple"]
-        _ = longTitle.waitForExistence(timeout: 30)
-        writeScreenshot(XCUIScreen.main.screenshot(), name: "rosary_long")
-
         let playButton = app.buttons["TransportPlayPause"].firstMatch
         XCTAssertTrue(playButton.waitForExistence(timeout: 5))
         playButton.tap()

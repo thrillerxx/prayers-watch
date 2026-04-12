@@ -13,6 +13,10 @@ PROJECT_FILE="${PROJECT_FILE:-prayers.xcodeproj}"
 BUILD_TARGET="${BUILD_TARGET:-prayers Watch App}"
 TEST_SCHEME="${TEST_SCHEME:-prayers-watch-uitests}"
 DESTINATION="${DESTINATION:-platform=watchOS Simulator,name=Apple Watch Series 11 (42mm)}"
+# Required for Simulator: without -sdk watchsimulator, xcodebuild may emit Debug-watchos
+# (device) into the local build/ tree while -destination points at the Simulator — installs
+# then pick up the wrong .app or an older DerivedData binary.
+WATCH_SDK="${WATCH_SDK:-watchsimulator}"
 
 RUN_TESTS="${RUN_TESTS:-1}"
 PUSH_FIRST="${PUSH_FIRST:-1}"
@@ -67,6 +71,7 @@ ssh -o BatchMode=yes -o StrictHostKeyChecking=accept-new "$MAC_HOST" \
    BUILD_TARGET='$BUILD_TARGET'; \
    TEST_SCHEME='$TEST_SCHEME'; \
    DESTINATION='$DESTINATION'; \
+   WATCH_SDK='$WATCH_SDK'; \
    BRANCH='$BRANCH'; \
    RUN_TESTS='$RUN_TESTS'; \
    mkdir -p \"\$(dirname \"$MAC_REPO_DIR\")\"; \
@@ -109,6 +114,7 @@ ssh -o BatchMode=yes -o StrictHostKeyChecking=accept-new "$MAC_HOST" \
    echo '[remote] running xcodebuild build...'; \
    xcodebuild -project \"$PROJECT_FILE\" \
      -target \"$BUILD_TARGET\" \
+     -sdk \"\$WATCH_SDK\" \
      -destination \"$DESTINATION\" \
      \$SIGN_FLAGS \
      -configuration Debug \
@@ -117,6 +123,7 @@ ssh -o BatchMode=yes -o StrictHostKeyChecking=accept-new "$MAC_HOST" \
      echo '[remote] running xcodebuild test...'; \
      xcodebuild test -project \"$PROJECT_FILE\" \
        -scheme \"$TEST_SCHEME\" \
+       -sdk \"\$WATCH_SDK\" \
        -destination \"$DESTINATION\" \
        \$SIGN_FLAGS; \
    fi"

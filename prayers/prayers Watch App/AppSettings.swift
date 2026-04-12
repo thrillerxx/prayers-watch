@@ -15,10 +15,15 @@ enum AppSettings {
     static let autoAdvanceKey = "settings.rosary.autoAdvance"   // Bool
     static let hapticsKey = "settings.rosary.haptics"           // Bool
 
+    // Appearance (named presets)
+    static let colorThemeKey = "settings.appearance.colorTheme" // String rawValue AppColorTheme
+
     // Defaults
     static let defaultVoiceLanguage = "en-US"
     static let defaultSpeechSpeed = "slow" // veryslow|slow|normal
     static let defaultPauseBetweenPartsSeconds = 2
     static let defaultAutoAdvance = true
     static let defaultHaptics = true
+
+    static let defaultColorTheme = AppColorTheme.marian.rawValue
 }

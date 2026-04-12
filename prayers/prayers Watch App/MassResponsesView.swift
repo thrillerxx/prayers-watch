@@ -1,17 +1,40 @@
 import SwiftUI
 
 struct MassResponsesView: View {
+
     @State private var text: String = ""
 
+    @Environment(\.appColorTheme) private var theme
+    @Environment(\.accessibilityReduceTransparency) private var reduceTransparency
+    @Environment(\.accessibilityDifferentiateWithoutColor) private var differentiateWithoutColor
+
+    private var accent: Color {
+        theme.accentColor(reduceTransparency: reduceTransparency, increaseContrast: differentiateWithoutColor)
+    }
+
     var body: some View {
-        ScrollView {
-            Text(text.isEmpty ? "Loading…" : text)
-                .font(.system(.body, design: .serif))
-                .multilineTextAlignment(.leading)
-                .lineSpacing(3)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.horizontal, 10)
-                .padding(.vertical, 6)
+        ZStack {
+            LinearGradient(
+                colors: [
+                    Color.black.opacity(0.95),
+                    Color.black.opacity(0.88),
+                    accent.opacity(0.12)
+                ],
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )
+            .ignoresSafeArea()
+
+            ScrollView {
+                Text(text.isEmpty ? "Loading…" : text)
+                    .font(DivinityFont.prayer(13))
+                    .foregroundStyle(.primary)
+                    .multilineTextAlignment(.leading)
+                    .lineSpacing(4)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.horizontal, 10)
+                    .padding(.vertical, 8)
+            }
         }
         .navigationTitle("Mass Responses")
         .task {

@@ -702,6 +702,11 @@
 				INFOPLIST_KEY_CFBundleDisplayName = prayers;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.divinityapp.prayers;
+				INFOPLIST_KEY_UIAppFonts = (
+					Fonts/Cormorant-Regular.ttf,
+					Fonts/Cormorant-Medium.ttf,
+					Fonts/Cinzel-SemiBold.ttf,
+				);
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -731,6 +736,11 @@
 				INFOPLIST_KEY_CFBundleDisplayName = prayers;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.divinityapp.prayers;
+				INFOPLIST_KEY_UIAppFonts = (
+					Fonts/Cormorant-Regular.ttf,
+					Fonts/Cormorant-Medium.ttf,
+					Fonts/Cinzel-SemiBold.ttf,
+				);
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
