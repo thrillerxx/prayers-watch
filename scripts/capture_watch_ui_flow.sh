@@ -57,6 +57,9 @@ fi
 
 cd "$ROOT/prayers"
 
+# Test target name in Xcode is "prayers Watch AppUITests" (spaces); class is prayers_Watch_AppUITests.
+ONLY_TEST='-only-testing:prayers Watch AppUITests/prayers_Watch_AppUITests/testUIReferenceFlowCapture'
+
 set +e
 if command -v xcbeautify >/dev/null 2>&1; then
   xcodebuild test \
@@ -64,7 +67,7 @@ if command -v xcbeautify >/dev/null 2>&1; then
     -scheme prayers-watch-uitests \
     -sdk watchsimulator \
     -destination "$DESTINATION" \
-    -only-testing:prayers_Watch_AppUITests/prayers_Watch_AppUITests/testUIReferenceFlowCapture \
+    "$ONLY_TEST" \
     CODE_SIGNING_ALLOWED=NO \
     -resultBundlePath "$OUT/ui-capture.xcresult" \
     2>&1 | tee "$OUT/xcodebuild.log" | xcbeautify
@@ -74,7 +77,7 @@ else
     -scheme prayers-watch-uitests \
     -sdk watchsimulator \
     -destination "$DESTINATION" \
-    -only-testing:prayers_Watch_AppUITests/prayers_Watch_AppUITests/testUIReferenceFlowCapture \
+    "$ONLY_TEST" \
     CODE_SIGNING_ALLOWED=NO \
     -resultBundlePath "$OUT/ui-capture.xcresult" \
     2>&1 | tee "$OUT/xcodebuild.log"
