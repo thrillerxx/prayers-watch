@@ -14,6 +14,7 @@ This document captures **agreed product decisions** for Spotify-inspired polish,
 | Theme settings | **5–8 named presets** (no free RGB sliders). |
 | Mini-player | **Yes**: when browsing **Library** or **Mass**, show a **bottom bar** for the active session; **tap → return** to now playing. |
 | Mystery art | **20 PNGs generated** and added to **Asset Catalog** (`joyful_1` … `luminous_5`); prompts below remain for **regeneration** or style tweaks. |
+| Prayer body | **Current step only** in a **rounded legibility card** (material + shadow on art); **not** the full rosary list at once (that read as broken “sections” on watch). |
 | Accessibility | **Polished**: prefer **readable contrast** and **materials** when allowed; when **Reduce Transparency** / **Increase Contrast** are on, swap to **solid scrims**, **stronger dividers**, and **higher-contrast text** (Spotify-like clarity, not washed-out). |
 | Minimum watch | **Series 6+** (performance assumptions for full-bleed images). |
 

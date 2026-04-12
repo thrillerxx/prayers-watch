@@ -19,6 +19,15 @@ struct RosaryView: View {
         differentiateWithoutColor
     }
 
+    /// Readable on full-bleed art: light text + shadow; falls back to solid card when a11y needs it.
+    private var heroPrimaryText: Color {
+        solidChrome ? Color.primary : Color.white
+    }
+
+    private var heroSecondaryText: Color {
+        solidChrome ? Color.secondary : Color.white.opacity(0.78)
+    }
+
     var body: some View {
         Group {
             if let errorText = rosary.errorText {
@@ -61,17 +70,20 @@ struct RosaryView: View {
 
     private var nowPlayingSession: some View {
         ZStack {
-            if let mystery = rosary.selectedMystery {
-                mysteryHeroBackground(mystery: mystery)
+            if rosary.selectedMystery != nil {
+                mysteryHeroBackground
             }
 
             VStack(spacing: 0) {
                 sessionHeader
                     .padding(.horizontal, 10)
-                    .padding(.top, 4)
-                    .padding(.bottom, 4)
+                    .padding(.top, 6)
+                    .padding(.bottom, 6)
 
-                lyricsScroll
+                currentPrayerPanel
+                    .padding(.horizontal, 8)
+
+                Spacer(minLength: 0)
             }
             .safeAreaInset(edge: .bottom, spacing: 0) {
                 playerChrome
@@ -80,25 +92,29 @@ struct RosaryView: View {
         .ignoresSafeArea(edges: .bottom)
     }
 
-    private func mysteryHeroBackground(mystery: RosaryMystery) -> some View {
-        let name = MysteryArt.assetName(mystery: mystery, stepIndex: rosary.index, steps: rosary.steps)
-        let colors = theme.heroGradientColors(reduceTransparency: reduceTransparency, increaseContrast: increaseContrast)
+    private var mysteryHeroBackground: some View {
+        Group {
+            if let mystery = rosary.selectedMystery {
+                let name = MysteryArt.assetName(mystery: mystery, stepIndex: rosary.index, steps: rosary.steps)
+                let colors = theme.heroGradientColors(reduceTransparency: reduceTransparency, increaseContrast: increaseContrast)
 
-        return ZStack {
-            Image(name)
-                .resizable()
-                .aspectRatio(contentMode: .fill)
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .clipped()
+                ZStack {
+                    Image(name)
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        .clipped()
 
-            LinearGradient(
-                colors: colors,
-                startPoint: .top,
-                endPoint: .bottom
-            )
-            .allowsHitTesting(false)
+                    LinearGradient(
+                        colors: colors,
+                        startPoint: .top,
+                        endPoint: .bottom
+                    )
+                    .allowsHitTesting(false)
+                }
+                .ignoresSafeArea()
+            }
         }
-        .ignoresSafeArea()
     }
 
     private var sessionHeader: some View {
@@ -106,28 +122,31 @@ struct RosaryView: View {
             if let mystery = rosary.selectedMystery {
                 Text(mystery.title)
                     .font(DivinityFont.caption(10))
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(heroSecondaryText)
                     .textCase(.uppercase)
                     .tracking(0.4)
+                    .shadow(color: textShadowColor, radius: solidChrome ? 0 : 2, x: 0, y: 1)
             }
 
             Text(rosary.displayTitle)
                 .font(DivinityFont.title(14))
-                .foregroundStyle(.primary)
+                .foregroundStyle(heroPrimaryText)
                 .multilineTextAlignment(.center)
-                .lineLimit(2)
+                .lineLimit(3)
                 .lineSpacing(2)
-                .minimumScaleFactor(0.85)
+                .minimumScaleFactor(0.82)
                 .truncationMode(.tail)
                 .frame(maxWidth: .infinity, alignment: .center)
+                .shadow(color: textShadowColor, radius: solidChrome ? 0 : 3, x: 0, y: 1)
 
             if let label = rosary.hailMaryCounterLabel {
                 Text(label)
                     .font(DivinityFont.caption(11))
                     .fontWeight(.semibold)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(heroSecondaryText)
                     .minimumScaleFactor(0.7)
                     .lineLimit(1)
+                    .shadow(color: textShadowColor, radius: solidChrome ? 0 : 2, x: 0, y: 1)
             }
         }
         .onLongPressGesture(minimumDuration: 0.55) {
@@ -137,45 +156,43 @@ struct RosaryView: View {
         }
     }
 
-    private var lyricsScroll: some View {
-        ScrollViewReader { proxy in
-            ScrollView {
-                LazyVStack(alignment: .center, spacing: 10) {
-                    ForEach(Array(rosary.steps.enumerated()), id: \.element.id) { i, step in
-                        stepTextBlock(stepIndex: i, step: step)
-                            .id(step.id)
-                    }
-                }
-                .padding(.horizontal, 8)
-                .padding(.vertical, 8)
-            }
-            .onAppear {
-                guard rosary.steps.indices.contains(rosary.index) else { return }
-                let id = rosary.steps[rosary.index].id
-                proxy.scrollTo(id, anchor: .center)
-            }
-            .onChange(of: rosary.index) { _, newIdx in
-                guard rosary.steps.indices.contains(newIdx) else { return }
-                let id = rosary.steps[newIdx].id
-                withAnimation(.easeInOut(duration: 0.25)) {
-                    proxy.scrollTo(id, anchor: .center)
-                }
-            }
-        }
+    private var textShadowColor: Color {
+        solidChrome ? .clear : Color.black.opacity(0.45)
     }
 
-    private func stepTextBlock(stepIndex i: Int, step: RosaryStep) -> some View {
-        let isActive = i == rosary.index
-        let bodyText = rosary.textForStep(at: i) ?? ""
-        let dim = theme.dimmedTextOpacity(reduceTransparency: reduceTransparency, increaseContrast: increaseContrast)
+    /// Single “now playing” prayer — avoids a long wall of dimmed sections (unreadable on watch).
+    private var currentPrayerPanel: some View {
+        let bodyText = rosary.textForStep(at: rosary.index) ?? ""
 
-        return Text(bodyText)
-            .font(isActive ? DivinityFont.prayerEmphasis(14) : DivinityFont.prayer(13))
-            .foregroundStyle(isActive ? Color.primary : Color.primary.opacity(dim))
-            .multilineTextAlignment(.center)
-            .lineSpacing(4)
-            .minimumScaleFactor(0.8)
-            .frame(maxWidth: .infinity, alignment: .center)
+        return ScrollView {
+            Text(bodyText)
+                .font(DivinityFont.prayerEmphasis(15))
+                .foregroundStyle(heroPrimaryText)
+                .multilineTextAlignment(.center)
+                .lineSpacing(5)
+                .minimumScaleFactor(0.78)
+                .frame(maxWidth: .infinity, alignment: .center)
+                .padding(.horizontal, 12)
+                .padding(.vertical, 12)
+                .background(prayerCardBackground)
+                .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+                .shadow(color: Color.black.opacity(solidChrome ? 0 : 0.35), radius: 8, x: 0, y: 3)
+        }
+        .frame(maxHeight: .infinity)
+    }
+
+    @ViewBuilder
+    private var prayerCardBackground: some View {
+        if solidChrome {
+            RoundedRectangle(cornerRadius: 14, style: .continuous)
+                .fill(.regularMaterial)
+        } else {
+            ZStack {
+                Color.black.opacity(0.38)
+                RoundedRectangle(cornerRadius: 14, style: .continuous)
+                    .fill(.ultraThinMaterial)
+            }
+        }
     }
 
     private var playerChrome: some View {
