@@ -51,6 +51,13 @@ final class prayers_Watch_AppUITests: XCTestCase {
         try? screenshot.pngRepresentation.write(to: url)
     }
 
+    /// Opens the first prayer row in Prayer Library (detail view autoplays).
+    private func openFirstPrayerDetail(_ app: XCUIApplication) {
+        let firstCell = app.cells.element(boundBy: 0)
+        XCTAssertTrue(firstCell.waitForExistence(timeout: 15))
+        firstCell.tap()
+    }
+
     /// Rosary now-playing player: prev / play / next / stop (auto-advance lives in Settings only).
     @MainActor
     func testRosaryPlayerTransport() throws {
@@ -96,7 +103,7 @@ final class prayers_Watch_AppUITests: XCTestCase {
         app.launch()
 
         app.buttons["Prayer Library"].tap()
-        openMassPrayerDetail(app)
+        openFirstPrayerDetail(app)
 
         // Prayer Detail screenshot
         writeScreenshot(XCUIScreen.main.screenshot(), name: "prayer_detail")
