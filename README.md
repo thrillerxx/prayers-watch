@@ -2,6 +2,8 @@
 
 A simple watchOS prayer + rosary app (SwiftUI).
 
+**Agents / automation:** read **`docs/agent-environment.md`** (SSH to Mac, Xcode Simulator, Homebrew PATH, BlackHole, canonical paths). The full tailnet reference on omarchy is **`/home/car/.openclaw/workspace/OPENCLAW_ENVIRONMENT.md`** (§5 prayers-watch).
+
 ## Open in Xcode
 
 - Project: `prayers/prayers.xcodeproj`
@@ -16,11 +18,17 @@ A simple watchOS prayer + rosary app (SwiftUI).
 
 ### CLI build
 
+Use **`-sdk watchsimulator`** so the product is a Simulator build (see `docs/agent-environment.md`).
+
 ```bash
-cd /home/car/dev/prayers-watch/prayers
-xcodebuild -project prayers.xcodeproj -scheme "prayers Watch App" \
+cd prayers
+xcodebuild -project prayers.xcodeproj \
+  -target "prayers Watch App" \
+  -sdk watchsimulator \
   -destination 'platform=watchOS Simulator,name=Apple Watch Series 11 (46mm),OS=26.2' \
-  -configuration Debug build
+  -configuration Debug \
+  CODE_SIGNING_ALLOWED=NO \
+  build
 ```
 
 ## Complications (Watch Face Widget)
