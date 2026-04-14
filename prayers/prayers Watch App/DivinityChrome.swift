@@ -108,5 +108,7 @@ struct HomeNavigationTile: View {
             }
         }
         .buttonStyle(.plain)
+        .accessibilityLabel(title)
+        .accessibilityHint(subtitle)
     }
 }

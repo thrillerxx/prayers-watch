@@ -77,13 +77,25 @@ final class prayers_Watch_AppUITests: XCTestCase {
     /// Home menu uses `NavigationLink` + `Label`; watchOS often exposes rows as cells/staticText, not `buttons["Title"]`.
     /// Scrolls the main list a few times — Settings can sit below the fold on smaller watch faces.
     private func tapHomeMenuItem(_ app: XCUIApplication, _ title: String, file: StaticString = #filePath, line: UInt = #line) {
+        // List may be scrolled from a prior screen; move toward the top, then hunt.
+        for _ in 0..<5 {
+            app.swipeDown()
+        }
+
         if app.buttons[title].waitForExistence(timeout: 2) {
             app.buttons[title].tap()
             return
         }
-        for _ in 0..<8 {
+
+        let begins = NSPredicate(format: "label BEGINSWITH %@", title)
+        for _ in 0..<12 {
+            let cell = app.cells.containing(begins).firstMatch
+            if cell.waitForExistence(timeout: 1), cell.isHittable {
+                cell.tap()
+                return
+            }
             let text = app.staticTexts[title].firstMatch
-            if text.waitForExistence(timeout: 1) {
+            if text.waitForExistence(timeout: 1), text.isHittable {
                 text.tap()
                 return
             }
