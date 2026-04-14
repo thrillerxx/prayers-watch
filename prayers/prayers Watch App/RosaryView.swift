@@ -208,13 +208,17 @@ struct RosaryView: View {
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
             .safeAreaInset(edge: .bottom, spacing: 0) {
-                HStack(spacing: 0) {
-                    Color.clear.frame(width: 14)
-                    playerChrome
-                        .frame(maxWidth: .infinity)
-                    Color.clear.frame(width: 14)
-                }
-                .clipped()
+                playerChrome
+                    .padding(.horizontal, 12)
+                    .frame(maxWidth: .infinity)
+                    .background {
+                        DivinityChrome.elevatedSurface(
+                            theme: theme,
+                            reduceTransparency: reduceTransparency,
+                            increaseContrast: increaseContrast
+                        )
+                    }
+                    .ignoresSafeArea(edges: .bottom)
             }
         }
     }
