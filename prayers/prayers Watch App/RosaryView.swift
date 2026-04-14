@@ -209,7 +209,7 @@ struct RosaryView: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
             .safeAreaInset(edge: .bottom, spacing: 0) {
                 playerChrome
-                    .padding(.horizontal, 12)
+                    .padding(.horizontal, 16)
                     .frame(maxWidth: .infinity)
                     .background {
                         DivinityChrome.elevatedSurface(
@@ -354,7 +354,7 @@ struct RosaryView: View {
         return VStack(alignment: .leading, spacing: 7) {
             progressSection(accent: accent)
 
-            HStack(spacing: 3) {
+            HStack(spacing: 4) {
                 compactTransportChip(
                     icon: "backward.fill",
                     accent: accent,
@@ -365,6 +365,7 @@ struct RosaryView: View {
                 )
                 .accessibilityLabel("Previous")
                 .accessibilityIdentifier("TransportPrevious")
+                .frame(width: 38)
 
                 compactTransportChip(
                     icon: speech.isSpeaking ? "pause.fill" : "play.fill",
@@ -375,6 +376,7 @@ struct RosaryView: View {
                     action: { rosary.playPauseTapped() }
                 )
                 .accessibilityIdentifier("TransportPlayPause")
+                .frame(maxWidth: .infinity)
 
                 compactTransportChip(
                     icon: "forward.fill",
@@ -386,6 +388,7 @@ struct RosaryView: View {
                 )
                 .accessibilityLabel("Next")
                 .accessibilityIdentifier("TransportNext")
+                .frame(width: 38)
             }
             .frame(height: 28)
 
@@ -416,7 +419,7 @@ struct RosaryView: View {
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(.horizontal, 4)
+        .padding(.horizontal, 6)
         .padding(.top, 6)
         .padding(.bottom, 8)
         .background {
@@ -452,8 +455,7 @@ struct RosaryView: View {
         .buttonStyle(.plain)
         .disabled(disabled)
         .opacity(disabled ? 0.5 : 1)
-        .frame(maxWidth: .infinity)
-        .frame(height: 28)
+        .frame(maxWidth: .infinity, minHeight: 28, maxHeight: 28)
         .background {
             RoundedRectangle(cornerRadius: 7, style: .continuous)
                 .fill(prominent ? accent : secondaryFill)
@@ -513,6 +515,7 @@ struct RosaryView: View {
             ThinProgressBar(value: rosary.overallProgressFraction, accent: accent, dimmed: !solidChrome)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.horizontal, 1)
     }
 
     private struct ThinProgressBar: View {
