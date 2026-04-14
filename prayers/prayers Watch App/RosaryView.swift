@@ -245,9 +245,9 @@ struct RosaryView: View {
     private func rosaryMusicTopChrome(watchWidth: CGFloat) -> some View {
         let isLargeWatch = watchWidth >= 200
         /// Strong negative top pulls the clock toward the physical top; a bit more on 46mm.
-        let topPad: CGFloat = isLargeWatch ? -22 : -18
-        /// Keep glass controls inside the round display so Simulator/device doesn’t clip them.
-        let edgeInset: CGFloat = isLargeWatch ? 10 : 8
+        let topPad: CGFloat = isLargeWatch ? -28 : -22
+        /// Inset from the round bezel so Back/Stop aren’t clipped in Simulator or on hardware.
+        let edgeInset: CGFloat = isLargeWatch ? 14 : 11
 
         return VStack(alignment: .center, spacing: 1) {
             TimelineView(.periodic(from: .now, by: 60.0)) { context in
@@ -285,7 +285,7 @@ struct RosaryView: View {
                         .foregroundStyle(heroPrimaryText)
                         .lineLimit(1)
                         .minimumScaleFactor(0.75)
-                        .padding(.horizontal, 10)
+                        .padding(.horizontal, 8)
                         .frame(height: 34)
                 }
                 .buttonStyle(.plain)
