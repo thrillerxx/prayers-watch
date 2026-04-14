@@ -241,12 +241,15 @@ struct RosaryView: View {
         #endif
     }
 
-    /// Top bar: time on the first row (hugs the top); back and Stop on the second row at left and right corners.
+    /// Top bar: time on the first row; back and Stop on the second row at left/right, inset from the curved bezel.
     private func rosaryMusicTopChrome(watchWidth: CGFloat) -> some View {
         let isLargeWatch = watchWidth >= 200
-        let topPad: CGFloat = isLargeWatch ? -16 : -12
+        /// Strong negative top pulls the clock toward the physical top; a bit more on 46mm.
+        let topPad: CGFloat = isLargeWatch ? -22 : -18
+        /// Keep glass controls inside the round display so Simulator/device doesn’t clip them.
+        let edgeInset: CGFloat = isLargeWatch ? 10 : 8
 
-        return VStack(alignment: .center, spacing: 3) {
+        return VStack(alignment: .center, spacing: 1) {
             TimelineView(.periodic(from: .now, by: 60.0)) { context in
                 Text(context.date, format: .dateTime.hour().minute())
                     .font(.system(size: 14, weight: .semibold, design: .default))
@@ -298,9 +301,8 @@ struct RosaryView: View {
                 .accessibilityLabel("Stop")
                 .accessibilityIdentifier("TransportStop")
             }
-            .padding(.horizontal, 2)
         }
-        .padding(.horizontal, 4)
+        .padding(.horizontal, edgeInset)
         .padding(.top, topPad)
         .padding(.bottom, 2)
     }
