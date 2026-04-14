@@ -219,8 +219,8 @@ struct RosaryView: View {
 
                 rosaryPlayerDock
                     .padding(.horizontal, 12)
-                    .padding(.top, 6)
-                    .padding(.bottom, 6)
+                    .padding(.top, 4)
+                    .padding(.bottom, 3)
             }
         }
     }
@@ -367,27 +367,22 @@ struct RosaryView: View {
 
     private var rosaryPlayerDock: some View {
         let accent = theme.accentColor(reduceTransparency: reduceTransparency, increaseContrast: increaseContrast)
-        return VStack(spacing: 6) {
-            ThinProgressBar(value: rosary.overallProgressFraction, accent: accent, dimmed: !solidChrome)
+        return VStack(spacing: 4) {
+            ThinProgressBar(value: rosary.overallProgressFraction, accent: accent, dimmed: !solidChrome, lineHeight: 3)
                 .padding(.horizontal, 2)
             rosaryTransportRow
-            HStack {
-                Spacer(minLength: 0)
-                rosaryStopButton
-                Spacer(minLength: 0)
-            }
         }
     }
 
-    /// Compact transport (42mm + 46mm): sized like the library docked mini-player, centered so it does not span edge-to-edge.
+    /// Minimal transport row (42mm + 46mm): one tight line — prev / play / next / stop — with library mini-player–scale glyphs.
     private enum RosaryTransportMetrics {
-        static let sideIcon: CGFloat = 14
-        static let sideFrame: CGFloat = 30
-        static let playIcon: CGFloat = 18
-        static let playFrame: CGFloat = 34
-        static let stopIcon: CGFloat = 13
-        static let stopFrame: CGFloat = 28
-        static let clusterSpacing: CGFloat = 10
+        static let sideIcon: CGFloat = 11
+        static let sideFrame: CGFloat = 24
+        static let playIcon: CGFloat = 13
+        static let playFrame: CGFloat = 28
+        static let stopIcon: CGFloat = 10
+        static let stopFrame: CGFloat = 24
+        static let clusterSpacing: CGFloat = 4
     }
 
     private var rosaryTransportRow: some View {
@@ -399,6 +394,7 @@ struct RosaryView: View {
             } label: {
                 Image(systemName: rosary.index == 0 ? "arrow.counterclockwise" : "backward.fill")
                     .font(.system(size: m.sideIcon, weight: .medium))
+                    .imageScale(.small)
                     .foregroundStyle(heroPrimaryText.opacity(0.95))
                     .symbolRenderingMode(.monochrome)
                     .frame(width: m.sideFrame, height: m.sideFrame)
@@ -413,6 +409,7 @@ struct RosaryView: View {
             } label: {
                 Image(systemName: speech.isSpeaking ? "pause.fill" : "play.fill")
                     .font(.system(size: m.playIcon, weight: .medium))
+                    .imageScale(.small)
                     .foregroundStyle(heroPrimaryText)
                     .symbolRenderingMode(.monochrome)
                     .frame(width: m.playFrame, height: m.playFrame)
@@ -427,6 +424,7 @@ struct RosaryView: View {
             } label: {
                 Image(systemName: "forward.fill")
                     .font(.system(size: m.sideIcon, weight: .medium))
+                    .imageScale(.small)
                     .foregroundStyle(heroPrimaryText.opacity(nextDisabled ? 0.35 : 0.95))
                     .symbolRenderingMode(.monochrome)
                     .frame(width: m.sideFrame, height: m.sideFrame)
@@ -436,25 +434,23 @@ struct RosaryView: View {
             .disabled(nextDisabled)
             .accessibilityLabel("Next")
             .accessibilityIdentifier("TransportNext")
+
+            Button {
+                Task { @MainActor in rosary.stopPlayback() }
+            } label: {
+                Image(systemName: "stop.fill")
+                    .font(.system(size: m.stopIcon, weight: .medium))
+                    .imageScale(.small)
+                    .foregroundStyle(heroPrimaryText.opacity(0.95))
+                    .symbolRenderingMode(.monochrome)
+                    .frame(width: m.stopFrame, height: m.stopFrame)
+                    .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel("Stop")
+            .accessibilityIdentifier("TransportStop")
         }
         .frame(maxWidth: .infinity)
-    }
-
-    private var rosaryStopButton: some View {
-        let m = RosaryTransportMetrics.self
-        return Button {
-            Task { @MainActor in rosary.stopPlayback() }
-        } label: {
-            Image(systemName: "stop.fill")
-                .font(.system(size: m.stopIcon, weight: .medium))
-                .foregroundStyle(heroPrimaryText.opacity(0.95))
-                .symbolRenderingMode(.monochrome)
-                .frame(width: m.stopFrame, height: m.stopFrame)
-                .contentShape(Rectangle())
-        }
-        .buttonStyle(.plain)
-        .accessibilityLabel("Stop")
-        .accessibilityIdentifier("TransportStop")
     }
 
     @ViewBuilder
@@ -475,6 +471,7 @@ struct RosaryView: View {
         let value: Double
         let accent: Color
         var dimmed: Bool = false
+        var lineHeight: CGFloat = 5
 
         var body: some View {
             GeometryReader { geo in
@@ -485,10 +482,10 @@ struct RosaryView: View {
                         .fill(accent)
                         .frame(width: max(4, geo.size.width * min(1, max(0, value))))
                 }
-                .frame(width: geo.size.width, height: 5, alignment: .leading)
+                .frame(width: geo.size.width, height: lineHeight, alignment: .leading)
             }
             .frame(maxWidth: .infinity)
-            .frame(height: 5)
+            .frame(height: lineHeight)
         }
     }
 }
