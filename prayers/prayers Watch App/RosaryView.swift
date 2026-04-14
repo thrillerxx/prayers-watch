@@ -367,7 +367,7 @@ struct RosaryView: View {
 
     private var rosaryPlayerDock: some View {
         let accent = theme.accentColor(reduceTransparency: reduceTransparency, increaseContrast: increaseContrast)
-        return VStack(spacing: 10) {
+        return VStack(spacing: 6) {
             ThinProgressBar(value: rosary.overallProgressFraction, accent: accent, dimmed: !solidChrome)
                 .padding(.horizontal, 2)
             rosaryTransportRow
@@ -379,9 +379,20 @@ struct RosaryView: View {
         }
     }
 
-    /// Same control sizing as `PrayerDetailNowPlayingHero` in `PrayerLibraryView` (plain icons, no glass disks).
+    /// Compact transport (42mm + 46mm): smaller than prayer detail hero so art + text stay visible above the fold.
+    private enum RosaryTransportMetrics {
+        static let sideIcon: CGFloat = 16
+        static let sideFrame: CGFloat = 34
+        static let playIcon: CGFloat = 21
+        static let playFrame: CGFloat = 40
+        static let stopIcon: CGFloat = 15
+        static let stopFrame: CGFloat = 32
+        static let gap: CGFloat = 2
+    }
+
     private var rosaryTransportRow: some View {
         let nextDisabled = rosary.steps.isEmpty || rosary.index >= rosary.steps.count - 1
+        let m = RosaryTransportMetrics.self
         return HStack(spacing: 0) {
             Spacer(minLength: 0)
 
@@ -389,42 +400,42 @@ struct RosaryView: View {
                 rosary.previousStep()
             } label: {
                 Image(systemName: rosary.index == 0 ? "arrow.counterclockwise" : "backward.fill")
-                    .font(.system(size: 21, weight: .medium))
+                    .font(.system(size: m.sideIcon, weight: .medium))
                     .foregroundStyle(heroPrimaryText.opacity(0.95))
                     .symbolRenderingMode(.monochrome)
-                    .frame(width: 44, height: 44)
+                    .frame(width: m.sideFrame, height: m.sideFrame)
                     .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
             .accessibilityLabel(rosary.index == 0 ? "Replay" : "Previous")
             .accessibilityIdentifier("TransportPrevious")
 
-            Spacer(minLength: 4)
+            Spacer(minLength: m.gap)
 
             Button {
                 rosary.playPauseTapped()
             } label: {
                 Image(systemName: speech.isSpeaking ? "pause.fill" : "play.fill")
-                    .font(.system(size: 28, weight: .medium))
+                    .font(.system(size: m.playIcon, weight: .medium))
                     .foregroundStyle(heroPrimaryText)
                     .symbolRenderingMode(.monochrome)
-                    .frame(width: 52, height: 52)
+                    .frame(width: m.playFrame, height: m.playFrame)
                     .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
             .accessibilityLabel(speech.isSpeaking ? "Pause" : "Play")
             .accessibilityIdentifier("TransportPlayPause")
 
-            Spacer(minLength: 4)
+            Spacer(minLength: m.gap)
 
             Button {
                 rosary.nextStep()
             } label: {
                 Image(systemName: "forward.fill")
-                    .font(.system(size: 21, weight: .medium))
+                    .font(.system(size: m.sideIcon, weight: .medium))
                     .foregroundStyle(heroPrimaryText.opacity(nextDisabled ? 0.35 : 0.95))
                     .symbolRenderingMode(.monochrome)
-                    .frame(width: 44, height: 44)
+                    .frame(width: m.sideFrame, height: m.sideFrame)
                     .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
@@ -438,14 +449,15 @@ struct RosaryView: View {
     }
 
     private var rosaryStopButton: some View {
-        Button {
+        let m = RosaryTransportMetrics.self
+        return Button {
             Task { @MainActor in rosary.stopPlayback() }
         } label: {
             Image(systemName: "stop.fill")
-                .font(.system(size: 21, weight: .medium))
+                .font(.system(size: m.stopIcon, weight: .medium))
                 .foregroundStyle(heroPrimaryText.opacity(0.95))
                 .symbolRenderingMode(.monochrome)
-                .frame(width: 44, height: 44)
+                .frame(width: m.stopFrame, height: m.stopFrame)
                 .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
