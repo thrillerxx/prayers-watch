@@ -1,5 +1,6 @@
 import Combine
 import Foundation
+import MediaPlayer
 import SwiftUI
 
 /// Holds rosary playback state so it survives navigation (mini-player can return to session).
@@ -157,6 +158,7 @@ final class RosarySessionController: ObservableObject {
             includeStJoseph: includeStJoseph
         )
         index = 0
+        publishRosaryNowPlayingIfNeeded()
     }
 
     enum TransitionReason {
@@ -208,6 +210,8 @@ final class RosarySessionController: ObservableObject {
                 speakStep(at: index)
             }
         }
+
+        publishRosaryNowPlayingIfNeeded()
     }
 
     func speakStep(at idx: Int) {
@@ -265,6 +269,25 @@ final class RosarySessionController: ObservableObject {
         selectedMystery = nil
         steps = []
         index = 0
+        clearRosaryNowPlaying()
+    }
+
+    /// Encourages watchOS media chrome (including hiding the status clock on all case sizes) alongside `WatchMediaTimeSuppressor`.
+    private func publishRosaryNowPlayingIfNeeded() {
+        guard isRosaryActive else { return }
+        MPNowPlayingInfoCenter.default().nowPlayingInfo = [
+            MPMediaItemPropertyTitle: displayTitle,
+            MPMediaItemPropertyArtist: selectedMystery?.title ?? "Rosary",
+            MPNowPlayingInfoPropertyPlaybackRate: 1.0,
+            MPMediaItemPropertyPlaybackDuration: 3600.0,
+            MPNowPlayingInfoPropertyElapsedPlaybackTime: 0.0,
+        ]
+        MPNowPlayingInfoCenter.default().playbackState = .playing
+    }
+
+    private func clearRosaryNowPlaying() {
+        MPNowPlayingInfoCenter.default().nowPlayingInfo = nil
+        MPNowPlayingInfoCenter.default().playbackState = .stopped
     }
 
     func playPauseTapped() {

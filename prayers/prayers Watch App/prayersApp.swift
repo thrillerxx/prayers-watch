@@ -5,8 +5,6 @@
 //  Created by Car Gonzalez on 2/5/26.
 //
 
-import AVFoundation
-import AVKit
 import SwiftUI
 
 @main
@@ -28,7 +26,8 @@ struct prayers_Watch_AppApp: App {
     }
 }
 
-/// Hosts the main UI and, during an active Rosary mystery session, a window-level media surface so watchOS hides the status-bar clock.
+/// Hosts the main UI. Rosary “now playing” installs `WatchMediaTimeSuppressor` inside `RosaryView` so it sits in the NavigationStack
+/// content subtree (window-level overlay did not hide the status clock on 46mm for some layouts).
 private struct AppShell: View {
     let theme: AppColorTheme
     @EnvironmentObject private var rosarySession: RosarySessionController
@@ -55,78 +54,5 @@ private struct AppShell: View {
         }
         .environment(\.appColorTheme, theme)
         .preferredColorScheme(.dark)
-        .overlay {
-            if rosarySession.selectedMystery != nil {
-                WatchMediaTimeSuppressor()
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .allowsHitTesting(false)
-                    .accessibilityHidden(true)
-            }
-        }
-    }
-}
-
-/// Plays an inaudible loop so watchOS treats the app as media and suppresses the corner digital time.
-/// The bundled MP4 includes a **silent AAC** track: video-only playback did not suppress the status clock on some sizes (e.g. 46mm); leaving the player unmuted with digital silence keeps it inaudible but lets the system enter media mode reliably.
-/// `AVPlayerLooper` is unavailable on watchOS; restart from zero at item end instead.
-private struct WatchMediaTimeSuppressor: View {
-    @Environment(\.scenePhase) private var scenePhase
-
-    @State private var player: AVPlayer?
-    @State private var endObserver: NSObjectProtocol?
-
-    var body: some View {
-        VideoPlayer(player: player) {
-            EmptyView()
-        }
-        .focusable(false)
-        .disabled(true)
-        /// Fully transparent layers are sometimes ignored for “now playing”; keep a hair of alpha so watchOS suppresses the status-bar clock.
-        .opacity(0.01)
-        .allowsHitTesting(false)
-        .accessibilityHidden(true)
-        .ignoresSafeArea()
-        .onAppear(perform: startPlayback)
-        .onDisappear(perform: stopPlayback)
-        .onChange(of: scenePhase) { _, phase in
-            if phase == .active { player?.play() }
-        }
-    }
-
-    private func startPlayback() {
-        guard player == nil,
-              let url = Bundle.main.url(forResource: "silent_time_suppressor", withExtension: "mp4")
-        else { return }
-
-        try? AVAudioSession.sharedInstance().setCategory(.playback, mode: .default)
-        try? AVAudioSession.sharedInstance().setActive(true)
-
-        let item = AVPlayerItem(url: url)
-        let p = AVPlayer(playerItem: item)
-        /// `isMuted = true` can skip audio-side “now playing” semantics on some watch layouts; the file’s audio is digital silence.
-        p.isMuted = false
-        p.volume = 1.0
-        p.actionAtItemEnd = .none
-
-        let loopPlayer = p
-        endObserver = NotificationCenter.default.addObserver(
-            forName: .AVPlayerItemDidPlayToEndTime,
-            object: item,
-            queue: .main
-        ) { _ in
-            loopPlayer.seek(to: .zero) { _ in loopPlayer.play() }
-        }
-
-        player = p
-        p.play()
-    }
-
-    private func stopPlayback() {
-        if let token = endObserver {
-            NotificationCenter.default.removeObserver(token)
-            endObserver = nil
-        }
-        player?.pause()
-        player = nil
     }
 }

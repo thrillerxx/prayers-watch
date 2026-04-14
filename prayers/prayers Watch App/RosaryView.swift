@@ -196,6 +196,10 @@ struct RosaryView: View {
     /// Music-style layout: blurred hero, small cover art; prayer scrolls full-width with controls overlaid (no text card).
     private var nowPlayingSession: some View {
         ZStack(alignment: .bottom) {
+            WatchMediaTimeSuppressor()
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .allowsHitTesting(false)
+
             if rosary.selectedMystery != nil {
                 mysteryHeroBackground
             }
