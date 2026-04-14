@@ -209,11 +209,12 @@ struct RosaryView: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
             .safeAreaInset(edge: .bottom, spacing: 0) {
                 HStack(spacing: 0) {
-                    Color.clear.frame(width: 10)
+                    Color.clear.frame(width: 14)
                     playerChrome
                         .frame(maxWidth: .infinity)
-                    Color.clear.frame(width: 10)
+                    Color.clear.frame(width: 14)
                 }
+                .clipped()
             }
         }
     }
@@ -346,14 +347,13 @@ struct RosaryView: View {
         let surface = DivinityChrome.elevatedSurface(theme: theme, reduceTransparency: reduceTransparency, increaseContrast: increaseContrast)
         let stroke = DivinityChrome.elevatedSurfaceStroke(theme: theme, accent: accent, reduceTransparency: reduceTransparency)
 
-        return VStack(alignment: .leading, spacing: 8) {
+        return VStack(alignment: .leading, spacing: 7) {
             progressSection(accent: accent)
 
-            HStack(spacing: 2) {
+            HStack(spacing: 3) {
                 compactTransportChip(
                     icon: "backward.fill",
                     accent: accent,
-                    surface: surface,
                     stroke: stroke,
                     prominent: false,
                     disabled: rosary.index == 0,
@@ -365,7 +365,6 @@ struct RosaryView: View {
                 compactTransportChip(
                     icon: speech.isSpeaking ? "pause.fill" : "play.fill",
                     accent: accent,
-                    surface: surface,
                     stroke: stroke,
                     prominent: true,
                     disabled: false,
@@ -376,7 +375,6 @@ struct RosaryView: View {
                 compactTransportChip(
                     icon: "forward.fill",
                     accent: accent,
-                    surface: surface,
                     stroke: stroke,
                     prominent: false,
                     disabled: rosary.steps.isEmpty || rosary.index >= rosary.steps.count - 1,
@@ -385,46 +383,63 @@ struct RosaryView: View {
                 .accessibilityLabel("Next")
                 .accessibilityIdentifier("TransportNext")
             }
-            .frame(height: 30)
+            .frame(height: 28)
 
             Button {
                 Task { @MainActor in rosary.stopPlayback() }
             } label: {
-                Label("Stop", systemImage: "stop.fill")
-                    .font(DivinityFont.caption(11))
-                    .fontWeight(.medium)
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 1)
+                HStack(spacing: 6) {
+                    Image(systemName: "stop.fill")
+                        .font(.system(size: 11, weight: .semibold))
+                    Text("Stop")
+                        .font(.system(size: 11, weight: .semibold))
+                }
+                .foregroundStyle(.white)
+                .symbolRenderingMode(.monochrome)
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 7)
+                .contentShape(Rectangle())
             }
-            .buttonStyle(.bordered)
-            .tint(accent)
-            .controlSize(.mini)
+            .buttonStyle(.plain)
             .accessibilityIdentifier("TransportStop")
+            .background {
+                RoundedRectangle(cornerRadius: 8, style: .continuous)
+                    .fill(Color.white.opacity(0.14))
+                    .overlay {
+                        RoundedRectangle(cornerRadius: 8, style: .continuous)
+                            .stroke(stroke.opacity(0.65), lineWidth: 0.5)
+                    }
+            }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(.horizontal, 8)
+        .padding(.horizontal, 4)
         .padding(.top, 6)
-        .padding(.bottom, 6)
+        .padding(.bottom, 8)
         .background {
             playerChromeBackground(surface: surface, stroke: stroke)
         }
-        .shadow(color: .black.opacity(solidChrome ? 0.22 : 0.32), radius: 6, x: 0, y: -2)
+        .shadow(color: .black.opacity(solidChrome ? 0.18 : 0.22), radius: 4, x: 0, y: -1)
     }
 
-    /// Plain chips avoid watchOS bordered button chrome overflowing narrow 42mm widths.
+    /// Plain chips — secondary uses light-on-dim (readable on 42mm); avoids bordered overflow clipping.
     private func compactTransportChip(
         icon: String,
         accent: Color,
-        surface: Color,
         stroke: Color,
         prominent: Bool,
         disabled: Bool,
         action: @escaping () -> Void
     ) -> some View {
-        Button(action: action) {
+        let secondaryFill = Color.white.opacity(0.16)
+        let iconColor: Color = {
+            if prominent { return .white }
+            if disabled { return .white.opacity(0.38) }
+            return .white.opacity(0.95)
+        }()
+        return Button(action: action) {
             Image(systemName: icon)
-                .font(.system(size: prominent ? 13 : 11, weight: .semibold))
-                .foregroundStyle(prominent ? Color.white : accent.opacity(disabled ? 0.38 : 0.92))
+                .font(.system(size: prominent ? 12 : 10, weight: .semibold))
+                .foregroundStyle(iconColor)
                 .symbolRenderingMode(.monochrome)
                 .frame(maxWidth: .infinity)
                 .frame(maxHeight: .infinity)
@@ -432,15 +447,18 @@ struct RosaryView: View {
         }
         .buttonStyle(.plain)
         .disabled(disabled)
-        .opacity(disabled ? 0.55 : 1)
+        .opacity(disabled ? 0.5 : 1)
         .frame(maxWidth: .infinity)
-        .frame(height: 30)
+        .frame(height: 28)
         .background {
             RoundedRectangle(cornerRadius: 7, style: .continuous)
-                .fill(prominent ? accent : surface)
+                .fill(prominent ? accent : secondaryFill)
                 .overlay {
                     RoundedRectangle(cornerRadius: 7, style: .continuous)
-                        .stroke(stroke, lineWidth: 0.5)
+                        .stroke(
+                            prominent ? accent.opacity(0.35) : stroke.opacity(0.55),
+                            lineWidth: 0.5
+                        )
                 }
         }
     }
@@ -507,10 +525,10 @@ struct RosaryView: View {
                         .fill(accent)
                         .frame(width: max(4, geo.size.width * min(1, max(0, value))))
                 }
-                .frame(width: geo.size.width, height: 4, alignment: .leading)
+                .frame(width: geo.size.width, height: 5, alignment: .leading)
             }
             .frame(maxWidth: .infinity)
-            .frame(height: 4)
+            .frame(height: 5)
         }
     }
 }
