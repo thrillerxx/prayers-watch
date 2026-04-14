@@ -239,6 +239,7 @@ struct RosaryView: View {
     }
 
     /// watchOS Music–style header: glass back orb · time · glass “Stop” (replaces system … overflow).
+    /// Nudged toward the physical top so the time sits higher (less “floating” in the upper third).
     private var rosaryMusicTopChrome: some View {
         HStack(alignment: .center) {
             Button {
@@ -261,6 +262,7 @@ struct RosaryView: View {
                     .foregroundStyle(heroPrimaryText)
                     .monospacedDigit()
                     .minimumScaleFactor(0.85)
+                    .offset(y: -5)
             }
 
             Spacer(minLength: 6)
@@ -290,7 +292,8 @@ struct RosaryView: View {
             .accessibilityIdentifier("TransportStop")
         }
         .padding(.horizontal, 8)
-        .padding(.bottom, 6)
+        .padding(.top, -10)
+        .padding(.bottom, 2)
     }
 
     private func rosaryGlassCircle(diameter: CGFloat) -> some View {
