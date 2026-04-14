@@ -193,21 +193,19 @@ struct RosaryView: View {
                 sessionHeader
                     .padding(.horizontal, 16)
                     .padding(.top, 8)
-                    .padding(.bottom, 6)
+                    .padding(.bottom, 8)
 
                 currentPrayerPanel
                     .padding(.horizontal, 8)
-
-                Spacer()
-                    .frame(minHeight: 136)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-
-            HStack(spacing: 0) {
-                Color.clear.frame(width: 6)
-                playerChrome
-                    .frame(maxWidth: .infinity)
-                Color.clear.frame(width: 6)
+            .safeAreaInset(edge: .bottom, spacing: 0) {
+                HStack(spacing: 0) {
+                    Color.clear.frame(width: 10)
+                    playerChrome
+                        .frame(maxWidth: .infinity)
+                    Color.clear.frame(width: 10)
+                }
             }
         }
     }
@@ -340,7 +338,7 @@ struct RosaryView: View {
         let surface = DivinityChrome.elevatedSurface(theme: theme, reduceTransparency: reduceTransparency, increaseContrast: increaseContrast)
         let stroke = DivinityChrome.elevatedSurfaceStroke(theme: theme, accent: accent, reduceTransparency: reduceTransparency)
 
-        return VStack(alignment: .leading, spacing: 10) {
+        return VStack(alignment: .leading, spacing: 8) {
             progressSection(accent: accent)
 
             HStack(spacing: 2) {
@@ -396,13 +394,13 @@ struct RosaryView: View {
             .accessibilityIdentifier("TransportStop")
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(.horizontal, 10)
-        .padding(.top, 8)
-        .padding(.bottom, 8)
+        .padding(.horizontal, 8)
+        .padding(.top, 6)
+        .padding(.bottom, 6)
         .background {
             playerChromeBackground(surface: surface, stroke: stroke)
         }
-        .shadow(color: .black.opacity(solidChrome ? 0.28 : 0.38), radius: 10, x: 0, y: -4)
+        .shadow(color: .black.opacity(solidChrome ? 0.22 : 0.32), radius: 6, x: 0, y: -2)
     }
 
     /// Plain chips avoid watchOS bordered button chrome overflowing narrow 42mm widths.
@@ -465,7 +463,7 @@ struct RosaryView: View {
     }
 
     private func progressSection(accent: Color) -> some View {
-        VStack(alignment: .leading, spacing: 5) {
+        VStack(alignment: .leading, spacing: 4) {
             if let decade = rosary.decadeProgressFraction() {
                 Text("Decade")
                     .font(DivinityFont.caption(9))
