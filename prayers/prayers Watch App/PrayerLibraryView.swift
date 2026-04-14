@@ -53,6 +53,8 @@ struct PrayerLibraryView: View {
                                 } label: {
                                     prayerRowLabel(title: prayer.title, icon: "building.columns")
                                 }
+                                .listRowInsets(EdgeInsets(top: 4, leading: 8, bottom: 4, trailing: 8))
+                                .listRowSeparator(.hidden)
                             }
                         } header: {
                             Text("Mass")
@@ -70,6 +72,8 @@ struct PrayerLibraryView: View {
                                 } label: {
                                     prayerRowLabel(title: prayer.title, icon: "book.pages")
                                 }
+                                .listRowInsets(EdgeInsets(top: 4, leading: 8, bottom: 4, trailing: 8))
+                                .listRowSeparator(.hidden)
                             }
                         } header: {
                             Text(massPrayers.isEmpty ? "Prayers" : "More prayers")
@@ -79,6 +83,8 @@ struct PrayerLibraryView: View {
                         }
                     }
                 }
+                .listStyle(.plain)
+                .scrollContentBackground(.hidden)
                 .listSectionSpacing(8)
                 .listRowBackground(
                     RoundedRectangle(cornerRadius: 10, style: .continuous)
@@ -90,6 +96,8 @@ struct PrayerLibraryView: View {
         }
         .navigationTitle("Prayer Library")
         .navigationBarTitleDisplayMode(.inline)
+        .toolbarBackground(DivinityChrome.canvasBackground, for: .navigationBar)
+        .toolbarBackground(.visible, for: .navigationBar)
         .tint(accent)
         .onAppear {
             loadPrayers()
@@ -106,7 +114,10 @@ struct PrayerLibraryView: View {
                 Image(systemName: icon)
                     .font(.system(size: 14, weight: .semibold))
                     .foregroundStyle(accent)
+                    .symbolRenderingMode(.monochrome)
             }
+            .frame(width: 32, height: 32)
+
             Text(title)
                 .font(DivinityFont.title(14))
                 .lineLimit(3)
@@ -115,6 +126,7 @@ struct PrayerLibraryView: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
         }
         .padding(.vertical, 4)
+        .contentShape(Rectangle())
     }
 
     private func loadPrayers() {

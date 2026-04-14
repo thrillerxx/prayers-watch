@@ -59,33 +59,34 @@ struct SettingsView: View {
                 }
                 .font(DivinityFont.caption(14))
 
-                HStack(spacing: 8) {
+                HStack(spacing: 6) {
                     Text("Pause")
                         .font(DivinityFont.caption(14))
                         .lineLimit(1)
+                        .frame(maxWidth: .infinity, alignment: .leading)
 
-                    Spacer(minLength: 6)
+                    HStack(spacing: 6) {
+                        Button {
+                            pauseBetweenPartsSeconds = max(1, pauseBetweenPartsSeconds - 1)
+                        } label: {
+                            Image(systemName: "minus.circle")
+                        }
+                        .buttonStyle(.plain)
+                        .tint(accent)
 
-                    Button {
-                        pauseBetweenPartsSeconds = max(1, pauseBetweenPartsSeconds - 1)
-                    } label: {
-                        Image(systemName: "minus.circle")
+                        Text("\(pauseBetweenPartsSeconds)s")
+                            .font(DivinityFont.caption(14))
+                            .monospacedDigit()
+                            .frame(minWidth: 30, alignment: .center)
+
+                        Button {
+                            pauseBetweenPartsSeconds = min(10, pauseBetweenPartsSeconds + 1)
+                        } label: {
+                            Image(systemName: "plus.circle")
+                        }
+                        .buttonStyle(.plain)
+                        .tint(accent)
                     }
-                    .buttonStyle(.plain)
-                    .tint(accent)
-
-                    Text("\(pauseBetweenPartsSeconds)s")
-                        .font(DivinityFont.caption(14))
-                        .monospacedDigit()
-                        .frame(minWidth: 28, alignment: .center)
-
-                    Button {
-                        pauseBetweenPartsSeconds = min(10, pauseBetweenPartsSeconds + 1)
-                    } label: {
-                        Image(systemName: "plus.circle")
-                    }
-                    .buttonStyle(.plain)
-                    .tint(accent)
                 }
                 .contentShape(Rectangle())
             }
@@ -96,9 +97,13 @@ struct SettingsView: View {
                     .foregroundStyle(.secondary)
             }
             }
+            .listStyle(.plain)
+            .scrollContentBackground(.hidden)
         }
         .navigationTitle("Settings")
         .navigationBarTitleDisplayMode(.inline)
+        .toolbarBackground(DivinityChrome.canvasBackground, for: .navigationBar)
+        .toolbarBackground(.visible, for: .navigationBar)
         .tint(accent)
     }
 }

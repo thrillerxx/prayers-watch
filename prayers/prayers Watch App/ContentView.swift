@@ -22,51 +22,40 @@ struct ContentView: View {
 
     var body: some View {
         NavigationStack(path: $path) {
-            ScrollView {
-                VStack(alignment: .leading, spacing: 10) {
-                    VStack(alignment: .leading, spacing: 4) {
+            List {
+                Section {
+                    VStack(alignment: .center, spacing: 4) {
                         Text("Divinity")
                             .font(DivinityFont.chrome(17))
                             .foregroundStyle(.primary)
+                            .multilineTextAlignment(.center)
                         Text("Prayers & Rosary")
                             .font(DivinityFont.caption(11))
                             .foregroundStyle(.secondary)
+                            .multilineTextAlignment(.center)
                     }
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(.top, 4)
-                    .padding(.bottom, 6)
-
-                    HomeNavigationTile(
-                        route: .rosary,
-                        title: "Rosary",
-                        subtitle: "Guided mysteries",
-                        icon: "cross.fill"
-                    )
-                    HomeNavigationTile(
-                        route: .prayerLibrary,
-                        title: "Prayer Library",
-                        subtitle: "Browse & listen",
-                        icon: "books.vertical.fill"
-                    )
-                    HomeNavigationTile(
-                        route: .massResponses,
-                        title: "Mass Responses",
-                        subtitle: "At Mass & devotions",
-                        icon: "text.book.closed.fill"
-                    )
-                    HomeNavigationTile(
-                        route: .settings,
-                        title: "Settings",
-                        subtitle: "Theme & voice",
-                        icon: "gearshape.fill"
-                    )
+                    .frame(maxWidth: .infinity)
+                    .padding(.top, 2)
+                    .padding(.bottom, 4)
+                    .listRowInsets(EdgeInsets(top: 6, leading: 8, bottom: 8, trailing: 8))
+                    .listRowBackground(Color.clear)
+                    .listRowSeparator(.hidden)
                 }
-                .padding(.horizontal, 10)
-                .padding(.bottom, 8)
+
+                Section {
+                    homeTile(.rosary, title: "Rosary", subtitle: "Guided mysteries", icon: "cross.fill")
+                    homeTile(.prayerLibrary, title: "Prayer Library", subtitle: "Browse & listen", icon: "books.vertical.fill")
+                    homeTile(.massResponses, title: "Mass Responses", subtitle: "At Mass & devotions", icon: "text.book.closed.fill")
+                    homeTile(.settings, title: "Settings", subtitle: "Theme & voice", icon: "gearshape.fill")
+                }
             }
+            .listStyle(.plain)
+            .scrollContentBackground(.hidden)
             .scrollIndicators(.hidden)
             .background(DivinityChrome.canvasBackground)
             .navigationBarTitleDisplayMode(.inline)
+            .toolbarBackground(DivinityChrome.canvasBackground, for: .navigationBar)
+            .toolbarBackground(.visible, for: .navigationBar)
             .navigationDestination(for: NavRoute.self) { route in
                 switch route {
                 case .rosary:
@@ -89,6 +78,14 @@ struct ContentView: View {
         .environment(\.appColorTheme, theme)
     }
 
+    @ViewBuilder
+    private func homeTile(_ route: NavRoute, title: String, subtitle: String, icon: String) -> some View {
+        HomeNavigationTile(route: route, title: title, subtitle: subtitle, icon: icon)
+            .listRowInsets(EdgeInsets(top: 4, leading: 8, bottom: 4, trailing: 8))
+            .listRowBackground(Color.clear)
+            .listRowSeparator(.hidden)
+    }
+
     private var rosaryMiniPlayer: some View {
         Button {
             path = NavigationPath()
@@ -96,8 +93,10 @@ struct ContentView: View {
         } label: {
             HStack(spacing: 8) {
                 Image(systemName: "cross.fill")
-                    .font(.caption.weight(.semibold))
+                    .font(.system(size: 14, weight: .semibold))
                     .foregroundStyle(accent)
+                    .symbolRenderingMode(.monochrome)
+                    .frame(width: 22, height: 22)
 
                 VStack(alignment: .leading, spacing: 1) {
                     Text(rosary.miniPlayerTitle)
@@ -109,16 +108,17 @@ struct ContentView: View {
                         .foregroundStyle(.secondary)
                         .lineLimit(1)
                 }
-
-                Spacer(minLength: 4)
+                .frame(maxWidth: .infinity, alignment: .leading)
 
                 Image(systemName: "chevron.right")
-                    .font(.caption.weight(.bold))
+                    .font(.system(size: 10, weight: .bold))
                     .foregroundStyle(.secondary)
+                    .frame(width: 16, height: 16)
             }
             .padding(.horizontal, 10)
             .padding(.vertical, 8)
             .frame(maxWidth: .infinity, alignment: .leading)
+            .contentShape(Rectangle())
             .background {
                 RoundedRectangle(cornerRadius: 12, style: .continuous)
                     .fill(DivinityChrome.elevatedSurface(theme: theme, reduceTransparency: reduceTransparency, increaseContrast: differentiateWithoutColor))
@@ -129,8 +129,8 @@ struct ContentView: View {
             }
         }
         .buttonStyle(.plain)
-        .padding(.horizontal, 6)
-        .padding(.bottom, 2)
+        .padding(.horizontal, 8)
+        .padding(.bottom, 4)
         .shadow(color: .black.opacity(0.4), radius: 8, y: 3)
         .accessibilityIdentifier("RosaryMiniPlayer")
     }

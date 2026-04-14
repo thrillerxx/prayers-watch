@@ -61,16 +61,17 @@ struct HomeNavigationTile: View {
 
     var body: some View {
         NavigationLink(value: route) {
-            HStack(alignment: .center, spacing: 10) {
+            HStack(alignment: .center, spacing: 8) {
                 ZStack {
                     RoundedRectangle(cornerRadius: 9, style: .continuous)
                         .fill(accent.opacity(reduceTransparency ? 0.28 : 0.22))
-                        .frame(width: 42, height: 42)
+                        .frame(width: 40, height: 40)
                     Image(systemName: icon)
-                        .font(.system(size: 18, weight: .semibold))
+                        .font(.system(size: 17, weight: .semibold))
                         .foregroundStyle(accent)
-                        .symbolRenderingMode(.hierarchical)
+                        .symbolRenderingMode(.monochrome)
                 }
+                .frame(width: 40, height: 40)
 
                 VStack(alignment: .leading, spacing: 2) {
                     Text(title)
@@ -78,20 +79,25 @@ struct HomeNavigationTile: View {
                         .foregroundStyle(.primary)
                         .lineLimit(2)
                         .minimumScaleFactor(0.85)
+                        .multilineTextAlignment(.leading)
                     Text(subtitle)
                         .font(DivinityFont.caption(11))
                         .foregroundStyle(.secondary)
                         .lineLimit(2)
+                        .minimumScaleFactor(0.88)
+                        .multilineTextAlignment(.leading)
                 }
-
-                Spacer(minLength: 4)
+                .frame(maxWidth: .infinity, alignment: .leading)
 
                 Image(systemName: "chevron.right")
-                    .font(.system(size: 11, weight: .bold))
+                    .font(.system(size: 10, weight: .bold))
                     .foregroundStyle(.tertiary)
+                    .frame(width: 16, height: 16)
             }
             .padding(.horizontal, 10)
             .padding(.vertical, 10)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .contentShape(Rectangle())
             .background {
                 RoundedRectangle(cornerRadius: 12, style: .continuous)
                     .fill(surface)

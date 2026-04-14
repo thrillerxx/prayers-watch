@@ -51,6 +51,8 @@ struct MassResponsesView: View {
             }
         }
         .navigationBarTitleDisplayMode(.inline)
+        .toolbarBackground(DivinityChrome.canvasBackground, for: .navigationBar)
+        .toolbarBackground(.visible, for: .navigationBar)
         .navigationTitle("Mass Responses")
         .task {
             guard text.isEmpty else { return }
