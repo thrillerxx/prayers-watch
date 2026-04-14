@@ -73,18 +73,18 @@ struct HomeNavigationTile: View {
                 }
                 .frame(width: 40, height: 40)
 
-                VStack(alignment: .leading, spacing: 2) {
+                VStack(alignment: .leading, spacing: 3) {
                     Text(title)
                         .font(DivinityFont.title(14))
                         .foregroundStyle(.primary)
                         .lineLimit(2)
-                        .minimumScaleFactor(0.85)
+                        .minimumScaleFactor(0.82)
                         .multilineTextAlignment(.leading)
                     Text(subtitle)
-                        .font(DivinityFont.caption(11))
+                        .font(DivinityFont.caption(10))
                         .foregroundStyle(.secondary)
-                        .lineLimit(2)
-                        .minimumScaleFactor(0.88)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.75)
                         .multilineTextAlignment(.leading)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -94,8 +94,8 @@ struct HomeNavigationTile: View {
                     .foregroundStyle(.tertiary)
                     .frame(width: 16, height: 16)
             }
-            .padding(.horizontal, 10)
-            .padding(.vertical, 10)
+            .padding(.horizontal, 9)
+            .padding(.vertical, 11)
             .frame(maxWidth: .infinity, alignment: .leading)
             .contentShape(Rectangle())
             .background {

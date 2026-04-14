@@ -24,27 +24,31 @@ struct ContentView: View {
         NavigationStack(path: $path) {
             List {
                 Section {
-                    VStack(alignment: .center, spacing: 4) {
-                        Text("Divinity")
-                            .font(DivinityFont.chrome(17))
-                            .foregroundStyle(.primary)
-                            .multilineTextAlignment(.center)
-                        Text("Prayers & Rosary")
-                            .font(DivinityFont.caption(11))
-                            .foregroundStyle(.secondary)
-                            .multilineTextAlignment(.center)
+                    HStack {
+                        Spacer(minLength: 0)
+                        VStack(alignment: .center, spacing: 4) {
+                            Text("Divinity")
+                                .font(DivinityFont.chrome(17))
+                                .foregroundStyle(.primary)
+                                .multilineTextAlignment(.center)
+                            Text("Prayers & Rosary")
+                                .font(DivinityFont.caption(11))
+                                .foregroundStyle(.secondary)
+                                .multilineTextAlignment(.center)
+                        }
+                        .fixedSize(horizontal: false, vertical: true)
+                        Spacer(minLength: 0)
                     }
-                    .frame(maxWidth: .infinity)
                     .padding(.top, 2)
                     .padding(.bottom, 4)
-                    .listRowInsets(EdgeInsets(top: 6, leading: 8, bottom: 8, trailing: 8))
+                    .listRowInsets(EdgeInsets(top: 6, leading: 4, bottom: 8, trailing: 4))
                     .listRowBackground(Color.clear)
                 }
 
                 Section {
-                    homeTile(.rosary, title: "Rosary", subtitle: "Guided mysteries", icon: "cross.fill")
+                    homeTile(.rosary, title: "Rosary", subtitle: "Mysteries", icon: "cross.circle.fill")
                     homeTile(.prayerLibrary, title: "Prayer Library", subtitle: "Browse & listen", icon: "books.vertical.fill")
-                    homeTile(.massResponses, title: "Mass Responses", subtitle: "At Mass & devotions", icon: "text.book.closed.fill")
+                    homeTile(.massResponses, title: "Mass Responses", subtitle: "At Mass", icon: "text.book.closed.fill")
                     homeTile(.settings, title: "Settings", subtitle: "Theme & voice", icon: "gearshape.fill")
                 }
             }
@@ -90,8 +94,8 @@ struct ContentView: View {
             path.append(NavRoute.rosary)
         } label: {
             HStack(spacing: 8) {
-                Image(systemName: "cross.fill")
-                    .font(.system(size: 14, weight: .semibold))
+                Image(systemName: "cross.circle.fill")
+                    .font(.system(size: 15, weight: .semibold))
                     .foregroundStyle(accent)
                     .symbolRenderingMode(.monochrome)
                     .frame(width: 22, height: 22)

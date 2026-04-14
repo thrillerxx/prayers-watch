@@ -69,15 +69,20 @@ struct RosaryView: View {
 
             ScrollView {
                 VStack(alignment: .leading, spacing: 10) {
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text("Rosary")
-                            .font(DivinityFont.chrome(17))
-                            .foregroundStyle(.primary)
-                        Text("Choose a mystery set")
-                            .font(DivinityFont.caption(11))
-                            .foregroundStyle(.secondary)
+                    HStack {
+                        Spacer(minLength: 0)
+                        VStack(alignment: .center, spacing: 4) {
+                            Text("Rosary")
+                                .font(DivinityFont.chrome(17))
+                                .foregroundStyle(.primary)
+                                .multilineTextAlignment(.center)
+                            Text("Choose a set")
+                                .font(DivinityFont.caption(11))
+                                .foregroundStyle(.secondary)
+                                .multilineTextAlignment(.center)
+                        }
+                        Spacer(minLength: 0)
                     }
-                    .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.top, 4)
                     .padding(.bottom, 2)
 
@@ -119,18 +124,18 @@ struct RosaryView: View {
                 }
                 .frame(width: 40, height: 40)
 
-                VStack(alignment: .leading, spacing: 2) {
+                VStack(alignment: .leading, spacing: 3) {
                     Text(mystery.title)
                         .font(DivinityFont.title(14))
                         .foregroundStyle(.primary)
                         .lineLimit(2)
-                        .minimumScaleFactor(0.85)
+                        .minimumScaleFactor(0.82)
                         .multilineTextAlignment(.leading)
                     Text(mysteryPickerSubtitle(mystery))
-                        .font(DivinityFont.caption(11))
+                        .font(DivinityFont.caption(10))
                         .foregroundStyle(.secondary)
-                        .lineLimit(2)
-                        .minimumScaleFactor(0.88)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.75)
                         .multilineTextAlignment(.leading)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -140,8 +145,8 @@ struct RosaryView: View {
                     .foregroundStyle(accent.opacity(0.9))
                     .frame(width: 16, height: 16)
             }
-            .padding(.horizontal, 10)
-            .padding(.vertical, 10)
+            .padding(.horizontal, 9)
+            .padding(.vertical, 11)
             .frame(maxWidth: .infinity, alignment: .leading)
             .contentShape(Rectangle())
             .background {
@@ -168,10 +173,10 @@ struct RosaryView: View {
 
     private func mysteryPickerSubtitle(_ mystery: RosaryMystery) -> String {
         switch mystery {
-        case .joyful: return "Annunciation to the Temple"
-        case .sorrowful: return "The Lord’s Passion"
-        case .glorious: return "Resurrection & glory"
-        case .luminous: return "The mysteries of light"
+        case .joyful: return "Incarnation"
+        case .sorrowful: return "Passion"
+        case .glorious: return "Glory"
+        case .luminous: return "Light"
         }
     }
 
