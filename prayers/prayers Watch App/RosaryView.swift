@@ -62,6 +62,12 @@ struct RosaryView: View {
         }
     }
 
+    /// Choosing a set should open the session and begin audio (matches “tap row → plays” expectation).
+    private func pickMystery(_ mystery: RosaryMystery) {
+        rosary.start(mystery)
+        rosary.transition(to: 0, reason: .manualStart)
+    }
+
     private var mysteryPicker: some View {
         let accent = theme.accentColor(reduceTransparency: reduceTransparency, increaseContrast: increaseContrast)
         let surface = DivinityChrome.elevatedSurface(theme: theme, reduceTransparency: reduceTransparency, increaseContrast: increaseContrast)
@@ -71,23 +77,25 @@ struct RosaryView: View {
             DivinityChrome.canvasBackground.ignoresSafeArea()
 
             ScrollView {
-                VStack(alignment: .leading, spacing: 10) {
-                    HStack {
-                        Spacer(minLength: 0)
-                        VStack(alignment: .center, spacing: 4) {
-                            Text("Rosary")
-                                .font(DivinityFont.chrome(17))
-                                .foregroundStyle(.primary)
-                                .multilineTextAlignment(.center)
-                            Text("Choose a set")
-                                .font(DivinityFont.caption(11))
-                                .foregroundStyle(.secondary)
-                                .multilineTextAlignment(.center)
-                        }
-                        Spacer(minLength: 0)
+                VStack(alignment: .leading, spacing: 12) {
+                    VStack(alignment: .center, spacing: 6) {
+                        Text("Mysteries")
+                            .font(.system(size: 10, weight: .semibold, design: .default))
+                            .foregroundStyle(accent.opacity(0.95))
+                            .textCase(.uppercase)
+                            .tracking(0.6)
+                        Text("Rosary")
+                            .font(.system(size: 20, weight: .bold, design: .default))
+                            .foregroundStyle(.primary)
+                            .multilineTextAlignment(.center)
+                        Text("Choose a set to begin")
+                            .font(.system(size: 12, weight: .medium, design: .default))
+                            .foregroundStyle(.secondary)
+                            .multilineTextAlignment(.center)
                     }
-                    .padding(.top, 4)
-                    .padding(.bottom, 2)
+                    .frame(maxWidth: .infinity)
+                    .padding(.top, 6)
+                    .padding(.bottom, 4)
 
                     ForEach(RosaryMystery.allCases) { mystery in
                         mysterySetPickerRow(
@@ -96,7 +104,7 @@ struct RosaryView: View {
                             surface: surface,
                             stroke: stroke
                         ) {
-                            rosary.start(mystery)
+                            pickMystery(mystery)
                         }
                     }
                 }
@@ -129,13 +137,13 @@ struct RosaryView: View {
 
                 VStack(alignment: .leading, spacing: 3) {
                     Text(mystery.title)
-                        .font(DivinityFont.title(14))
+                        .font(.system(size: 15, weight: .semibold, design: .default))
                         .foregroundStyle(.primary)
                         .lineLimit(2)
                         .minimumScaleFactor(0.82)
                         .multilineTextAlignment(.leading)
                     Text(mysteryPickerSubtitle(mystery))
-                        .font(DivinityFont.caption(10))
+                        .font(.system(size: 11, weight: .medium, design: .default))
                         .foregroundStyle(.secondary)
                         .lineLimit(1)
                         .minimumScaleFactor(0.75)
@@ -143,17 +151,17 @@ struct RosaryView: View {
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
 
-                Image(systemName: "play.fill")
-                    .font(.system(size: 11, weight: .bold))
-                    .foregroundStyle(accent.opacity(0.9))
-                    .frame(width: 16, height: 16)
+                Image(systemName: "chevron.right")
+                    .font(.system(size: 11, weight: .semibold))
+                    .foregroundStyle(Color.secondary.opacity(0.85))
+                    .frame(width: 14, height: 14)
             }
-            .padding(.horizontal, 9)
-            .padding(.vertical, 11)
+            .padding(.horizontal, 10)
+            .padding(.vertical, 12)
             .frame(maxWidth: .infinity, alignment: .leading)
             .contentShape(Rectangle())
             .background {
-                RoundedRectangle(cornerRadius: 12, style: .continuous)
+                RoundedRectangle(cornerRadius: 14, style: .continuous)
                     .fill(surface)
                     .overlay {
                         RoundedRectangle(cornerRadius: 12, style: .continuous)
