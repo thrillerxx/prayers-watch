@@ -191,7 +191,7 @@ struct RosaryView: View {
 
             VStack(spacing: 0) {
                 sessionHeader
-                    .padding(.horizontal, 12)
+                    .padding(.horizontal, 16)
                     .padding(.top, 8)
                     .padding(.bottom, 6)
 
@@ -203,8 +203,12 @@ struct RosaryView: View {
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
 
-            playerChrome
-                .frame(maxWidth: .infinity)
+            HStack(spacing: 0) {
+                Color.clear.frame(width: 6)
+                playerChrome
+                    .frame(maxWidth: .infinity)
+                Color.clear.frame(width: 6)
+            }
         }
     }
 
@@ -339,7 +343,7 @@ struct RosaryView: View {
         return VStack(alignment: .leading, spacing: 10) {
             progressSection(accent: accent)
 
-            HStack(spacing: 4) {
+            HStack(spacing: 2) {
                 compactTransportChip(
                     icon: "backward.fill",
                     accent: accent,
@@ -375,24 +379,24 @@ struct RosaryView: View {
                 .accessibilityLabel("Next")
                 .accessibilityIdentifier("TransportNext")
             }
-            .frame(height: 32)
+            .frame(height: 30)
 
             Button {
                 Task { @MainActor in rosary.stopPlayback() }
             } label: {
                 Label("Stop", systemImage: "stop.fill")
-                    .font(DivinityFont.caption(12))
+                    .font(DivinityFont.caption(11))
                     .fontWeight(.medium)
                     .frame(maxWidth: .infinity)
-                    .padding(.vertical, 2)
+                    .padding(.vertical, 1)
             }
             .buttonStyle(.bordered)
             .tint(accent)
-            .controlSize(.small)
+            .controlSize(.mini)
             .accessibilityIdentifier("TransportStop")
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(.horizontal, 6)
+        .padding(.horizontal, 10)
         .padding(.top, 8)
         .padding(.bottom, 8)
         .background {
@@ -424,12 +428,12 @@ struct RosaryView: View {
         .disabled(disabled)
         .opacity(disabled ? 0.55 : 1)
         .frame(maxWidth: .infinity)
-        .frame(height: 32)
+        .frame(height: 30)
         .background {
-            RoundedRectangle(cornerRadius: 8, style: .continuous)
+            RoundedRectangle(cornerRadius: 7, style: .continuous)
                 .fill(prominent ? accent : surface)
                 .overlay {
-                    RoundedRectangle(cornerRadius: 8, style: .continuous)
+                    RoundedRectangle(cornerRadius: 7, style: .continuous)
                         .stroke(stroke, lineWidth: 0.5)
                 }
         }
