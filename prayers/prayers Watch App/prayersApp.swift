@@ -67,12 +67,13 @@ private struct AppShell: View {
 }
 
 /// Plays an inaudible loop so watchOS treats the app as media and suppresses the corner digital time (see `silent_time_suppressor.mp4`).
+/// `AVPlayerLooper` is unavailable on watchOS; restart from zero at item end instead.
 private struct WatchMediaTimeSuppressor: View {
-    @State private var queuePlayer: AVQueuePlayer?
-    @State private var looper: AVPlayerLooper?
+    @State private var player: AVPlayer?
+    @State private var endObserver: NSObjectProtocol?
 
     var body: some View {
-        VideoPlayer(player: queuePlayer) {
+        VideoPlayer(player: player) {
             EmptyView()
         }
         .focusable(false)
@@ -87,7 +88,7 @@ private struct WatchMediaTimeSuppressor: View {
     }
 
     private func startPlayback() {
-        guard queuePlayer == nil,
+        guard player == nil,
               let url = Bundle.main.url(forResource: "silent_time_suppressor", withExtension: "mp4")
         else { return }
 
@@ -95,17 +96,29 @@ private struct WatchMediaTimeSuppressor: View {
         try? AVAudioSession.sharedInstance().setActive(true)
 
         let item = AVPlayerItem(url: url)
-        let player = AVQueuePlayer(items: [item])
-        player.isMuted = true
-        let loop = AVPlayerLooper(player: player, templateItem: item)
-        queuePlayer = player
-        looper = loop
-        player.play()
+        let p = AVPlayer(playerItem: item)
+        p.isMuted = true
+        p.actionAtItemEnd = .none
+
+        let loopPlayer = p
+        endObserver = NotificationCenter.default.addObserver(
+            forName: .AVPlayerItemDidPlayToEndTime,
+            object: item,
+            queue: .main
+        ) { _ in
+            loopPlayer.seek(to: .zero) { _ in loopPlayer.play() }
+        }
+
+        player = p
+        p.play()
     }
 
     private func stopPlayback() {
-        queuePlayer?.pause()
-        queuePlayer = nil
-        looper = nil
+        if let token = endObserver {
+            NotificationCenter.default.removeObserver(token)
+            endObserver = nil
+        }
+        player?.pause()
+        player = nil
     }
 }
