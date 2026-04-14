@@ -41,6 +41,7 @@ struct prayers_Watch_AppApp: App {
             }
             .environmentObject(rosarySession)
             .environment(\.appColorTheme, theme)
+            .preferredColorScheme(.dark)
         }
     }
 }

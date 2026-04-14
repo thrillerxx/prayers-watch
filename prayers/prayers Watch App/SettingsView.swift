@@ -23,7 +23,9 @@ struct SettingsView: View {
     }
 
     var body: some View {
-        List {
+        ZStack {
+            DivinityChrome.canvasBackground.ignoresSafeArea()
+            List {
             Section("Appearance") {
                 Picker("Color theme", selection: $colorThemeRaw) {
                     ForEach(AppColorTheme.allCases) { t in
@@ -93,8 +95,10 @@ struct SettingsView: View {
                     .font(DivinityFont.caption(11))
                     .foregroundStyle(.secondary)
             }
+            }
         }
         .navigationTitle("Settings")
+        .navigationBarTitleDisplayMode(.inline)
         .tint(accent)
     }
 }

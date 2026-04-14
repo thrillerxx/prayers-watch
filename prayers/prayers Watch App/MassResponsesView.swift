@@ -14,14 +14,15 @@ struct MassResponsesView: View {
 
     var body: some View {
         ZStack {
+            DivinityChrome.canvasBackground.ignoresSafeArea()
+
             LinearGradient(
                 colors: [
-                    Color.black.opacity(0.95),
-                    Color.black.opacity(0.88),
-                    accent.opacity(0.12)
+                    Color.clear,
+                    accent.opacity(reduceTransparency ? 0.14 : 0.1)
                 ],
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
+                startPoint: .top,
+                endPoint: .bottom
             )
             .ignoresSafeArea()
 
@@ -32,10 +33,24 @@ struct MassResponsesView: View {
                     .multilineTextAlignment(.leading)
                     .lineSpacing(4)
                     .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 12)
+                    .background {
+                        RoundedRectangle(cornerRadius: 12, style: .continuous)
+                            .fill(DivinityChrome.elevatedSurface(theme: theme, reduceTransparency: reduceTransparency, increaseContrast: differentiateWithoutColor))
+                            .overlay {
+                                RoundedRectangle(cornerRadius: 12, style: .continuous)
+                                    .stroke(
+                                        DivinityChrome.elevatedSurfaceStroke(theme: theme, accent: accent, reduceTransparency: reduceTransparency),
+                                        lineWidth: 0.5
+                                    )
+                            }
+                    }
                     .padding(.horizontal, 10)
                     .padding(.vertical, 8)
             }
         }
+        .navigationBarTitleDisplayMode(.inline)
         .navigationTitle("Mass Responses")
         .task {
             guard text.isEmpty else { return }

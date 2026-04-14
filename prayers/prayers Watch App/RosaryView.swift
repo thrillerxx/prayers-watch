@@ -31,11 +31,15 @@ struct RosaryView: View {
     var body: some View {
         Group {
             if let errorText = rosary.errorText {
-                Text(errorText)
-                    .font(DivinityFont.caption(11))
-                    .foregroundStyle(.red)
-                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
-                    .padding(.horizontal, 10)
+                ZStack {
+                    DivinityChrome.canvasBackground.ignoresSafeArea()
+                    Text(errorText)
+                        .font(DivinityFont.caption(11))
+                        .foregroundStyle(.red)
+                        .multilineTextAlignment(.center)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+                        .padding(.horizontal, 10)
+                }
             } else if rosary.selectedMystery == nil {
                 mysteryPicker
             } else {
@@ -56,15 +60,112 @@ struct RosaryView: View {
     }
 
     private var mysteryPicker: some View {
-        List {
-            ForEach(RosaryMystery.allCases) { mystery in
-                Button {
-                    rosary.start(mystery)
-                } label: {
-                    Label(mystery.title, systemImage: "circle.fill")
-                        .font(DivinityFont.title(15))
+        let accent = theme.accentColor(reduceTransparency: reduceTransparency, increaseContrast: increaseContrast)
+        let surface = DivinityChrome.elevatedSurface(theme: theme, reduceTransparency: reduceTransparency, increaseContrast: increaseContrast)
+        let stroke = DivinityChrome.elevatedSurfaceStroke(theme: theme, accent: accent, reduceTransparency: reduceTransparency)
+
+        return ZStack {
+            DivinityChrome.canvasBackground.ignoresSafeArea()
+
+            ScrollView {
+                VStack(alignment: .leading, spacing: 10) {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("Rosary")
+                            .font(DivinityFont.chrome(17))
+                            .foregroundStyle(.primary)
+                        Text("Choose a mystery set")
+                            .font(DivinityFont.caption(11))
+                            .foregroundStyle(.secondary)
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.top, 4)
+                    .padding(.bottom, 2)
+
+                    ForEach(RosaryMystery.allCases) { mystery in
+                        mysterySetPickerRow(
+                            mystery: mystery,
+                            accent: accent,
+                            surface: surface,
+                            stroke: stroke
+                        ) {
+                            rosary.start(mystery)
+                        }
+                    }
                 }
+                .padding(.horizontal, 10)
+                .padding(.bottom, 8)
             }
+            .scrollIndicators(.hidden)
+        }
+    }
+
+    private func mysterySetPickerRow(
+        mystery: RosaryMystery,
+        accent: Color,
+        surface: Color,
+        stroke: Color,
+        action: @escaping () -> Void
+    ) -> some View {
+        Button(action: action) {
+            HStack(alignment: .center, spacing: 10) {
+                ZStack {
+                    RoundedRectangle(cornerRadius: 9, style: .continuous)
+                        .fill(accent.opacity(reduceTransparency ? 0.28 : 0.22))
+                        .frame(width: 42, height: 42)
+                    Image(systemName: mysteryPickerIcon(mystery))
+                        .font(.system(size: 18, weight: .semibold))
+                        .foregroundStyle(accent)
+                        .symbolRenderingMode(.hierarchical)
+                }
+
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(mystery.title)
+                        .font(DivinityFont.title(14))
+                        .foregroundStyle(.primary)
+                        .lineLimit(2)
+                        .minimumScaleFactor(0.85)
+                    Text(mysteryPickerSubtitle(mystery))
+                        .font(DivinityFont.caption(11))
+                        .foregroundStyle(.secondary)
+                        .lineLimit(2)
+                }
+
+                Spacer(minLength: 4)
+
+                Image(systemName: "play.fill")
+                    .font(.system(size: 12, weight: .bold))
+                    .foregroundStyle(accent.opacity(0.9))
+            }
+            .padding(.horizontal, 10)
+            .padding(.vertical, 10)
+            .background {
+                RoundedRectangle(cornerRadius: 12, style: .continuous)
+                    .fill(surface)
+                    .overlay {
+                        RoundedRectangle(cornerRadius: 12, style: .continuous)
+                            .stroke(stroke, lineWidth: 0.5)
+                    }
+            }
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel(mystery.title)
+    }
+
+    private func mysteryPickerIcon(_ mystery: RosaryMystery) -> String {
+        switch mystery {
+        case .joyful: return "gift.fill"
+        case .sorrowful: return "cross.fill"
+        case .glorious: return "sunrise.fill"
+        case .luminous: return "sparkles"
+        }
+    }
+
+    private func mysteryPickerSubtitle(_ mystery: RosaryMystery) -> String {
+        switch mystery {
+        case .joyful: return "Annunciation to the Temple"
+        case .sorrowful: return "The Lord’s Passion"
+        case .glorious: return "Resurrection & glory"
+        case .luminous: return "The mysteries of light"
         }
     }
 
@@ -256,9 +357,14 @@ struct RosaryView: View {
             .accessibilityIdentifier("TransportStop")
         }
         .padding(.horizontal, 8)
-        .padding(.top, 8)
+        .padding(.top, 10)
         .padding(.bottom, 6)
         .background(chromeBackground)
+        .overlay(alignment: .top) {
+            Rectangle()
+                .fill(accent.opacity(reduceTransparency ? 0.22 : 0.35))
+                .frame(height: 0.5)
+        }
     }
 
     @ViewBuilder

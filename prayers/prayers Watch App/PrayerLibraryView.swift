@@ -23,7 +23,9 @@ struct PrayerLibraryView: View {
     }
 
     var body: some View {
-        VStack(spacing: 0) {
+        ZStack {
+            DivinityChrome.canvasBackground.ignoresSafeArea()
+            VStack(spacing: 0) {
             if speech.isSpeaking || speech.isPaused {
                 TransportRow(speech: speech, accent: accent)
                     .padding(.horizontal, 8)
@@ -55,7 +57,7 @@ struct PrayerLibraryView: View {
                         } header: {
                             Text("Mass")
                                 .font(DivinityFont.caption(10))
-                                .foregroundStyle(.secondary)
+                                .foregroundStyle(accent.opacity(0.95))
                                 .textCase(.uppercase)
                         }
                     }
@@ -72,15 +74,22 @@ struct PrayerLibraryView: View {
                         } header: {
                             Text(massPrayers.isEmpty ? "Prayers" : "More prayers")
                                 .font(DivinityFont.caption(10))
-                                .foregroundStyle(.secondary)
+                                .foregroundStyle(accent.opacity(0.95))
                                 .textCase(.uppercase)
                         }
                     }
                 }
-                .listSectionSpacing(6)
+                .listSectionSpacing(8)
+                .listRowBackground(
+                    RoundedRectangle(cornerRadius: 10, style: .continuous)
+                        .fill(DivinityChrome.elevatedSurface(theme: theme, reduceTransparency: reduceTransparency, increaseContrast: differentiateWithoutColor))
+                        .padding(.vertical, 2)
+                )
+            }
             }
         }
         .navigationTitle("Prayer Library")
+        .navigationBarTitleDisplayMode(.inline)
         .tint(accent)
         .onAppear {
             loadPrayers()
@@ -89,11 +98,15 @@ struct PrayerLibraryView: View {
 
     @ViewBuilder
     private func prayerRowLabel(title: String, icon: String) -> some View {
-        HStack(alignment: .firstTextBaseline, spacing: 8) {
-            Image(systemName: icon)
-                .font(.system(size: 12, weight: .semibold))
-                .foregroundStyle(.tertiary)
-                .frame(width: 16, alignment: .center)
+        HStack(alignment: .center, spacing: 10) {
+            ZStack {
+                RoundedRectangle(cornerRadius: 7, style: .continuous)
+                    .fill(accent.opacity(reduceTransparency ? 0.28 : 0.2))
+                    .frame(width: 32, height: 32)
+                Image(systemName: icon)
+                    .font(.system(size: 14, weight: .semibold))
+                    .foregroundStyle(accent)
+            }
             Text(title)
                 .font(DivinityFont.title(14))
                 .lineLimit(3)
@@ -101,7 +114,7 @@ struct PrayerLibraryView: View {
                 .multilineTextAlignment(.leading)
                 .frame(maxWidth: .infinity, alignment: .leading)
         }
-        .padding(.vertical, 2)
+        .padding(.vertical, 4)
     }
 
     private func loadPrayers() {

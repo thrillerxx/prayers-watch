@@ -1,12 +1,5 @@
 import SwiftUI
 
-enum NavRoute: Hashable {
-    case rosary
-    case prayerLibrary
-    case massResponses
-    case settings
-}
-
 struct ContentView: View {
 
     @EnvironmentObject private var rosary: RosarySessionController
@@ -29,32 +22,51 @@ struct ContentView: View {
 
     var body: some View {
         NavigationStack(path: $path) {
-            List {
-                Section {
-                    NavigationLink(value: NavRoute.rosary) {
-                        Label("Rosary", systemImage: "cross.fill")
-                            .font(DivinityFont.title(15))
+            ScrollView {
+                VStack(alignment: .leading, spacing: 10) {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("Divinity")
+                            .font(DivinityFont.chrome(17))
+                            .foregroundStyle(.primary)
+                        Text("Prayers & Rosary")
+                            .font(DivinityFont.caption(11))
+                            .foregroundStyle(.secondary)
                     }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.top, 4)
+                    .padding(.bottom, 6)
 
-                    NavigationLink(value: NavRoute.prayerLibrary) {
-                        Label("Prayer Library", systemImage: "books.vertical.fill")
-                            .font(DivinityFont.title(15))
-                    }
+                    HomeNavigationTile(
+                        route: .rosary,
+                        title: "Rosary",
+                        subtitle: "Guided mysteries",
+                        icon: "cross.fill"
+                    )
+                    HomeNavigationTile(
+                        route: .prayerLibrary,
+                        title: "Prayer Library",
+                        subtitle: "Browse & listen",
+                        icon: "books.vertical.fill"
+                    )
+                    HomeNavigationTile(
+                        route: .massResponses,
+                        title: "Mass Responses",
+                        subtitle: "At Mass & devotions",
+                        icon: "text.book.closed.fill"
+                    )
+                    HomeNavigationTile(
+                        route: .settings,
+                        title: "Settings",
+                        subtitle: "Theme & voice",
+                        icon: "gearshape.fill"
+                    )
                 }
-
-                Section {
-                    NavigationLink(value: NavRoute.massResponses) {
-                        Label("Mass Responses & Prayers", systemImage: "text.book.closed.fill")
-                            .font(DivinityFont.title(15))
-                    }
-
-                    NavigationLink(value: NavRoute.settings) {
-                        Label("Settings", systemImage: "gearshape.fill")
-                            .font(DivinityFont.title(15))
-                    }
-                }
+                .padding(.horizontal, 10)
+                .padding(.bottom, 8)
             }
-            .navigationTitle("Divinity")
+            .scrollIndicators(.hidden)
+            .background(DivinityChrome.canvasBackground)
+            .navigationBarTitleDisplayMode(.inline)
             .navigationDestination(for: NavRoute.self) { route in
                 switch route {
                 case .rosary:
@@ -108,20 +120,18 @@ struct ContentView: View {
             .padding(.vertical, 8)
             .frame(maxWidth: .infinity, alignment: .leading)
             .background {
-                if reduceTransparency || differentiateWithoutColor {
-                    Color.black.opacity(0.92)
-                } else {
-                    ZStack {
-                        Color.black.opacity(0.35)
-                        Rectangle().fill(.ultraThinMaterial)
+                RoundedRectangle(cornerRadius: 12, style: .continuous)
+                    .fill(DivinityChrome.elevatedSurface(theme: theme, reduceTransparency: reduceTransparency, increaseContrast: differentiateWithoutColor))
+                    .overlay {
+                        RoundedRectangle(cornerRadius: 12, style: .continuous)
+                            .stroke(accent.opacity(0.35), lineWidth: 0.5)
                     }
-                }
             }
-            .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
         }
         .buttonStyle(.plain)
         .padding(.horizontal, 6)
         .padding(.bottom, 2)
+        .shadow(color: .black.opacity(0.4), radius: 8, y: 3)
         .accessibilityIdentifier("RosaryMiniPlayer")
     }
 }

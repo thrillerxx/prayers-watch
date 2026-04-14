@@ -219,7 +219,7 @@ final class prayers_Watch_AppUITests: XCTestCase {
         tapBackButton(app)
         snapshot(app, "06_home_after_library")
 
-        tapHomeMenuItem(app, "Mass Responses & Prayers")
+        tapHomeMenuItem(app, "Mass Responses")
         XCTAssertTrue(app.navigationBars.firstMatch.waitForExistence(timeout: 10))
         snapshot(app, "07_mass_responses")
 
