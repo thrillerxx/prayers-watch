@@ -107,7 +107,7 @@ final class prayers_Watch_AppUITests: XCTestCase {
 
         writeScreenshot(XCUIScreen.main.screenshot(), name: "home")
 
-        app.buttons["Rosary"].tap()
+        tapHomeMenuItem(app, "Rosary")
         writeScreenshot(XCUIScreen.main.screenshot(), name: "choose_mystery")
 
         app.buttons["Joyful"].tap()
@@ -143,7 +143,7 @@ final class prayers_Watch_AppUITests: XCTestCase {
         let app = XCUIApplication()
         app.launch()
 
-        app.buttons["Prayer Library"].tap()
+        tapHomeMenuItem(app, "Prayer Library")
         openFirstPrayerDetail(app)
 
         // Prayer Detail screenshot
@@ -201,7 +201,7 @@ final class prayers_Watch_AppUITests: XCTestCase {
 
         snapshot(app, "01_home_divinity")
 
-        app.buttons["Prayer Library"].tap()
+        tapHomeMenuItem(app, "Prayer Library")
         XCTAssertTrue(app.navigationBars.firstMatch.waitForExistence(timeout: 10))
         snapshot(app, "02_prayer_library")
 
