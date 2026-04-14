@@ -119,6 +119,17 @@ final class RosarySessionController: ObservableObject {
         return step.title
     }
 
+    /// Short name for the active decade (e.g. "The Annunciation"), including during Hail Marys — aligns with `MysteryArt` / cover image.
+    var currentDecadeMysteryShortTitle: String? {
+        guard let mystery = selectedMystery else { return nil }
+        guard let d = MysteryArt.decadeNumber(mystery: mystery, stepIndex: index, steps: steps), d >= 1 else { return nil }
+        let titleId = "mystery_\(mystery.contentKey)_\(d)_title"
+        guard let titlePrayer = prayersById[titleId],
+              let raw = titlePrayer.translations[lang] ?? titlePrayer.translations["en"] else { return nil }
+        let t = raw.trimmingCharacters(in: .whitespacesAndNewlines)
+        return t.isEmpty ? nil : t
+    }
+
     var hailMaryCounterLabel: String? {
         guard let step = currentStep else { return nil }
         guard step.title == "Hail Mary" else { return nil }

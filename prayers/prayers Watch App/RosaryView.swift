@@ -247,11 +247,13 @@ struct RosaryView: View {
 
                 ZStack {
                     Image(name)
+                        .renderingMode(.original)
                         .resizable()
                         .aspectRatio(contentMode: .fill)
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                         .clipped()
                         .blur(radius: solidChrome ? 0 : 20)
+                        .id(name)
 
                     LinearGradient(
                         colors: colors,
@@ -295,16 +297,20 @@ struct RosaryView: View {
         Group {
             if let mystery = rosary.selectedMystery {
                 let name = MysteryArt.assetName(mystery: mystery, stepIndex: rosary.index, steps: rosary.steps)
+                let corner: CGFloat = 12
                 Image(name)
+                    .renderingMode(.original)
                     .resizable()
+                    .interpolation(.high)
                     .aspectRatio(contentMode: .fill)
-                    .frame(width: 72, height: 72)
-                    .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+                    .frame(width: 102, height: 102)
+                    .clipShape(RoundedRectangle(cornerRadius: corner, style: .continuous))
                     .overlay {
-                        RoundedRectangle(cornerRadius: 10, style: .continuous)
-                            .stroke(Color.white.opacity(0.22), lineWidth: 0.5)
+                        RoundedRectangle(cornerRadius: corner, style: .continuous)
+                            .stroke(Color.white.opacity(0.26), lineWidth: 0.5)
                     }
-                    .shadow(color: Color.black.opacity(solidChrome ? 0 : 0.35), radius: 6, x: 0, y: 2)
+                    .shadow(color: Color.black.opacity(solidChrome ? 0 : 0.4), radius: 8, x: 0, y: 3)
+                    .id(name)
             }
         }
         .frame(maxWidth: .infinity)
@@ -324,8 +330,8 @@ struct RosaryView: View {
                     .shadow(color: textShadowColor, radius: solidChrome ? 0 : 2, x: 0, y: 1)
             }
 
-            if let stepTitle = heroStepTitle {
-                Text(stepTitle)
+            if let mysteryTitle = rosary.currentDecadeMysteryShortTitle ?? heroStepTitle {
+                Text(mysteryTitle)
                     .font(.system(size: 15, weight: .bold, design: .default))
                     .foregroundStyle(heroPrimaryText)
                     .multilineTextAlignment(.center)
@@ -333,6 +339,18 @@ struct RosaryView: View {
                     .lineSpacing(2)
                     .minimumScaleFactor(0.72)
                     .shadow(color: textShadowColor, radius: solidChrome ? 0 : 3, x: 0, y: 1)
+            } else if let step = rosary.currentStep {
+                let fallback = step.title.trimmingCharacters(in: .whitespacesAndNewlines)
+                if !fallback.isEmpty, fallback.caseInsensitiveCompare("Rosary") != .orderedSame {
+                    Text(fallback)
+                        .font(.system(size: 15, weight: .bold, design: .default))
+                        .foregroundStyle(heroPrimaryText)
+                        .multilineTextAlignment(.center)
+                        .lineLimit(3)
+                        .lineSpacing(2)
+                        .minimumScaleFactor(0.72)
+                        .shadow(color: textShadowColor, radius: solidChrome ? 0 : 3, x: 0, y: 1)
+                }
             }
 
             if let label = rosary.hailMaryCounterLabel {
