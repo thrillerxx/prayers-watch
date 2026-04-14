@@ -29,4 +29,12 @@ xcrun simctl launch "$WATCH_UDID" "$BUNDLE"
 
 open -a Simulator
 osascript -e 'tell application "Simulator" to activate' 2>/dev/null || true
+
+# Simulator framebuffer (works over SSH); see docs/ui-capture.md — Manual screenshot
+SHOT_DIR="$REPO/prayers/artifacts/mac-visible"
+mkdir -p "$SHOT_DIR"
+sleep 2
+xcrun simctl io "$WATCH_UDID" screenshot "$SHOT_DIR/mac-watch-46mm-after-run.png"
+
 echo "[mac_watch_46mm_run] done — $(git -C "$REPO" rev-parse --short HEAD)"
+echo "[mac_watch_46mm_run] screenshot: $SHOT_DIR/mac-watch-46mm-after-run.png"
