@@ -361,14 +361,14 @@ struct RosaryView: View {
                 Spacer(minLength: 0)
                 HStack(spacing: 6) {
                     compactTransportChip(
-                        icon: "backward.fill",
+                        icon: rosary.index == 0 ? "arrow.counterclockwise" : "backward.fill",
                         accent: accent,
                         stroke: stroke,
                         prominent: false,
-                        disabled: rosary.index == 0,
+                        disabled: false,
                         action: { rosary.previousStep() }
                     )
-                    .accessibilityLabel("Previous")
+                    .accessibilityLabel(rosary.index == 0 ? "Replay" : "Previous")
                     .accessibilityIdentifier("TransportPrevious")
                     .frame(width: 32, height: 28)
 

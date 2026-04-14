@@ -269,7 +269,11 @@ final class RosarySessionController: ObservableObject {
     }
 
     func previousStep() {
-        guard index > 0 else { return }
+        if index == 0 {
+            if hapticsOn { Haptics.click() }
+            transition(to: 0, reason: .manualStart)
+            return
+        }
         if hapticsOn { Haptics.click() }
         transition(to: index - 1, reason: .manualBack)
     }
