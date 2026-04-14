@@ -27,7 +27,7 @@ struct PrayerLibraryView: View {
             DivinityChrome.canvasBackground.ignoresSafeArea()
             VStack(spacing: 0) {
             if speech.isSpeaking || speech.isPaused {
-                TransportRow(speech: speech)
+                PrayerPlaybackMiniPlayer(speech: speech)
                     .padding(.horizontal, 8)
                     .padding(.bottom, 6)
             }
@@ -154,7 +154,8 @@ struct PrayerLibraryView: View {
     }
 }
 
-private struct TransportRow: View {
+/// Spotify-style “now playing” strip for prayer TTS: artwork well (list icons), sans title stack, accent progress, white transport glyphs.
+private struct PrayerPlaybackMiniPlayer: View {
     @ObservedObject var speech: SpeechManager
 
     @Environment(\.appColorTheme) private var theme
@@ -173,64 +174,122 @@ private struct TransportRow: View {
         DivinityChrome.elevatedSurfaceStroke(theme: theme, accent: accent, reduceTransparency: reduceTransparency)
     }
 
+    private var displayTitle: String {
+        let t = speech.nowPlayingTitle?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        return t.isEmpty ? "Now playing" : t
+    }
+
+    private var displaySubtitle: String? {
+        let s = speech.nowPlayingSubtitle?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        return s.isEmpty ? nil : s
+    }
+
+    private var artworkSymbol: String {
+        speech.nowPlayingArtworkSymbol ?? "waveform"
+    }
+
     var body: some View {
-        let rowHeight: CGFloat = 34
-        return HStack(spacing: 8) {
-            Button {
-                if speech.isSpeaking {
-                    speech.pause()
-                } else {
-                    speech.resume()
+        VStack(alignment: .leading, spacing: 8) {
+            HStack(alignment: .center, spacing: 10) {
+                ZStack {
+                    RoundedRectangle(cornerRadius: 8, style: .continuous)
+                        .fill(accent.opacity(reduceTransparency ? 0.38 : 0.32))
+                        .frame(width: 48, height: 48)
+                    Image(systemName: artworkSymbol)
+                        .font(.system(size: 21, weight: .semibold))
+                        .foregroundStyle(.white)
+                        .symbolRenderingMode(.monochrome)
                 }
-            } label: {
-                Image(systemName: speech.isSpeaking ? "pause.fill" : "play.fill")
-                    .font(.system(size: 15, weight: .semibold))
-                    .foregroundStyle(.white)
-                    .symbolRenderingMode(.monochrome)
-                    .frame(maxWidth: .infinity)
-                    .frame(maxHeight: .infinity)
-                    .contentShape(Rectangle())
-            }
-            .buttonStyle(.plain)
-            .accessibilityLabel(speech.isSpeaking ? "Pause" : "Play")
-            .accessibilityIdentifier("TransportPlayPause")
-            .frame(maxWidth: .infinity)
-            .frame(height: rowHeight)
-            .background {
-                RoundedRectangle(cornerRadius: 9, style: .continuous)
-                    .fill(accent)
-                    .overlay {
-                        RoundedRectangle(cornerRadius: 9, style: .continuous)
-                            .stroke(stroke.opacity(0.45), lineWidth: 0.5)
+                .frame(width: 48, height: 48)
+
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(displayTitle)
+                        .font(.system(size: 14, weight: .semibold, design: .default))
+                        .foregroundStyle(.white)
+                        .lineLimit(2)
+                        .minimumScaleFactor(0.78)
+                        .multilineTextAlignment(.leading)
+
+                    if let displaySubtitle {
+                        Text(displaySubtitle)
+                            .font(.system(size: 11, weight: .medium, design: .default))
+                            .foregroundStyle(.white.opacity(0.52))
+                            .lineLimit(1)
                     }
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
             }
 
-            Button {
-                speech.stop()
-            } label: {
-                Image(systemName: "stop.fill")
-                    .font(.system(size: 14, weight: .semibold))
-                    .foregroundStyle(.white)
-                    .symbolRenderingMode(.monochrome)
-                    .frame(maxWidth: .infinity)
-                    .frame(maxHeight: .infinity)
-                    .contentShape(Rectangle())
-            }
-            .buttonStyle(.plain)
-            .accessibilityLabel("Stop")
-            .accessibilityIdentifier("TransportStop")
-            .frame(maxWidth: .infinity)
-            .frame(height: rowHeight)
-            .background {
-                RoundedRectangle(cornerRadius: 9, style: .continuous)
-                    .fill(surface)
-                    .overlay {
-                        RoundedRectangle(cornerRadius: 9, style: .continuous)
-                            .stroke(stroke, lineWidth: 0.5)
+            playbackProgressBar
+
+            HStack(spacing: 0) {
+                Button {
+                    speech.stop()
+                } label: {
+                    Image(systemName: "stop.fill")
+                        .font(.system(size: 19, weight: .medium))
+                        .foregroundStyle(.white.opacity(0.92))
+                        .symbolRenderingMode(.monochrome)
+                        .frame(width: 40, height: 40)
+                        .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel("Stop")
+                .accessibilityIdentifier("TransportStop")
+
+                Spacer(minLength: 8)
+
+                Button {
+                    if speech.isSpeaking {
+                        speech.pause()
+                    } else {
+                        speech.resume()
                     }
+                } label: {
+                    Image(systemName: speech.isSpeaking ? "pause.fill" : "play.fill")
+                        .font(.system(size: 26, weight: .medium))
+                        .foregroundStyle(.white)
+                        .symbolRenderingMode(.monochrome)
+                        .frame(width: 48, height: 48)
+                        .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel(speech.isSpeaking ? "Pause" : "Play")
+                .accessibilityIdentifier("TransportPlayPause")
+
+                Spacer(minLength: 8)
+
+                Color.clear
+                    .frame(width: 40, height: 40)
+                    .accessibilityHidden(true)
             }
+            .frame(maxWidth: .infinity)
         }
-        .frame(maxWidth: .infinity)
+        .padding(.horizontal, 10)
+        .padding(.vertical, 10)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background {
+            RoundedRectangle(cornerRadius: 14, style: .continuous)
+                .fill(surface)
+                .overlay {
+                    RoundedRectangle(cornerRadius: 14, style: .continuous)
+                        .stroke(stroke, lineWidth: 0.5)
+                }
+        }
+    }
+
+    private var playbackProgressBar: some View {
+        GeometryReader { geo in
+            ZStack(alignment: .leading) {
+                Capsule()
+                    .fill(Color.white.opacity(0.12))
+                Capsule()
+                    .fill(accent)
+                    .frame(width: max(3, geo.size.width * min(1, max(0, speech.playbackProgress))))
+            }
+            .frame(width: geo.size.width, height: 3, alignment: .leading)
+        }
+        .frame(height: 3)
     }
 }
 
@@ -266,7 +325,7 @@ struct PrayerDetailView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 10) {
                 if speech.isSpeaking || speech.isPaused {
-                    TransportRow(speech: speech)
+                    PrayerPlaybackMiniPlayer(speech: speech)
                 }
 
                 if text.isEmpty {
@@ -298,7 +357,14 @@ struct PrayerDetailView: View {
     private func speak() {
         guard !text.isEmpty else { return }
 
-        speech.speak(text: text, voiceLanguage: "en-US", rate: 0.45)
+        speech.speak(
+            text: text,
+            voiceLanguage: "en-US",
+            rate: 0.45,
+            title: prayer.title,
+            artworkSymbol: prayer.id.hasPrefix("mass_") ? "building.columns" : "book.pages",
+            subtitle: prayer.id.hasPrefix("mass_") ? "Mass" : "Prayer"
+        )
     }
 }
 
