@@ -209,7 +209,7 @@ struct RosaryView: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
             .safeAreaInset(edge: .bottom, spacing: 0) {
                 playerChrome
-                    .padding(.horizontal, 16)
+                    .padding(.horizontal, 22)
                     .frame(maxWidth: .infinity)
                     .background {
                         DivinityChrome.elevatedSurface(
@@ -365,7 +365,7 @@ struct RosaryView: View {
                 )
                 .accessibilityLabel("Previous")
                 .accessibilityIdentifier("TransportPrevious")
-                .frame(width: 38)
+                .frame(width: 34)
 
                 compactTransportChip(
                     icon: speech.isSpeaking ? "pause.fill" : "play.fill",
@@ -388,7 +388,7 @@ struct RosaryView: View {
                 )
                 .accessibilityLabel("Next")
                 .accessibilityIdentifier("TransportNext")
-                .frame(width: 38)
+                .frame(width: 34)
             }
             .frame(height: 28)
 
@@ -419,13 +419,23 @@ struct RosaryView: View {
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(.horizontal, 6)
+        .padding(.horizontal, 4)
         .padding(.top, 6)
         .padding(.bottom, 8)
         .background {
             playerChromeBackground(surface: surface, stroke: stroke)
         }
-        .shadow(color: .black.opacity(solidChrome ? 0.18 : 0.22), radius: 4, x: 0, y: -1)
+        .clipShape(playerChromeCardShape)
+    }
+
+    private var playerChromeCardShape: UnevenRoundedRectangle {
+        UnevenRoundedRectangle(
+            topLeadingRadius: 16,
+            bottomLeadingRadius: 0,
+            bottomTrailingRadius: 0,
+            topTrailingRadius: 16,
+            style: .continuous
+        )
     }
 
     /// Plain chips — secondary uses light-on-dim (readable on 42mm); avoids bordered overflow clipping.
@@ -471,12 +481,11 @@ struct RosaryView: View {
 
     @ViewBuilder
     private func playerChromeBackground(surface: Color, stroke: Color) -> some View {
-        let topRadius: CGFloat = 18
         let shape = UnevenRoundedRectangle(
-            topLeadingRadius: topRadius,
+            topLeadingRadius: 16,
             bottomLeadingRadius: 0,
             bottomTrailingRadius: 0,
-            topTrailingRadius: topRadius,
+            topTrailingRadius: 16,
             style: .continuous
         )
         ZStack {
