@@ -209,7 +209,7 @@ struct RosaryView: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
             .safeAreaInset(edge: .bottom, spacing: 0) {
                 playerChrome
-                    .padding(.horizontal, 22)
+                    .padding(.horizontal, 28)
                     .frame(maxWidth: .infinity)
                     .background {
                         DivinityChrome.elevatedSurface(
@@ -354,7 +354,7 @@ struct RosaryView: View {
         return VStack(alignment: .leading, spacing: 7) {
             progressSection(accent: accent)
 
-            HStack(spacing: 4) {
+            HStack(spacing: 6) {
                 compactTransportChip(
                     icon: "backward.fill",
                     accent: accent,
@@ -365,7 +365,7 @@ struct RosaryView: View {
                 )
                 .accessibilityLabel("Previous")
                 .accessibilityIdentifier("TransportPrevious")
-                .frame(width: 34)
+                .frame(width: 32, height: 28)
 
                 compactTransportChip(
                     icon: speech.isSpeaking ? "pause.fill" : "play.fill",
@@ -376,7 +376,7 @@ struct RosaryView: View {
                     action: { rosary.playPauseTapped() }
                 )
                 .accessibilityIdentifier("TransportPlayPause")
-                .frame(maxWidth: .infinity)
+                .frame(width: 56, height: 28)
 
                 compactTransportChip(
                     icon: "forward.fill",
@@ -388,9 +388,9 @@ struct RosaryView: View {
                 )
                 .accessibilityLabel("Next")
                 .accessibilityIdentifier("TransportNext")
-                .frame(width: 34)
+                .frame(width: 32, height: 28)
             }
-            .frame(height: 28)
+            .frame(maxWidth: .infinity)
 
             Button {
                 Task { @MainActor in rosary.stopPlayback() }
