@@ -379,23 +379,21 @@ struct RosaryView: View {
         }
     }
 
-    /// Compact transport (42mm + 46mm): smaller than prayer detail hero so art + text stay visible above the fold.
+    /// Compact transport (42mm + 46mm): sized like the library docked mini-player, centered so it does not span edge-to-edge.
     private enum RosaryTransportMetrics {
-        static let sideIcon: CGFloat = 16
-        static let sideFrame: CGFloat = 34
-        static let playIcon: CGFloat = 21
-        static let playFrame: CGFloat = 40
-        static let stopIcon: CGFloat = 15
-        static let stopFrame: CGFloat = 32
-        static let gap: CGFloat = 2
+        static let sideIcon: CGFloat = 14
+        static let sideFrame: CGFloat = 30
+        static let playIcon: CGFloat = 18
+        static let playFrame: CGFloat = 34
+        static let stopIcon: CGFloat = 13
+        static let stopFrame: CGFloat = 28
+        static let clusterSpacing: CGFloat = 10
     }
 
     private var rosaryTransportRow: some View {
         let nextDisabled = rosary.steps.isEmpty || rosary.index >= rosary.steps.count - 1
         let m = RosaryTransportMetrics.self
-        return HStack(spacing: 0) {
-            Spacer(minLength: 0)
-
+        return HStack(spacing: m.clusterSpacing) {
             Button {
                 rosary.previousStep()
             } label: {
@@ -409,8 +407,6 @@ struct RosaryView: View {
             .buttonStyle(.plain)
             .accessibilityLabel(rosary.index == 0 ? "Replay" : "Previous")
             .accessibilityIdentifier("TransportPrevious")
-
-            Spacer(minLength: m.gap)
 
             Button {
                 rosary.playPauseTapped()
@@ -426,8 +422,6 @@ struct RosaryView: View {
             .accessibilityLabel(speech.isSpeaking ? "Pause" : "Play")
             .accessibilityIdentifier("TransportPlayPause")
 
-            Spacer(minLength: m.gap)
-
             Button {
                 rosary.nextStep()
             } label: {
@@ -442,8 +436,6 @@ struct RosaryView: View {
             .disabled(nextDisabled)
             .accessibilityLabel("Next")
             .accessibilityIdentifier("TransportNext")
-
-            Spacer(minLength: 0)
         }
         .frame(maxWidth: .infinity)
     }
