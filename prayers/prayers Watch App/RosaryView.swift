@@ -191,6 +191,7 @@ struct RosaryView: View {
         }
     }
 
+    /// Music-style layout: blurred hero, small cover art, floating circular transport (all mysteries).
     private var nowPlayingSession: some View {
         ZStack(alignment: .bottom) {
             if rosary.selectedMystery != nil {
@@ -198,30 +199,28 @@ struct RosaryView: View {
             }
 
             VStack(spacing: 0) {
-                sessionHeader
-                    .padding(.horizontal, 16)
-                    .padding(.top, 8)
-                    .padding(.bottom, 8)
+                ScrollView {
+                    VStack(spacing: 10) {
+                        Color.clear.frame(height: 4)
+                        rosaryAlbumArtTile
+                        rosarySessionTitles
+                            .padding(.horizontal, 10)
+                            .onLongPressGesture(minimumDuration: 0.55) {
+                                Task { @MainActor in
+                                    rosary.exitToMysteryPicker()
+                                }
+                            }
+                        currentPrayerPanel
+                            .padding(.horizontal, 8)
+                    }
+                }
+                .frame(maxHeight: .infinity)
+                .scrollIndicators(.hidden)
 
-                currentPrayerPanel
-                    .padding(.horizontal, 8)
-            }
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-            .safeAreaInset(edge: .bottom, spacing: 0) {
-                HStack(spacing: 0) {
-                    Color.clear.frame(width: 10)
-                    playerChrome
-                        .frame(maxWidth: .infinity)
-                    Color.clear.frame(width: 10)
-                }
-                .background {
-                    DivinityChrome.elevatedSurface(
-                        theme: theme,
-                        reduceTransparency: reduceTransparency,
-                        increaseContrast: increaseContrast
-                    )
-                }
-                .ignoresSafeArea(edges: .bottom)
+                rosaryPlayerDock
+                    .padding(.horizontal, 12)
+                    .padding(.top, 6)
+                    .padding(.bottom, 6)
             }
         }
     }
@@ -252,6 +251,7 @@ struct RosaryView: View {
                         .aspectRatio(contentMode: .fill)
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                         .clipped()
+                        .blur(radius: solidChrome ? 0 : 20)
 
                     LinearGradient(
                         colors: colors,
@@ -261,51 +261,6 @@ struct RosaryView: View {
                     .allowsHitTesting(false)
                 }
                 .ignoresSafeArea()
-            }
-        }
-    }
-
-    private var sessionHeader: some View {
-        VStack(alignment: .center, spacing: 8) {
-            if let mystery = rosary.selectedMystery {
-                Text(mystery.title)
-                    .font(DivinityFont.caption(10))
-                    .foregroundStyle(heroSecondaryText)
-                    .textCase(.uppercase)
-                    .tracking(0.4)
-                    .multilineTextAlignment(.center)
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.85)
-                    .shadow(color: textShadowColor, radius: solidChrome ? 0 : 2, x: 0, y: 1)
-            }
-
-            if let stepTitle = heroStepTitle {
-                Text(stepTitle)
-                    .font(DivinityFont.title(13))
-                    .foregroundStyle(heroPrimaryText)
-                    .multilineTextAlignment(.center)
-                    .lineLimit(2)
-                    .lineSpacing(2)
-                    .minimumScaleFactor(0.7)
-                    .truncationMode(.tail)
-                    .frame(maxWidth: .infinity, alignment: .center)
-                    .shadow(color: textShadowColor, radius: solidChrome ? 0 : 3, x: 0, y: 1)
-                    .padding(.horizontal, 4)
-            }
-
-            if let label = rosary.hailMaryCounterLabel {
-                Text(label)
-                    .font(DivinityFont.caption(11))
-                    .fontWeight(.semibold)
-                    .foregroundStyle(heroSecondaryText)
-                    .minimumScaleFactor(0.7)
-                    .lineLimit(1)
-                    .shadow(color: textShadowColor, radius: solidChrome ? 0 : 2, x: 0, y: 1)
-            }
-        }
-        .onLongPressGesture(minimumDuration: 0.55) {
-            Task { @MainActor in
-                rosary.exitToMysteryPicker()
             }
         }
     }
@@ -320,19 +275,203 @@ struct RosaryView: View {
 
         return ScrollView {
             Text(bodyText)
-                .font(DivinityFont.prayerEmphasis(15))
+                .font(DivinityFont.prayerEmphasis(14))
                 .foregroundStyle(heroPrimaryText)
                 .multilineTextAlignment(.center)
-                .lineSpacing(5)
+                .lineSpacing(4)
                 .minimumScaleFactor(0.78)
                 .frame(maxWidth: .infinity, alignment: .center)
-                .padding(.horizontal, 12)
-                .padding(.vertical, 12)
+                .padding(.horizontal, 10)
+                .padding(.vertical, 10)
                 .background(prayerCardBackground)
                 .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
                 .shadow(color: Color.black.opacity(solidChrome ? 0 : 0.35), radius: 8, x: 0, y: 3)
         }
-        .frame(maxHeight: .infinity)
+        .frame(maxHeight: 118)
+        .scrollIndicators(.hidden)
+    }
+
+    private var rosaryAlbumArtTile: some View {
+        Group {
+            if let mystery = rosary.selectedMystery {
+                let name = MysteryArt.assetName(mystery: mystery, stepIndex: rosary.index, steps: rosary.steps)
+                Image(name)
+                    .resizable()
+                    .aspectRatio(contentMode: .fill)
+                    .frame(width: 72, height: 72)
+                    .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+                    .overlay {
+                        RoundedRectangle(cornerRadius: 10, style: .continuous)
+                            .stroke(Color.white.opacity(0.22), lineWidth: 0.5)
+                    }
+                    .shadow(color: Color.black.opacity(solidChrome ? 0 : 0.35), radius: 6, x: 0, y: 2)
+            }
+        }
+        .frame(maxWidth: .infinity)
+    }
+
+    private var rosarySessionTitles: some View {
+        VStack(alignment: .center, spacing: 4) {
+            if let mystery = rosary.selectedMystery {
+                Text(mystery.title)
+                    .font(.system(size: 11, weight: .medium, design: .default))
+                    .foregroundStyle(heroSecondaryText)
+                    .textCase(.uppercase)
+                    .tracking(0.45)
+                    .multilineTextAlignment(.center)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.85)
+                    .shadow(color: textShadowColor, radius: solidChrome ? 0 : 2, x: 0, y: 1)
+            }
+
+            if let stepTitle = heroStepTitle {
+                Text(stepTitle)
+                    .font(.system(size: 15, weight: .bold, design: .default))
+                    .foregroundStyle(heroPrimaryText)
+                    .multilineTextAlignment(.center)
+                    .lineLimit(3)
+                    .lineSpacing(2)
+                    .minimumScaleFactor(0.72)
+                    .shadow(color: textShadowColor, radius: solidChrome ? 0 : 3, x: 0, y: 1)
+            }
+
+            if let label = rosary.hailMaryCounterLabel {
+                Text(label)
+                    .font(.system(size: 11, weight: .semibold, design: .default))
+                    .foregroundStyle(heroSecondaryText)
+                    .minimumScaleFactor(0.7)
+                    .lineLimit(1)
+                    .shadow(color: textShadowColor, radius: solidChrome ? 0 : 2, x: 0, y: 1)
+            }
+        }
+        .frame(maxWidth: .infinity)
+    }
+
+    private var rosaryPlayerDock: some View {
+        let accent = theme.accentColor(reduceTransparency: reduceTransparency, increaseContrast: increaseContrast)
+        return VStack(spacing: 10) {
+            ThinProgressBar(value: rosary.overallProgressFraction, accent: accent, dimmed: !solidChrome)
+                .padding(.horizontal, 2)
+            rosaryCircularTransportRow(accent: accent)
+            HStack {
+                Spacer(minLength: 0)
+                rosaryStopButton
+                Spacer(minLength: 0)
+            }
+        }
+    }
+
+    private func rosaryCircularTransportRow(accent: Color) -> some View {
+        HStack(spacing: 18) {
+            Spacer(minLength: 0)
+            rosaryGlassCircleButton(
+                icon: rosary.index == 0 ? "arrow.counterclockwise" : "backward.fill",
+                disabled: false,
+                label: rosary.index == 0 ? "Replay" : "Previous",
+                identifier: "TransportPrevious"
+            ) {
+                rosary.previousStep()
+            }
+
+            rosaryMainPlayCircle(accent: accent)
+
+            rosaryGlassCircleButton(
+                icon: "forward.fill",
+                disabled: rosary.steps.isEmpty || rosary.index >= rosary.steps.count - 1,
+                label: "Next",
+                identifier: "TransportNext"
+            ) {
+                rosary.nextStep()
+            }
+            Spacer(minLength: 0)
+        }
+    }
+
+    private func rosaryGlassCircleButton(
+        icon: String,
+        disabled: Bool,
+        label: String,
+        identifier: String,
+        action: @escaping () -> Void
+    ) -> some View {
+        Button(action: action) {
+            Image(systemName: icon)
+                .font(.system(size: 14, weight: .semibold))
+                .foregroundStyle(.white.opacity(disabled ? 0.45 : 0.95))
+                .symbolRenderingMode(.monochrome)
+                .frame(width: 40, height: 40)
+        }
+        .buttonStyle(.plain)
+        .disabled(disabled)
+        .opacity(disabled ? 0.62 : 1)
+        .background {
+            Group {
+                if solidChrome {
+                    Circle()
+                        .fill(Color.primary.opacity(0.12))
+                } else {
+                    Circle()
+                        .fill(.ultraThinMaterial)
+                }
+            }
+            .overlay {
+                Circle()
+                    .stroke(Color.white.opacity(solidChrome ? 0.2 : 0.22), lineWidth: 0.5)
+            }
+        }
+        .accessibilityLabel(label)
+        .accessibilityIdentifier(identifier)
+    }
+
+    private func rosaryMainPlayCircle(accent: Color) -> some View {
+        Button {
+            rosary.playPauseTapped()
+        } label: {
+            Image(systemName: speech.isSpeaking ? "pause.fill" : "play.fill")
+                .font(.system(size: 22, weight: .semibold))
+                .foregroundStyle(.white)
+                .symbolRenderingMode(.monochrome)
+                .frame(width: 50, height: 50)
+        }
+        .buttonStyle(.plain)
+        .background {
+            Circle()
+                .fill(accent)
+        }
+        .overlay {
+            Circle()
+                .stroke(Color.white.opacity(0.95), lineWidth: 3)
+        }
+        .accessibilityIdentifier("TransportPlayPause")
+    }
+
+    private var rosaryStopButton: some View {
+        Button {
+            Task { @MainActor in rosary.stopPlayback() }
+        } label: {
+            Image(systemName: "stop.fill")
+                .font(.system(size: 12, weight: .semibold))
+                .foregroundStyle(heroPrimaryText.opacity(0.92))
+                .symbolRenderingMode(.monochrome)
+                .frame(width: 36, height: 36)
+        }
+        .buttonStyle(.plain)
+        .background {
+            Group {
+                if solidChrome {
+                    Circle()
+                        .fill(Color.primary.opacity(0.1))
+                } else {
+                    Circle()
+                        .fill(.ultraThinMaterial)
+                }
+            }
+            .overlay {
+                Circle()
+                    .stroke(Color.white.opacity(0.18), lineWidth: 0.5)
+            }
+        }
+        .accessibilityIdentifier("TransportStop")
     }
 
     @ViewBuilder
@@ -347,191 +486,6 @@ struct RosaryView: View {
                     .fill(.ultraThinMaterial)
             }
         }
-    }
-
-    private var playerChrome: some View {
-        let accent = theme.accentColor(reduceTransparency: reduceTransparency, increaseContrast: increaseContrast)
-        let surface = DivinityChrome.elevatedSurface(theme: theme, reduceTransparency: reduceTransparency, increaseContrast: increaseContrast)
-        let stroke = DivinityChrome.elevatedSurfaceStroke(theme: theme, accent: accent, reduceTransparency: reduceTransparency)
-
-        return VStack(alignment: .leading, spacing: 7) {
-            progressSection(accent: accent)
-
-            HStack(spacing: 0) {
-                Spacer(minLength: 0)
-                HStack(spacing: 6) {
-                    compactTransportChip(
-                        icon: rosary.index == 0 ? "arrow.counterclockwise" : "backward.fill",
-                        accent: accent,
-                        stroke: stroke,
-                        prominent: false,
-                        disabled: false,
-                        action: { rosary.previousStep() }
-                    )
-                    .accessibilityLabel(rosary.index == 0 ? "Replay" : "Previous")
-                    .accessibilityIdentifier("TransportPrevious")
-                    .frame(width: 32, height: 28)
-
-                    compactTransportChip(
-                        icon: speech.isSpeaking ? "pause.fill" : "play.fill",
-                        accent: accent,
-                        stroke: stroke,
-                        prominent: true,
-                        disabled: false,
-                        action: { rosary.playPauseTapped() }
-                    )
-                    .accessibilityIdentifier("TransportPlayPause")
-                    .frame(width: 56, height: 28)
-
-                    compactTransportChip(
-                        icon: "forward.fill",
-                        accent: accent,
-                        stroke: stroke,
-                        prominent: false,
-                        disabled: rosary.steps.isEmpty || rosary.index >= rosary.steps.count - 1,
-                        action: { rosary.nextStep() }
-                    )
-                    .accessibilityLabel("Next")
-                    .accessibilityIdentifier("TransportNext")
-                    .frame(width: 32, height: 28)
-                }
-                Spacer(minLength: 0)
-            }
-            .frame(maxWidth: .infinity)
-
-            Button {
-                Task { @MainActor in rosary.stopPlayback() }
-            } label: {
-                HStack(spacing: 6) {
-                    Image(systemName: "stop.fill")
-                        .font(.system(size: 11, weight: .semibold))
-                    Text("Stop")
-                        .font(.system(size: 11, weight: .semibold))
-                }
-                .foregroundStyle(.white)
-                .symbolRenderingMode(.monochrome)
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, 7)
-                .contentShape(Rectangle())
-            }
-            .buttonStyle(.plain)
-            .accessibilityIdentifier("TransportStop")
-            .background {
-                RoundedRectangle(cornerRadius: 8, style: .continuous)
-                    .fill(Color.white.opacity(0.14))
-                    .overlay {
-                        RoundedRectangle(cornerRadius: 8, style: .continuous)
-                            .stroke(stroke.opacity(0.65), lineWidth: 0.5)
-                    }
-            }
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(.horizontal, 8)
-        .padding(.top, 6)
-        .padding(.bottom, 8)
-        .background {
-            playerChromeBackground(surface: surface, stroke: stroke)
-        }
-        .clipShape(playerChromeCardShape)
-    }
-
-    private var playerChromeCardShape: UnevenRoundedRectangle {
-        UnevenRoundedRectangle(
-            topLeadingRadius: 16,
-            bottomLeadingRadius: 0,
-            bottomTrailingRadius: 0,
-            topTrailingRadius: 16,
-            style: .continuous
-        )
-    }
-
-    /// Plain chips — secondary uses light-on-dim (readable on 42mm); avoids bordered overflow clipping.
-    private func compactTransportChip(
-        icon: String,
-        accent: Color,
-        stroke: Color,
-        prominent: Bool,
-        disabled: Bool,
-        action: @escaping () -> Void
-    ) -> some View {
-        let secondaryFill = Color.white.opacity(0.16)
-        let iconColor: Color = {
-            if prominent { return .white }
-            if disabled { return .white.opacity(0.52) }
-            return .white.opacity(0.95)
-        }()
-        return Button(action: action) {
-            Image(systemName: icon)
-                .font(.system(size: prominent ? 12 : 10, weight: .semibold))
-                .foregroundStyle(iconColor)
-                .symbolRenderingMode(.monochrome)
-                .frame(maxWidth: .infinity)
-                .frame(maxHeight: .infinity)
-                .contentShape(Rectangle())
-        }
-        .buttonStyle(.plain)
-        .disabled(disabled)
-        .opacity(disabled ? 0.62 : 1)
-        .frame(maxWidth: .infinity, minHeight: 28, maxHeight: 28)
-        .background {
-            RoundedRectangle(cornerRadius: 7, style: .continuous)
-                .fill(prominent ? accent : secondaryFill)
-                .overlay {
-                    RoundedRectangle(cornerRadius: 7, style: .continuous)
-                        .stroke(
-                            prominent ? accent.opacity(0.35) : stroke.opacity(0.55),
-                            lineWidth: 0.5
-                        )
-                }
-        }
-    }
-
-    @ViewBuilder
-    private func playerChromeBackground(surface: Color, stroke: Color) -> some View {
-        let shape = UnevenRoundedRectangle(
-            topLeadingRadius: 16,
-            bottomLeadingRadius: 0,
-            bottomTrailingRadius: 0,
-            topTrailingRadius: 16,
-            style: .continuous
-        )
-        ZStack {
-            if solidChrome {
-                shape.fill(surface)
-            } else {
-                shape.fill(surface.opacity(0.92))
-                shape.fill(.ultraThinMaterial)
-            }
-            shape.stroke(stroke, lineWidth: 0.5)
-        }
-    }
-
-    private var playerProgressLabelColor: Color {
-        solidChrome ? Color.secondary : Color.white.opacity(0.58)
-    }
-
-    private func progressSection(accent: Color) -> some View {
-        VStack(alignment: .leading, spacing: 4) {
-            if let decade = rosary.decadeProgressFraction() {
-                Text("Decade")
-                    .font(DivinityFont.caption(9))
-                    .fontWeight(.medium)
-                    .foregroundStyle(playerProgressLabelColor)
-                    .textCase(.uppercase)
-                    .tracking(0.3)
-                ThinProgressBar(value: decade, accent: accent, dimmed: !solidChrome)
-            }
-
-            Text("Rosary")
-                .font(DivinityFont.caption(9))
-                .fontWeight(.medium)
-                .foregroundStyle(playerProgressLabelColor)
-                .textCase(.uppercase)
-                .tracking(0.3)
-            ThinProgressBar(value: rosary.overallProgressFraction, accent: accent, dimmed: !solidChrome)
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(.horizontal, 4)
     }
 
     private struct ThinProgressBar: View {
