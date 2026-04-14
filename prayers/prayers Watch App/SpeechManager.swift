@@ -27,6 +27,11 @@ final class SpeechManager: NSObject, ObservableObject, AVSpeechSynthesizerDelega
     private let synthesizer = AVSpeechSynthesizer()
     private var onFinish: (() -> Void)?
 
+    /// Last spoken payload so “from beginning” can restart without re-passing text from the view.
+    private var lastSpeechText: String = ""
+    private var lastSpeechVoice: String = "en-US"
+    private var lastSpeechRate: Float = 0.45
+
     private var progressTimer: Timer?
     private var progressSegmentStart: Date?
     private var progressAccumulated: TimeInterval = 0
@@ -44,6 +49,10 @@ final class SpeechManager: NSObject, ObservableObject, AVSpeechSynthesizerDelega
     var isSpeaking: Bool { state == .speaking }
     var isPaused: Bool { state == .paused }
 
+    var canReplayCurrentUtterance: Bool {
+        !lastSpeechText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+    }
+
     /// Starts speaking new text. Always stops any currently playing speech first.
     func speak(
         text: String,
@@ -57,6 +66,9 @@ final class SpeechManager: NSObject, ObservableObject, AVSpeechSynthesizerDelega
         synthesizer.stopSpeaking(at: .immediate)
 
         self.onFinish = onFinish
+        lastSpeechText = text
+        lastSpeechVoice = voiceLanguage
+        lastSpeechRate = rate
         nowPlayingTitle = title
         nowPlayingArtworkSymbol = artworkSymbol
         nowPlayingSubtitle = subtitle
@@ -90,6 +102,21 @@ final class SpeechManager: NSObject, ObservableObject, AVSpeechSynthesizerDelega
         state = .idle
         onFinish = nil
         clearNowPlayingPresentation()
+    }
+
+    /// Restart the current line of TTS from the beginning (prayer detail “rewind” control).
+    func replayFromStart() {
+        let t = lastSpeechText.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !t.isEmpty else { return }
+        speak(
+            text: lastSpeechText,
+            voiceLanguage: lastSpeechVoice,
+            rate: lastSpeechRate,
+            title: nowPlayingTitle,
+            artworkSymbol: nowPlayingArtworkSymbol,
+            subtitle: nowPlayingSubtitle,
+            onFinish: nil
+        )
     }
 
     func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didFinish utterance: AVSpeechUtterance) {
