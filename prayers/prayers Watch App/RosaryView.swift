@@ -195,37 +195,40 @@ struct RosaryView: View {
 
     /// Music-style layout: blurred hero, small cover art; prayer scrolls full-width with controls overlaid (no text card).
     private var nowPlayingSession: some View {
-        ZStack(alignment: .bottom) {
-            WatchMediaTimeSuppressor()
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .allowsHitTesting(false)
+        GeometryReader { geo in
+            ZStack(alignment: .bottom) {
+                WatchMediaTimeSuppressor()
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .allowsHitTesting(false)
 
-            if rosary.selectedMystery != nil {
-                mysteryHeroBackground
-            }
-
-            ScrollView {
-                VStack(spacing: 10) {
-                    Color.clear.frame(height: 4)
-                    rosaryAlbumArtTile
-                    rosarySessionTitles
-                        .padding(.horizontal, 10)
-                        .onLongPressGesture(minimumDuration: 0.55) {
-                            Task { @MainActor in
-                                rosary.exitToMysteryPicker()
-                            }
-                        }
-                    rosaryPrayerBody
+                if rosary.selectedMystery != nil {
+                    mysteryHeroBackground
                 }
-                .padding(.bottom, 56)
-            }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .scrollIndicators(.hidden)
-            .safeAreaInset(edge: .top, spacing: 0) {
-                rosaryMusicTopChrome
-            }
 
-            rosaryFloatingPlayerChrome
+                ScrollView {
+                    VStack(spacing: 10) {
+                        Color.clear.frame(height: 4)
+                        rosaryAlbumArtTile
+                        rosarySessionTitles
+                            .padding(.horizontal, 10)
+                            .onLongPressGesture(minimumDuration: 0.55) {
+                                Task { @MainActor in
+                                    rosary.exitToMysteryPicker()
+                                }
+                            }
+                        rosaryPrayerBody
+                    }
+                    .padding(.bottom, 56)
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .scrollIndicators(.hidden)
+                .safeAreaInset(edge: .top, spacing: 0) {
+                    rosaryMusicTopChrome(watchWidth: geo.size.width)
+                }
+
+                rosaryFloatingPlayerChrome
+            }
+            .frame(width: geo.size.width, height: geo.size.height)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         /// Apply on the now-playing subtree (not the whole `RosaryView`); corner clock still appeared on 46mm when this lived on the outer `Group`.
@@ -239,9 +242,13 @@ struct RosaryView: View {
     }
 
     /// watchOS Music–style header: glass back orb · time · glass “Stop” (replaces system … overflow).
-    /// Nudged toward the physical top so the time sits higher (less “floating” in the upper third).
-    private var rosaryMusicTopChrome: some View {
-        HStack(alignment: .center) {
+    /// Wider cases (about 46mm) use a slightly stronger upward nudge than 42mm so the time lines up similarly to each bezel.
+    private func rosaryMusicTopChrome(watchWidth: CGFloat) -> some View {
+        let isLargeWatch = watchWidth >= 200
+        let topPad: CGFloat = isLargeWatch ? -13 : -8
+        let timeYOffset: CGFloat = isLargeWatch ? -7 : -4
+
+        return HStack(alignment: .center) {
             Button {
                 rosary.exitToMysteryPicker()
             } label: {
@@ -262,7 +269,7 @@ struct RosaryView: View {
                     .foregroundStyle(heroPrimaryText)
                     .monospacedDigit()
                     .minimumScaleFactor(0.85)
-                    .offset(y: -5)
+                    .offset(y: timeYOffset)
             }
 
             Spacer(minLength: 6)
@@ -292,7 +299,7 @@ struct RosaryView: View {
             .accessibilityIdentifier("TransportStop")
         }
         .padding(.horizontal, 8)
-        .padding(.top, -10)
+        .padding(.top, topPad)
         .padding(.bottom, 2)
     }
 
