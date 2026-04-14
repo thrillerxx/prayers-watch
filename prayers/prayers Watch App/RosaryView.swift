@@ -370,6 +370,7 @@ struct RosaryView: View {
         .shadow(color: .black.opacity(solidChrome ? 0.35 : 0.45), radius: 14, x: 0, y: -6)
     }
 
+    @ViewBuilder
     private func transportButton(
         icon: String,
         accent: Color,
@@ -377,15 +378,27 @@ struct RosaryView: View {
         disabled: Bool,
         action: @escaping () -> Void
     ) -> some View {
-        Button(action: action) {
-            Image(systemName: icon)
-                .font(.system(size: prominent ? 17 : 15, weight: .semibold))
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .contentShape(Rectangle())
+        if prominent {
+            Button(action: action) {
+                Image(systemName: icon)
+                    .font(.system(size: 17, weight: .semibold))
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .contentShape(Rectangle())
+            }
+            .buttonStyle(.borderedProminent)
+            .tint(accent)
+            .disabled(disabled)
+        } else {
+            Button(action: action) {
+                Image(systemName: icon)
+                    .font(.system(size: 15, weight: .semibold))
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .contentShape(Rectangle())
+            }
+            .buttonStyle(.bordered)
+            .tint(accent)
+            .disabled(disabled)
         }
-        .buttonStyle(prominent ? .borderedProminent : .bordered)
-        .tint(accent)
-        .disabled(disabled)
     }
 
     @ViewBuilder
