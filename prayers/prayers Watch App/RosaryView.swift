@@ -241,64 +241,66 @@ struct RosaryView: View {
         #endif
     }
 
-    /// watchOS Music–style header: glass back orb · time · glass “Stop” (replaces system … overflow).
-    /// Wider cases (about 46mm) use a slightly stronger upward nudge than 42mm so the time lines up similarly to each bezel.
+    /// Top bar: time on the first row (hugs the top); back and Stop on the second row at left and right corners.
     private func rosaryMusicTopChrome(watchWidth: CGFloat) -> some View {
         let isLargeWatch = watchWidth >= 200
-        let topPad: CGFloat = isLargeWatch ? -13 : -8
-        let timeYOffset: CGFloat = isLargeWatch ? -7 : -4
+        let topPad: CGFloat = isLargeWatch ? -16 : -12
 
-        return HStack(alignment: .center) {
-            Button {
-                rosary.exitToMysteryPicker()
-            } label: {
-                Image(systemName: "chevron.left")
-                    .font(.system(size: 14, weight: .semibold))
-                    .foregroundStyle(heroPrimaryText)
-                    .frame(width: 34, height: 34)
-            }
-            .buttonStyle(.plain)
-            .background { rosaryGlassCircle(diameter: 34) }
-            .accessibilityLabel("Back")
-
-            Spacer(minLength: 6)
-
+        return VStack(alignment: .center, spacing: 3) {
             TimelineView(.periodic(from: .now, by: 60.0)) { context in
                 Text(context.date, format: .dateTime.hour().minute())
-                    .font(.system(size: 15, weight: .semibold, design: .default))
+                    .font(.system(size: 14, weight: .semibold, design: .default))
                     .foregroundStyle(heroPrimaryText)
                     .monospacedDigit()
-                    .minimumScaleFactor(0.85)
-                    .offset(y: timeYOffset)
-            }
-
-            Spacer(minLength: 6)
-
-            Button {
-                Task { @MainActor in rosary.stopPlayback() }
-            } label: {
-                Text("Stop")
-                    .font(.system(size: 11, weight: .semibold, design: .default))
-                    .foregroundStyle(heroPrimaryText)
+                    .minimumScaleFactor(0.8)
                     .lineLimit(1)
-                    .minimumScaleFactor(0.75)
-                    .padding(.horizontal, 10)
-                    .frame(height: 34)
+                    .multilineTextAlignment(.center)
+                    .frame(maxWidth: .infinity)
             }
-            .buttonStyle(.plain)
-            .background {
-                Capsule()
-                    .fill(solidChrome ? Color.primary.opacity(0.14) : Color.clear)
-                    .background(.ultraThinMaterial, in: Capsule())
-                    .overlay {
-                        Capsule()
-                            .stroke(Color.white.opacity(solidChrome ? 0.22 : 0.28), lineWidth: 0.5)
-                    }
+            .allowsHitTesting(false)
+
+            HStack(alignment: .center, spacing: 0) {
+                Button {
+                    rosary.exitToMysteryPicker()
+                } label: {
+                    Image(systemName: "chevron.left")
+                        .font(.system(size: 14, weight: .semibold))
+                        .foregroundStyle(heroPrimaryText)
+                        .frame(width: 34, height: 34)
+                }
+                .buttonStyle(.plain)
+                .background { rosaryGlassCircle(diameter: 34) }
+                .accessibilityLabel("Back")
+
+                Spacer(minLength: 0)
+
+                Button {
+                    Task { @MainActor in rosary.stopPlayback() }
+                } label: {
+                    Text("Stop")
+                        .font(.system(size: 11, weight: .semibold, design: .default))
+                        .foregroundStyle(heroPrimaryText)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.75)
+                        .padding(.horizontal, 10)
+                        .frame(height: 34)
+                }
+                .buttonStyle(.plain)
+                .background {
+                    Capsule()
+                        .fill(solidChrome ? Color.primary.opacity(0.14) : Color.clear)
+                        .background(.ultraThinMaterial, in: Capsule())
+                        .overlay {
+                            Capsule()
+                                .stroke(Color.white.opacity(solidChrome ? 0.22 : 0.28), lineWidth: 0.5)
+                        }
+                }
+                .accessibilityLabel("Stop")
+                .accessibilityIdentifier("TransportStop")
             }
-            .accessibilityLabel("Stop")
-            .accessibilityIdentifier("TransportStop")
+            .padding(.horizontal, 2)
         }
-        .padding(.horizontal, 8)
+        .padding(.horizontal, 4)
         .padding(.top, topPad)
         .padding(.bottom, 2)
     }
