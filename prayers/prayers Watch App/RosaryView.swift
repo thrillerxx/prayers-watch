@@ -191,7 +191,7 @@ struct RosaryView: View {
         }
     }
 
-    /// Music-style layout: blurred hero, small cover art, floating circular transport (all mysteries).
+    /// Music-style layout: blurred hero, small cover art; transport matches Prayer Library detail hero.
     private var nowPlayingSession: some View {
         ZStack(alignment: .bottom) {
             if rosary.selectedMystery != nil {
@@ -370,7 +370,7 @@ struct RosaryView: View {
         return VStack(spacing: 10) {
             ThinProgressBar(value: rosary.overallProgressFraction, accent: accent, dimmed: !solidChrome)
                 .padding(.horizontal, 2)
-            rosaryCircularTransportRow(accent: accent)
+            rosaryTransportRow
             HStack {
                 Spacer(minLength: 0)
                 rosaryStopButton
@@ -379,88 +379,62 @@ struct RosaryView: View {
         }
     }
 
-    private func rosaryCircularTransportRow(accent: Color) -> some View {
-        HStack(spacing: 18) {
+    /// Same control sizing as `PrayerDetailNowPlayingHero` in `PrayerLibraryView` (plain icons, no glass disks).
+    private var rosaryTransportRow: some View {
+        let nextDisabled = rosary.steps.isEmpty || rosary.index >= rosary.steps.count - 1
+        return HStack(spacing: 0) {
             Spacer(minLength: 0)
-            rosaryGlassCircleButton(
-                icon: rosary.index == 0 ? "arrow.counterclockwise" : "backward.fill",
-                disabled: false,
-                label: rosary.index == 0 ? "Replay" : "Previous",
-                identifier: "TransportPrevious"
-            ) {
+
+            Button {
                 rosary.previousStep()
+            } label: {
+                Image(systemName: rosary.index == 0 ? "arrow.counterclockwise" : "backward.fill")
+                    .font(.system(size: 21, weight: .medium))
+                    .foregroundStyle(heroPrimaryText.opacity(0.95))
+                    .symbolRenderingMode(.monochrome)
+                    .frame(width: 44, height: 44)
+                    .contentShape(Rectangle())
             }
+            .buttonStyle(.plain)
+            .accessibilityLabel(rosary.index == 0 ? "Replay" : "Previous")
+            .accessibilityIdentifier("TransportPrevious")
 
-            rosaryMainPlayCircle(accent: accent)
+            Spacer(minLength: 4)
 
-            rosaryGlassCircleButton(
-                icon: "forward.fill",
-                disabled: rosary.steps.isEmpty || rosary.index >= rosary.steps.count - 1,
-                label: "Next",
-                identifier: "TransportNext"
-            ) {
+            Button {
+                rosary.playPauseTapped()
+            } label: {
+                Image(systemName: speech.isSpeaking ? "pause.fill" : "play.fill")
+                    .font(.system(size: 28, weight: .medium))
+                    .foregroundStyle(heroPrimaryText)
+                    .symbolRenderingMode(.monochrome)
+                    .frame(width: 52, height: 52)
+                    .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel(speech.isSpeaking ? "Pause" : "Play")
+            .accessibilityIdentifier("TransportPlayPause")
+
+            Spacer(minLength: 4)
+
+            Button {
                 rosary.nextStep()
+            } label: {
+                Image(systemName: "forward.fill")
+                    .font(.system(size: 21, weight: .medium))
+                    .foregroundStyle(heroPrimaryText.opacity(nextDisabled ? 0.35 : 0.95))
+                    .symbolRenderingMode(.monochrome)
+                    .frame(width: 44, height: 44)
+                    .contentShape(Rectangle())
             }
+            .buttonStyle(.plain)
+            .disabled(nextDisabled)
+            .accessibilityLabel("Next")
+            .accessibilityIdentifier("TransportNext")
+
             Spacer(minLength: 0)
         }
-    }
-
-    private func rosaryGlassCircleButton(
-        icon: String,
-        disabled: Bool,
-        label: String,
-        identifier: String,
-        action: @escaping () -> Void
-    ) -> some View {
-        Button(action: action) {
-            Image(systemName: icon)
-                .font(.system(size: 14, weight: .semibold))
-                .foregroundStyle(.white.opacity(disabled ? 0.45 : 0.95))
-                .symbolRenderingMode(.monochrome)
-                .frame(width: 40, height: 40)
-        }
-        .buttonStyle(.plain)
-        .disabled(disabled)
-        .opacity(disabled ? 0.62 : 1)
-        .background {
-            Group {
-                if solidChrome {
-                    Circle()
-                        .fill(Color.primary.opacity(0.12))
-                } else {
-                    Circle()
-                        .fill(.ultraThinMaterial)
-                }
-            }
-            .overlay {
-                Circle()
-                    .stroke(Color.white.opacity(solidChrome ? 0.2 : 0.22), lineWidth: 0.5)
-            }
-        }
-        .accessibilityLabel(label)
-        .accessibilityIdentifier(identifier)
-    }
-
-    private func rosaryMainPlayCircle(accent: Color) -> some View {
-        Button {
-            rosary.playPauseTapped()
-        } label: {
-            Image(systemName: speech.isSpeaking ? "pause.fill" : "play.fill")
-                .font(.system(size: 22, weight: .semibold))
-                .foregroundStyle(.white)
-                .symbolRenderingMode(.monochrome)
-                .frame(width: 50, height: 50)
-        }
-        .buttonStyle(.plain)
-        .background {
-            Circle()
-                .fill(accent)
-        }
-        .overlay {
-            Circle()
-                .stroke(Color.white.opacity(0.95), lineWidth: 3)
-        }
-        .accessibilityIdentifier("TransportPlayPause")
+        .frame(maxWidth: .infinity)
     }
 
     private var rosaryStopButton: some View {
@@ -468,27 +442,14 @@ struct RosaryView: View {
             Task { @MainActor in rosary.stopPlayback() }
         } label: {
             Image(systemName: "stop.fill")
-                .font(.system(size: 12, weight: .semibold))
-                .foregroundStyle(heroPrimaryText.opacity(0.92))
+                .font(.system(size: 21, weight: .medium))
+                .foregroundStyle(heroPrimaryText.opacity(0.95))
                 .symbolRenderingMode(.monochrome)
-                .frame(width: 36, height: 36)
+                .frame(width: 44, height: 44)
+                .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
-        .background {
-            Group {
-                if solidChrome {
-                    Circle()
-                        .fill(Color.primary.opacity(0.1))
-                } else {
-                    Circle()
-                        .fill(.ultraThinMaterial)
-                }
-            }
-            .overlay {
-                Circle()
-                    .stroke(Color.white.opacity(0.18), lineWidth: 0.5)
-            }
-        }
+        .accessibilityLabel("Stop")
         .accessibilityIdentifier("TransportStop")
     }
 
