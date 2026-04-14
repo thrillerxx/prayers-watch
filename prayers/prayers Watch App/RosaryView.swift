@@ -263,16 +263,16 @@ struct RosaryView: View {
 
             if let stepTitle = heroStepTitle {
                 Text(stepTitle)
-                    .font(DivinityFont.title(14))
+                    .font(DivinityFont.title(13))
                     .foregroundStyle(heroPrimaryText)
                     .multilineTextAlignment(.center)
-                    .lineLimit(3)
-                    .lineSpacing(3)
-                    .minimumScaleFactor(0.82)
+                    .lineLimit(2)
+                    .lineSpacing(2)
+                    .minimumScaleFactor(0.7)
                     .truncationMode(.tail)
                     .frame(maxWidth: .infinity, alignment: .center)
                     .shadow(color: textShadowColor, radius: solidChrome ? 0 : 3, x: 0, y: 1)
-                    .padding(.horizontal, 6)
+                    .padding(.horizontal, 4)
             }
 
             if let label = rosary.hailMaryCounterLabel {
@@ -339,7 +339,7 @@ struct RosaryView: View {
         return VStack(alignment: .leading, spacing: 10) {
             progressSection(accent: accent)
 
-            HStack(spacing: 4) {
+            HStack(spacing: 2) {
                 transportButton(
                     icon: "backward.fill",
                     accent: accent,
@@ -349,6 +349,8 @@ struct RosaryView: View {
                 )
                 .accessibilityLabel("Previous")
                 .accessibilityIdentifier("TransportPrevious")
+                .frame(maxWidth: .infinity)
+                .frame(height: 34)
 
                 transportButton(
                     icon: speech.isSpeaking ? "pause.fill" : "play.fill",
@@ -358,6 +360,8 @@ struct RosaryView: View {
                     action: { rosary.playPauseTapped() }
                 )
                 .accessibilityIdentifier("TransportPlayPause")
+                .frame(maxWidth: .infinity)
+                .frame(height: 34)
 
                 transportButton(
                     icon: "forward.fill",
@@ -368,8 +372,9 @@ struct RosaryView: View {
                 )
                 .accessibilityLabel("Next")
                 .accessibilityIdentifier("TransportNext")
+                .frame(maxWidth: .infinity)
+                .frame(height: 34)
             }
-            .frame(height: 36)
 
             Button {
                 Task { @MainActor in rosary.stopPlayback() }
@@ -386,9 +391,9 @@ struct RosaryView: View {
             .accessibilityIdentifier("TransportStop")
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(.horizontal, 6)
+        .padding(.horizontal, 4)
         .padding(.top, 8)
-        .padding(.bottom, 10)
+        .padding(.bottom, 8)
         .background {
             playerChromeBackground(surface: surface, stroke: stroke)
         }
@@ -406,25 +411,25 @@ struct RosaryView: View {
         if prominent {
             Button(action: action) {
                 Image(systemName: icon)
-                    .font(.system(size: 15, weight: .semibold))
+                    .font(.system(size: 14, weight: .semibold))
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                     .contentShape(Rectangle())
             }
             .buttonStyle(.borderedProminent)
-            .buttonBorderShape(.roundedRectangle(radius: 9))
-            .controlSize(.small)
+            .buttonBorderShape(.roundedRectangle(radius: 8))
+            .controlSize(.mini)
             .tint(accent)
             .disabled(disabled)
         } else {
             Button(action: action) {
                 Image(systemName: icon)
-                    .font(.system(size: 13, weight: .semibold))
+                    .font(.system(size: 12, weight: .semibold))
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                     .contentShape(Rectangle())
             }
             .buttonStyle(.bordered)
-            .buttonBorderShape(.roundedRectangle(radius: 9))
-            .controlSize(.small)
+            .buttonBorderShape(.roundedRectangle(radius: 8))
+            .controlSize(.mini)
             .tint(accent)
             .disabled(disabled)
         }
