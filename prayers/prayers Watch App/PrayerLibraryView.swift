@@ -159,7 +159,8 @@ private struct TransportRow: View {
     var accent: Color
 
     var body: some View {
-        HStack(spacing: 6) {
+        let rowHeight: CGFloat = 36
+        return HStack(spacing: 6) {
             Button {
                 if speech.isSpeaking {
                     speech.pause()
@@ -168,24 +169,26 @@ private struct TransportRow: View {
                 }
             } label: {
                 Label(speech.isSpeaking ? "Pause" : "Play", systemImage: speech.isSpeaking ? "pause.fill" : "play.fill")
-                    .font(DivinityFont.caption(12))
+                    .font(DivinityFont.caption(11))
                     .fontWeight(.medium)
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 2)
+                    .frame(maxWidth: .infinity, minHeight: rowHeight, maxHeight: rowHeight)
             }
             .buttonStyle(.borderedProminent)
-            .tint(accent)
+            .buttonBorderShape(.roundedRectangle(radius: 9))
             .controlSize(.small)
+            .tint(accent)
             .accessibilityIdentifier("TransportPlayPause")
 
             Button {
                 speech.stop()
             } label: {
                 Image(systemName: "stop.fill")
-                    .font(.system(size: 14, weight: .semibold))
-                    .frame(width: 40, height: 34)
+                    .font(.system(size: 13, weight: .semibold))
+                    .frame(maxWidth: .infinity, minHeight: rowHeight, maxHeight: rowHeight)
             }
             .buttonStyle(.bordered)
+            .buttonBorderShape(.roundedRectangle(radius: 9))
+            .controlSize(.small)
             .tint(accent)
             .accessibilityIdentifier("TransportStop")
         }
@@ -196,6 +199,14 @@ private struct TransportRow: View {
 struct PrayerDetailView: View {
     let prayer: Prayer
     private let lang: String = "en"
+
+    /// watchOS navigation titles truncate poorly; keep a hard cap for 42mm.
+    private static func navigationTitleForWatch(_ raw: String, limit: Int = 22) -> String {
+        let t = raw.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard t.count > limit else { return t }
+        let idx = t.index(t.startIndex, offsetBy: limit - 1)
+        return String(t[..<idx]) + "…"
+    }
 
     @ObservedObject private var speech = SpeechManager.shared
 
@@ -234,8 +245,8 @@ struct PrayerDetailView: View {
             .padding(.horizontal, 10)
             .padding(.vertical, 6)
         }
-        .navigationTitle(prayer.title)
         .navigationBarTitleDisplayMode(.inline)
+        .navigationTitle(Self.navigationTitleForWatch(prayer.title))
         .tint(accent)
         .onAppear {
             if !didAutoplay {

@@ -46,8 +46,11 @@ struct RosaryView: View {
                 nowPlayingSession
             }
         }
-        .navigationTitle("Rosary")
+        // Empty title: inline "Rosary" collided with hero typography and duplicated the picker header.
+        .navigationTitle("")
         .navigationBarTitleDisplayMode(.inline)
+        .toolbarBackground(rosary.selectedMystery == nil ? DivinityChrome.canvasBackground : Color.clear, for: .navigationBar)
+        .toolbarBackground(.visible, for: .navigationBar)
         .tint(theme.accentColor(reduceTransparency: reduceTransparency, increaseContrast: increaseContrast))
         .onAppear {
             rosaryScreenActive = true
@@ -118,8 +121,8 @@ struct RosaryView: View {
                         .fill(accent.opacity(reduceTransparency ? 0.28 : 0.22))
                         .frame(width: 40, height: 40)
                     Image(systemName: mysteryPickerIcon(mystery))
-                        .font(.system(size: 17, weight: .semibold))
-                        .foregroundStyle(accent)
+                        .font(.system(size: 16, weight: .semibold))
+                        .foregroundStyle(.white)
                         .symbolRenderingMode(.monochrome)
                 }
                 .frame(width: 40, height: 40)
@@ -189,7 +192,7 @@ struct RosaryView: View {
             VStack(spacing: 0) {
                 sessionHeader
                     .padding(.horizontal, 10)
-                    .padding(.top, 6)
+                    .padding(.top, 8)
                     .padding(.bottom, 6)
 
                 currentPrayerPanel
@@ -197,11 +200,26 @@ struct RosaryView: View {
 
                 Spacer(minLength: 0)
             }
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
             .safeAreaInset(edge: .bottom, spacing: 0) {
                 playerChrome
+                    .frame(maxWidth: .infinity)
             }
         }
-        .ignoresSafeArea(edges: .bottom)
+    }
+
+    /// Avoid a duplicate “Rosary” line; fall back to the step title when the controller returns the generic label.
+    private var heroStepTitle: String? {
+        let t = rosary.displayTitle.trimmingCharacters(in: .whitespacesAndNewlines)
+        if !t.isEmpty, t.caseInsensitiveCompare("Rosary") != .orderedSame {
+            return t
+        }
+        if let stepTitle = rosary.currentStep?.title.trimmingCharacters(in: .whitespacesAndNewlines),
+           !stepTitle.isEmpty,
+           stepTitle.caseInsensitiveCompare("Rosary") != .orderedSame {
+            return stepTitle
+        }
+        return nil
     }
 
     private var mysteryHeroBackground: some View {
@@ -230,26 +248,32 @@ struct RosaryView: View {
     }
 
     private var sessionHeader: some View {
-        VStack(alignment: .center, spacing: 4) {
+        VStack(alignment: .center, spacing: 8) {
             if let mystery = rosary.selectedMystery {
                 Text(mystery.title)
                     .font(DivinityFont.caption(10))
                     .foregroundStyle(heroSecondaryText)
                     .textCase(.uppercase)
                     .tracking(0.4)
+                    .multilineTextAlignment(.center)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.85)
                     .shadow(color: textShadowColor, radius: solidChrome ? 0 : 2, x: 0, y: 1)
             }
 
-            Text(rosary.displayTitle)
-                .font(DivinityFont.title(14))
-                .foregroundStyle(heroPrimaryText)
-                .multilineTextAlignment(.center)
-                .lineLimit(3)
-                .lineSpacing(2)
-                .minimumScaleFactor(0.82)
-                .truncationMode(.tail)
-                .frame(maxWidth: .infinity, alignment: .center)
-                .shadow(color: textShadowColor, radius: solidChrome ? 0 : 3, x: 0, y: 1)
+            if let stepTitle = heroStepTitle {
+                Text(stepTitle)
+                    .font(DivinityFont.title(14))
+                    .foregroundStyle(heroPrimaryText)
+                    .multilineTextAlignment(.center)
+                    .lineLimit(3)
+                    .lineSpacing(3)
+                    .minimumScaleFactor(0.82)
+                    .truncationMode(.tail)
+                    .frame(maxWidth: .infinity, alignment: .center)
+                    .shadow(color: textShadowColor, radius: solidChrome ? 0 : 3, x: 0, y: 1)
+                    .padding(.horizontal, 6)
+            }
 
             if let label = rosary.hailMaryCounterLabel {
                 Text(label)
@@ -315,7 +339,7 @@ struct RosaryView: View {
         return VStack(alignment: .leading, spacing: 10) {
             progressSection(accent: accent)
 
-            HStack(spacing: 6) {
+            HStack(spacing: 4) {
                 transportButton(
                     icon: "backward.fill",
                     accent: accent,
@@ -345,7 +369,7 @@ struct RosaryView: View {
                 .accessibilityLabel("Next")
                 .accessibilityIdentifier("TransportNext")
             }
-            .frame(height: 42)
+            .frame(height: 36)
 
             Button {
                 Task { @MainActor in rosary.stopPlayback() }
@@ -361,13 +385,14 @@ struct RosaryView: View {
             .controlSize(.small)
             .accessibilityIdentifier("TransportStop")
         }
-        .padding(.horizontal, 10)
-        .padding(.top, 12)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.horizontal, 6)
+        .padding(.top, 8)
         .padding(.bottom, 10)
         .background {
             playerChromeBackground(surface: surface, stroke: stroke)
         }
-        .shadow(color: .black.opacity(solidChrome ? 0.35 : 0.45), radius: 14, x: 0, y: -6)
+        .shadow(color: .black.opacity(solidChrome ? 0.28 : 0.38), radius: 10, x: 0, y: -4)
     }
 
     @ViewBuilder
@@ -381,21 +406,25 @@ struct RosaryView: View {
         if prominent {
             Button(action: action) {
                 Image(systemName: icon)
-                    .font(.system(size: 17, weight: .semibold))
+                    .font(.system(size: 15, weight: .semibold))
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                     .contentShape(Rectangle())
             }
             .buttonStyle(.borderedProminent)
+            .buttonBorderShape(.roundedRectangle(radius: 9))
+            .controlSize(.small)
             .tint(accent)
             .disabled(disabled)
         } else {
             Button(action: action) {
                 Image(systemName: icon)
-                    .font(.system(size: 15, weight: .semibold))
+                    .font(.system(size: 13, weight: .semibold))
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                     .contentShape(Rectangle())
             }
             .buttonStyle(.bordered)
+            .buttonBorderShape(.roundedRectangle(radius: 9))
+            .controlSize(.small)
             .tint(accent)
             .disabled(disabled)
         }
@@ -446,6 +475,7 @@ struct RosaryView: View {
                 .tracking(0.3)
             ThinProgressBar(value: rosary.overallProgressFraction, accent: accent, dimmed: !solidChrome)
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
 
     private struct ThinProgressBar: View {
@@ -462,7 +492,9 @@ struct RosaryView: View {
                         .fill(accent)
                         .frame(width: max(4, geo.size.width * min(1, max(0, value))))
                 }
+                .frame(width: geo.size.width, height: 4, alignment: .leading)
             }
+            .frame(maxWidth: .infinity)
             .frame(height: 4)
         }
     }

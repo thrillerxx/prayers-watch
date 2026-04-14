@@ -41,24 +41,28 @@ struct ContentView: View {
                     }
                     .padding(.top, 2)
                     .padding(.bottom, 4)
-                    .listRowInsets(EdgeInsets(top: 6, leading: 4, bottom: 8, trailing: 4))
+                    .listRowInsets(EdgeInsets(top: 10, leading: 6, bottom: 10, trailing: 6))
                     .listRowBackground(Color.clear)
                 }
 
                 Section {
-                    homeTile(.rosary, title: "Rosary", subtitle: "Mysteries", icon: "cross.circle.fill")
+                    homeTile(.rosary, title: "Rosary", subtitle: "Mysteries", icon: "cross")
                     homeTile(.prayerLibrary, title: "Prayer Library", subtitle: "Browse & listen", icon: "books.vertical.fill")
                     homeTile(.massResponses, title: "Mass Responses", subtitle: "At Mass", icon: "text.book.closed.fill")
                     homeTile(.settings, title: "Settings", subtitle: "Theme & voice", icon: "gearshape.fill")
                 }
             }
+            .listSectionSpacing(6)
             .listStyle(.plain)
             .scrollContentBackground(.hidden)
             .scrollIndicators(.hidden)
             .background(DivinityChrome.canvasBackground)
             .navigationBarTitleDisplayMode(.inline)
+            .navigationTitle("")
             .toolbarBackground(DivinityChrome.canvasBackground, for: .navigationBar)
             .toolbarBackground(.visible, for: .navigationBar)
+            .safeAreaPadding(.top, 4)
+            .safeAreaPadding(.bottom, 6)
             .navigationDestination(for: NavRoute.self) { route in
                 switch route {
                 case .rosary:
@@ -84,7 +88,7 @@ struct ContentView: View {
     @ViewBuilder
     private func homeTile(_ route: NavRoute, title: String, subtitle: String, icon: String) -> some View {
         HomeNavigationTile(route: route, title: title, subtitle: subtitle, icon: icon)
-            .listRowInsets(EdgeInsets(top: 4, leading: 8, bottom: 4, trailing: 8))
+            .listRowInsets(EdgeInsets(top: 3, leading: 10, bottom: 3, trailing: 10))
             .listRowBackground(Color.clear)
     }
 
@@ -94,8 +98,8 @@ struct ContentView: View {
             path.append(NavRoute.rosary)
         } label: {
             HStack(spacing: 8) {
-                Image(systemName: "cross.circle.fill")
-                    .font(.system(size: 15, weight: .semibold))
+                Image(systemName: "cross")
+                    .font(.system(size: 14, weight: .bold))
                     .foregroundStyle(accent)
                     .symbolRenderingMode(.monochrome)
                     .frame(width: 22, height: 22)
