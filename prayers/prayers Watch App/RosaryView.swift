@@ -208,17 +208,20 @@ struct RosaryView: View {
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
             .safeAreaInset(edge: .bottom, spacing: 0) {
-                playerChrome
-                    .padding(.horizontal, 28)
-                    .frame(maxWidth: .infinity)
-                    .background {
-                        DivinityChrome.elevatedSurface(
-                            theme: theme,
-                            reduceTransparency: reduceTransparency,
-                            increaseContrast: increaseContrast
-                        )
-                    }
-                    .ignoresSafeArea(edges: .bottom)
+                HStack(spacing: 0) {
+                    Color.clear.frame(width: 10)
+                    playerChrome
+                        .frame(maxWidth: .infinity)
+                    Color.clear.frame(width: 10)
+                }
+                .background {
+                    DivinityChrome.elevatedSurface(
+                        theme: theme,
+                        reduceTransparency: reduceTransparency,
+                        increaseContrast: increaseContrast
+                    )
+                }
+                .ignoresSafeArea(edges: .bottom)
             }
         }
     }
@@ -354,41 +357,45 @@ struct RosaryView: View {
         return VStack(alignment: .leading, spacing: 7) {
             progressSection(accent: accent)
 
-            HStack(spacing: 6) {
-                compactTransportChip(
-                    icon: "backward.fill",
-                    accent: accent,
-                    stroke: stroke,
-                    prominent: false,
-                    disabled: rosary.index == 0,
-                    action: { rosary.previousStep() }
-                )
-                .accessibilityLabel("Previous")
-                .accessibilityIdentifier("TransportPrevious")
-                .frame(width: 32, height: 28)
+            HStack(spacing: 0) {
+                Spacer(minLength: 0)
+                HStack(spacing: 6) {
+                    compactTransportChip(
+                        icon: "backward.fill",
+                        accent: accent,
+                        stroke: stroke,
+                        prominent: false,
+                        disabled: rosary.index == 0,
+                        action: { rosary.previousStep() }
+                    )
+                    .accessibilityLabel("Previous")
+                    .accessibilityIdentifier("TransportPrevious")
+                    .frame(width: 32, height: 28)
 
-                compactTransportChip(
-                    icon: speech.isSpeaking ? "pause.fill" : "play.fill",
-                    accent: accent,
-                    stroke: stroke,
-                    prominent: true,
-                    disabled: false,
-                    action: { rosary.playPauseTapped() }
-                )
-                .accessibilityIdentifier("TransportPlayPause")
-                .frame(width: 56, height: 28)
+                    compactTransportChip(
+                        icon: speech.isSpeaking ? "pause.fill" : "play.fill",
+                        accent: accent,
+                        stroke: stroke,
+                        prominent: true,
+                        disabled: false,
+                        action: { rosary.playPauseTapped() }
+                    )
+                    .accessibilityIdentifier("TransportPlayPause")
+                    .frame(width: 56, height: 28)
 
-                compactTransportChip(
-                    icon: "forward.fill",
-                    accent: accent,
-                    stroke: stroke,
-                    prominent: false,
-                    disabled: rosary.steps.isEmpty || rosary.index >= rosary.steps.count - 1,
-                    action: { rosary.nextStep() }
-                )
-                .accessibilityLabel("Next")
-                .accessibilityIdentifier("TransportNext")
-                .frame(width: 32, height: 28)
+                    compactTransportChip(
+                        icon: "forward.fill",
+                        accent: accent,
+                        stroke: stroke,
+                        prominent: false,
+                        disabled: rosary.steps.isEmpty || rosary.index >= rosary.steps.count - 1,
+                        action: { rosary.nextStep() }
+                    )
+                    .accessibilityLabel("Next")
+                    .accessibilityIdentifier("TransportNext")
+                    .frame(width: 32, height: 28)
+                }
+                Spacer(minLength: 0)
             }
             .frame(maxWidth: .infinity)
 
