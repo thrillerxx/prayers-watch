@@ -67,8 +67,8 @@ struct HomeNavigationTile: View {
                         .fill(accent.opacity(reduceTransparency ? 0.28 : 0.22))
                         .frame(width: 40, height: 40)
                     Image(systemName: icon)
-                        .font(.system(size: 17, weight: .semibold))
-                        .foregroundStyle(accent)
+                        .font(.system(size: 16, weight: .semibold))
+                        .foregroundStyle(.white)
                         .symbolRenderingMode(.monochrome)
                 }
                 .frame(width: 40, height: 40)

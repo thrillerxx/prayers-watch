@@ -46,7 +46,7 @@ struct ContentView: View {
                 }
 
                 Section {
-                    homeTile(.rosary, title: "Rosary", subtitle: "Mysteries", icon: "cross")
+                    homeTile(.rosary, title: "Rosary", subtitle: "Mysteries", icon: "cross.fill")
                     homeTile(.prayerLibrary, title: "Prayer Library", subtitle: "Browse & listen", icon: "books.vertical.fill")
                     homeTile(.massResponses, title: "Mass Responses", subtitle: "At Mass", icon: "text.book.closed.fill")
                     homeTile(.settings, title: "Settings", subtitle: "Theme & voice", icon: "gearshape.fill")
@@ -98,8 +98,8 @@ struct ContentView: View {
             path.append(NavRoute.rosary)
         } label: {
             HStack(spacing: 8) {
-                Image(systemName: "cross")
-                    .font(.system(size: 14, weight: .bold))
+                Image(systemName: "cross.fill")
+                    .font(.system(size: 13, weight: .semibold))
                     .foregroundStyle(accent)
                     .symbolRenderingMode(.monochrome)
                     .frame(width: 22, height: 22)

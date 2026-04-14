@@ -184,7 +184,7 @@ struct RosaryView: View {
     }
 
     private var nowPlayingSession: some View {
-        ZStack {
+        ZStack(alignment: .bottom) {
             if rosary.selectedMystery != nil {
                 mysteryHeroBackground
             }
@@ -198,13 +198,13 @@ struct RosaryView: View {
                 currentPrayerPanel
                     .padding(.horizontal, 8)
 
-                Spacer(minLength: 0)
+                Spacer()
+                    .frame(minHeight: 136)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-            .safeAreaInset(edge: .bottom, spacing: 0) {
-                playerChrome
-                    .frame(maxWidth: .infinity)
-            }
+
+            playerChrome
+                .frame(maxWidth: .infinity)
         }
     }
 
