@@ -54,7 +54,6 @@ struct PrayerLibraryView: View {
                                     prayerRowLabel(title: prayer.title, icon: "building.columns")
                                 }
                                 .listRowInsets(EdgeInsets(top: 4, leading: 8, bottom: 4, trailing: 8))
-                                .listRowSeparator(.hidden)
                             }
                         } header: {
                             Text("Mass")
@@ -73,7 +72,6 @@ struct PrayerLibraryView: View {
                                     prayerRowLabel(title: prayer.title, icon: "book.pages")
                                 }
                                 .listRowInsets(EdgeInsets(top: 4, leading: 8, bottom: 4, trailing: 8))
-                                .listRowSeparator(.hidden)
                             }
                         } header: {
                             Text(massPrayers.isEmpty ? "Prayers" : "More prayers")

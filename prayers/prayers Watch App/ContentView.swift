@@ -39,7 +39,6 @@ struct ContentView: View {
                     .padding(.bottom, 4)
                     .listRowInsets(EdgeInsets(top: 6, leading: 8, bottom: 8, trailing: 8))
                     .listRowBackground(Color.clear)
-                    .listRowSeparator(.hidden)
                 }
 
                 Section {
@@ -83,7 +82,6 @@ struct ContentView: View {
         HomeNavigationTile(route: route, title: title, subtitle: subtitle, icon: icon)
             .listRowInsets(EdgeInsets(top: 4, leading: 8, bottom: 4, trailing: 8))
             .listRowBackground(Color.clear)
-            .listRowSeparator(.hidden)
     }
 
     private var rosaryMiniPlayer: some View {
