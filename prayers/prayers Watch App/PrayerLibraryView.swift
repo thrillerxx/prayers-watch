@@ -27,7 +27,7 @@ struct PrayerLibraryView: View {
             DivinityChrome.canvasBackground.ignoresSafeArea()
             VStack(spacing: 0) {
             if speech.isSpeaking || speech.isPaused {
-                TransportRow(speech: speech, accent: accent)
+                TransportRow(speech: speech)
                     .padding(.horizontal, 8)
                     .padding(.bottom, 6)
             }
@@ -156,11 +156,26 @@ struct PrayerLibraryView: View {
 
 private struct TransportRow: View {
     @ObservedObject var speech: SpeechManager
-    var accent: Color
+
+    @Environment(\.appColorTheme) private var theme
+    @Environment(\.accessibilityReduceTransparency) private var reduceTransparency
+    @Environment(\.accessibilityDifferentiateWithoutColor) private var differentiateWithoutColor
+
+    private var accent: Color {
+        theme.accentColor(reduceTransparency: reduceTransparency, increaseContrast: differentiateWithoutColor)
+    }
+
+    private var surface: Color {
+        DivinityChrome.elevatedSurface(theme: theme, reduceTransparency: reduceTransparency, increaseContrast: differentiateWithoutColor)
+    }
+
+    private var stroke: Color {
+        DivinityChrome.elevatedSurfaceStroke(theme: theme, accent: accent, reduceTransparency: reduceTransparency)
+    }
 
     var body: some View {
-        let rowHeight: CGFloat = 36
-        return HStack(spacing: 6) {
+        let rowHeight: CGFloat = 34
+        return HStack(spacing: 8) {
             Button {
                 if speech.isSpeaking {
                     speech.pause()
@@ -168,29 +183,52 @@ private struct TransportRow: View {
                     speech.resume()
                 }
             } label: {
-                Label(speech.isSpeaking ? "Pause" : "Play", systemImage: speech.isSpeaking ? "pause.fill" : "play.fill")
-                    .font(DivinityFont.caption(11))
-                    .fontWeight(.medium)
-                    .frame(maxWidth: .infinity, minHeight: rowHeight, maxHeight: rowHeight)
+                Image(systemName: speech.isSpeaking ? "pause.fill" : "play.fill")
+                    .font(.system(size: 15, weight: .semibold))
+                    .foregroundStyle(.white)
+                    .symbolRenderingMode(.monochrome)
+                    .frame(maxWidth: .infinity)
+                    .frame(maxHeight: .infinity)
+                    .contentShape(Rectangle())
             }
-            .buttonStyle(.borderedProminent)
-            .buttonBorderShape(.roundedRectangle(radius: 9))
-            .controlSize(.small)
-            .tint(accent)
+            .buttonStyle(.plain)
+            .accessibilityLabel(speech.isSpeaking ? "Pause" : "Play")
             .accessibilityIdentifier("TransportPlayPause")
+            .frame(maxWidth: .infinity)
+            .frame(height: rowHeight)
+            .background {
+                RoundedRectangle(cornerRadius: 9, style: .continuous)
+                    .fill(accent)
+                    .overlay {
+                        RoundedRectangle(cornerRadius: 9, style: .continuous)
+                            .stroke(stroke.opacity(0.45), lineWidth: 0.5)
+                    }
+            }
 
             Button {
                 speech.stop()
             } label: {
                 Image(systemName: "stop.fill")
-                    .font(.system(size: 13, weight: .semibold))
-                    .frame(maxWidth: .infinity, minHeight: rowHeight, maxHeight: rowHeight)
+                    .font(.system(size: 14, weight: .semibold))
+                    .foregroundStyle(.white)
+                    .symbolRenderingMode(.monochrome)
+                    .frame(maxWidth: .infinity)
+                    .frame(maxHeight: .infinity)
+                    .contentShape(Rectangle())
             }
-            .buttonStyle(.bordered)
-            .buttonBorderShape(.roundedRectangle(radius: 9))
-            .controlSize(.small)
-            .tint(accent)
+            .buttonStyle(.plain)
+            .accessibilityLabel("Stop")
             .accessibilityIdentifier("TransportStop")
+            .frame(maxWidth: .infinity)
+            .frame(height: rowHeight)
+            .background {
+                RoundedRectangle(cornerRadius: 9, style: .continuous)
+                    .fill(surface)
+                    .overlay {
+                        RoundedRectangle(cornerRadius: 9, style: .continuous)
+                            .stroke(stroke, lineWidth: 0.5)
+                    }
+            }
         }
         .frame(maxWidth: .infinity)
     }
@@ -228,7 +266,7 @@ struct PrayerDetailView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 10) {
                 if speech.isSpeaking || speech.isPaused {
-                    TransportRow(speech: speech, accent: accent)
+                    TransportRow(speech: speech)
                 }
 
                 if text.isEmpty {
