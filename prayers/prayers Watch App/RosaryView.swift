@@ -51,6 +51,8 @@ struct RosaryView: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbarBackground(rosary.selectedMystery == nil ? DivinityChrome.canvasBackground : Color.clear, for: .navigationBar)
         .toolbarBackground(.visible, for: .navigationBar)
+        .toolbar(rosary.selectedMystery != nil ? .hidden : .automatic, for: .navigationBar)
+        .navigationBarBackButtonHidden(rosary.selectedMystery != nil)
         .tint(theme.accentColor(reduceTransparency: reduceTransparency, increaseContrast: increaseContrast))
         .onAppear {
             rosaryScreenActive = true
@@ -215,9 +217,78 @@ struct RosaryView: View {
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .scrollIndicators(.hidden)
+            .safeAreaInset(edge: .top, spacing: 0) {
+                rosaryMusicTopChrome
+            }
 
             rosaryFloatingPlayerChrome
         }
+    }
+
+    /// watchOS Music–style header: glass back orb · time · glass “Stop” (replaces system … overflow).
+    private var rosaryMusicTopChrome: some View {
+        HStack(alignment: .center) {
+            Button {
+                rosary.exitToMysteryPicker()
+            } label: {
+                Image(systemName: "chevron.left")
+                    .font(.system(size: 14, weight: .semibold))
+                    .foregroundStyle(heroPrimaryText)
+                    .frame(width: 34, height: 34)
+            }
+            .buttonStyle(.plain)
+            .background { rosaryGlassCircle(diameter: 34) }
+            .accessibilityLabel("Back")
+
+            Spacer(minLength: 6)
+
+            TimelineView(.periodic(from: .now, by: 60.0)) { context in
+                Text(context.date, format: .dateTime.hour().minute())
+                    .font(.system(size: 15, weight: .semibold, design: .default))
+                    .foregroundStyle(heroPrimaryText)
+                    .monospacedDigit()
+                    .minimumScaleFactor(0.85)
+            }
+
+            Spacer(minLength: 6)
+
+            Button {
+                Task { @MainActor in rosary.stopPlayback() }
+            } label: {
+                Text("Stop")
+                    .font(.system(size: 11, weight: .semibold, design: .default))
+                    .foregroundStyle(heroPrimaryText)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.75)
+                    .padding(.horizontal, 10)
+                    .frame(height: 34)
+            }
+            .buttonStyle(.plain)
+            .background {
+                Capsule()
+                    .fill(solidChrome ? Color.primary.opacity(0.14) : Color.clear)
+                    .background(.ultraThinMaterial, in: Capsule())
+                    .overlay {
+                        Capsule()
+                            .stroke(Color.white.opacity(solidChrome ? 0.22 : 0.28), lineWidth: 0.5)
+                    }
+            }
+            .accessibilityLabel("Stop")
+            .accessibilityIdentifier("TransportStop")
+        }
+        .padding(.horizontal, 8)
+        .padding(.bottom, 6)
+    }
+
+    private func rosaryGlassCircle(diameter: CGFloat) -> some View {
+        Circle()
+            .fill(solidChrome ? Color.primary.opacity(0.14) : Color.clear)
+            .background(.ultraThinMaterial, in: Circle())
+            .overlay {
+                Circle()
+                    .stroke(Color.white.opacity(solidChrome ? 0.22 : 0.28), lineWidth: 0.5)
+            }
+            .frame(width: diameter, height: diameter)
     }
 
     /// Avoid a duplicate “Rosary” line; fall back to the step title when the controller returns the generic label.
@@ -349,14 +420,35 @@ struct RosaryView: View {
         .frame(maxWidth: .infinity)
     }
 
-    /// Progress + transport pinned over scrolling content; soft fade (no box stroke) for contrast.
+    /// Progress + Music-style glass transport (side orbs + ringed play); Stop lives in the top bar.
     private var rosaryFloatingPlayerChrome: some View {
         let accent = theme.accentColor(reduceTransparency: reduceTransparency, increaseContrast: increaseContrast)
-        return VStack(spacing: 4) {
+        let nextDisabled = rosary.steps.isEmpty || rosary.index >= rosary.steps.count - 1
+        return VStack(spacing: 6) {
             ThinProgressBar(value: rosary.overallProgressFraction, accent: accent, dimmed: !solidChrome, lineHeight: 3)
                 .padding(.horizontal, 14)
-            rosaryTransportRow
-                .padding(.horizontal, 12)
+            HStack(spacing: 18) {
+                Spacer(minLength: 0)
+                rosaryGlassTransportSideButton(
+                    icon: rosary.index == 0 ? "arrow.counterclockwise" : "backward.fill",
+                    disabled: false,
+                    label: rosary.index == 0 ? "Replay" : "Previous",
+                    identifier: "TransportPrevious"
+                ) {
+                    rosary.previousStep()
+                }
+                rosaryGlassTransportMainButton(accent: accent)
+                rosaryGlassTransportSideButton(
+                    icon: "forward.fill",
+                    disabled: nextDisabled,
+                    label: "Next",
+                    identifier: "TransportNext"
+                ) {
+                    rosary.nextStep()
+                }
+                Spacer(minLength: 0)
+            }
+            .padding(.horizontal, 8)
         }
         .padding(.top, 10)
         .padding(.bottom, 4)
@@ -381,83 +473,48 @@ struct RosaryView: View {
         }
     }
 
-    /// Minimal transport row (42mm + 46mm): one tight line — prev / play / next / stop — with library mini-player–scale glyphs.
-    private enum RosaryTransportMetrics {
-        static let sideIcon: CGFloat = 11
-        static let sideFrame: CGFloat = 24
-        static let playIcon: CGFloat = 13
-        static let playFrame: CGFloat = 28
-        static let stopIcon: CGFloat = 10
-        static let stopFrame: CGFloat = 24
-        static let clusterSpacing: CGFloat = 4
+    private func rosaryGlassTransportSideButton(
+        icon: String,
+        disabled: Bool,
+        label: String,
+        identifier: String,
+        action: @escaping () -> Void
+    ) -> some View {
+        Button(action: action) {
+            Image(systemName: icon)
+                .font(.system(size: 14, weight: .semibold))
+                .foregroundStyle(heroPrimaryText.opacity(disabled ? 0.4 : 0.98))
+                .symbolRenderingMode(.monochrome)
+                .frame(width: 40, height: 40)
+        }
+        .buttonStyle(.plain)
+        .disabled(disabled)
+        .background { rosaryGlassCircle(diameter: 40) }
+        .accessibilityLabel(label)
+        .accessibilityIdentifier(identifier)
     }
 
-    private var rosaryTransportRow: some View {
-        let nextDisabled = rosary.steps.isEmpty || rosary.index >= rosary.steps.count - 1
-        let m = RosaryTransportMetrics.self
-        return HStack(spacing: m.clusterSpacing) {
-            Button {
-                rosary.previousStep()
-            } label: {
-                Image(systemName: rosary.index == 0 ? "arrow.counterclockwise" : "backward.fill")
-                    .font(.system(size: m.sideIcon, weight: .medium))
-                    .imageScale(.small)
-                    .foregroundStyle(heroPrimaryText.opacity(0.95))
-                    .symbolRenderingMode(.monochrome)
-                    .frame(width: m.sideFrame, height: m.sideFrame)
-                    .contentShape(Rectangle())
-            }
-            .buttonStyle(.plain)
-            .accessibilityLabel(rosary.index == 0 ? "Replay" : "Previous")
-            .accessibilityIdentifier("TransportPrevious")
-
-            Button {
-                rosary.playPauseTapped()
-            } label: {
-                Image(systemName: speech.isSpeaking ? "pause.fill" : "play.fill")
-                    .font(.system(size: m.playIcon, weight: .medium))
-                    .imageScale(.small)
-                    .foregroundStyle(heroPrimaryText)
-                    .symbolRenderingMode(.monochrome)
-                    .frame(width: m.playFrame, height: m.playFrame)
-                    .contentShape(Rectangle())
-            }
-            .buttonStyle(.plain)
-            .accessibilityLabel(speech.isSpeaking ? "Pause" : "Play")
-            .accessibilityIdentifier("TransportPlayPause")
-
-            Button {
-                rosary.nextStep()
-            } label: {
-                Image(systemName: "forward.fill")
-                    .font(.system(size: m.sideIcon, weight: .medium))
-                    .imageScale(.small)
-                    .foregroundStyle(heroPrimaryText.opacity(nextDisabled ? 0.35 : 0.95))
-                    .symbolRenderingMode(.monochrome)
-                    .frame(width: m.sideFrame, height: m.sideFrame)
-                    .contentShape(Rectangle())
-            }
-            .buttonStyle(.plain)
-            .disabled(nextDisabled)
-            .accessibilityLabel("Next")
-            .accessibilityIdentifier("TransportNext")
-
-            Button {
-                Task { @MainActor in rosary.stopPlayback() }
-            } label: {
-                Image(systemName: "stop.fill")
-                    .font(.system(size: m.stopIcon, weight: .medium))
-                    .imageScale(.small)
-                    .foregroundStyle(heroPrimaryText.opacity(0.95))
-                    .symbolRenderingMode(.monochrome)
-                    .frame(width: m.stopFrame, height: m.stopFrame)
-                    .contentShape(Rectangle())
-            }
-            .buttonStyle(.plain)
-            .accessibilityLabel("Stop")
-            .accessibilityIdentifier("TransportStop")
+    private func rosaryGlassTransportMainButton(accent: Color) -> some View {
+        Button {
+            rosary.playPauseTapped()
+        } label: {
+            Image(systemName: speech.isSpeaking ? "pause.fill" : "play.fill")
+                .font(.system(size: 19, weight: .semibold))
+                .foregroundStyle(.white)
+                .symbolRenderingMode(.monochrome)
+                .frame(width: 48, height: 48)
         }
-        .frame(maxWidth: .infinity)
+        .buttonStyle(.plain)
+        .background {
+            Circle()
+                .fill(accent)
+        }
+        .overlay {
+            Circle()
+                .stroke(Color.white.opacity(0.92), lineWidth: 2.5)
+        }
+        .accessibilityLabel(speech.isSpeaking ? "Pause" : "Play")
+        .accessibilityIdentifier("TransportPlayPause")
     }
 
     private struct ThinProgressBar: View {
