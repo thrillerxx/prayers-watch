@@ -66,9 +66,12 @@ private struct AppShell: View {
     }
 }
 
-/// Plays an inaudible loop so watchOS treats the app as media and suppresses the corner digital time (see `silent_time_suppressor.mp4`).
+/// Plays an inaudible loop so watchOS treats the app as media and suppresses the corner digital time.
+/// The bundled MP4 includes a **silent AAC** track: video-only playback did not suppress the status clock on some sizes (e.g. 46mm); leaving the player unmuted with digital silence keeps it inaudible but lets the system enter media mode reliably.
 /// `AVPlayerLooper` is unavailable on watchOS; restart from zero at item end instead.
 private struct WatchMediaTimeSuppressor: View {
+    @Environment(\.scenePhase) private var scenePhase
+
     @State private var player: AVPlayer?
     @State private var endObserver: NSObjectProtocol?
 
@@ -85,6 +88,9 @@ private struct WatchMediaTimeSuppressor: View {
         .ignoresSafeArea()
         .onAppear(perform: startPlayback)
         .onDisappear(perform: stopPlayback)
+        .onChange(of: scenePhase) { _, phase in
+            if phase == .active { player?.play() }
+        }
     }
 
     private func startPlayback() {
@@ -97,7 +103,9 @@ private struct WatchMediaTimeSuppressor: View {
 
         let item = AVPlayerItem(url: url)
         let p = AVPlayer(playerItem: item)
-        p.isMuted = true
+        /// `isMuted = true` can skip audio-side “now playing” semantics on some watch layouts; the file’s audio is digital silence.
+        p.isMuted = false
+        p.volume = 1.0
         p.actionAtItemEnd = .none
 
         let loopPlayer = p
