@@ -62,8 +62,6 @@ struct RosaryView: View {
         .onDisappear {
             rosaryScreenActive = false
         }
-        /// Hides the system corner clock during “now playing” (46mm still showed it with VideoPlayer/Now Playing alone). Uses SwiftUI’s underscored SPI; confirm App Review posture if needed.
-        ._statusBarHidden(rosary.selectedMystery != nil)
     }
 
     /// Choosing a set should open the session and begin audio (matches “tap row → plays” expectation).
@@ -229,6 +227,15 @@ struct RosaryView: View {
 
             rosaryFloatingPlayerChrome
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        /// Apply on the now-playing subtree (not the whole `RosaryView`); corner clock still appeared on 46mm when this lived on the outer `Group`.
+        /// Uses underscored SPI; ineffective on some OS builds — then only VideoPlayer/Now Playing mitigations apply.
+        ._statusBarHidden(true)
+        #if DEBUG
+        .onAppear {
+            print("[Rosary] nowPlayingSession active — expect _statusBarHidden(true) on this screen")
+        }
+        #endif
     }
 
     /// watchOS Music–style header: glass back orb · time · glass “Stop” (replaces system … overflow).
