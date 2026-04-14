@@ -191,7 +191,7 @@ struct RosaryView: View {
 
             VStack(spacing: 0) {
                 sessionHeader
-                    .padding(.horizontal, 10)
+                    .padding(.horizontal, 12)
                     .padding(.top, 8)
                     .padding(.bottom, 6)
 
@@ -339,42 +339,43 @@ struct RosaryView: View {
         return VStack(alignment: .leading, spacing: 10) {
             progressSection(accent: accent)
 
-            HStack(spacing: 2) {
-                transportButton(
+            HStack(spacing: 4) {
+                compactTransportChip(
                     icon: "backward.fill",
                     accent: accent,
+                    surface: surface,
+                    stroke: stroke,
                     prominent: false,
                     disabled: rosary.index == 0,
                     action: { rosary.previousStep() }
                 )
                 .accessibilityLabel("Previous")
                 .accessibilityIdentifier("TransportPrevious")
-                .frame(maxWidth: .infinity)
-                .frame(height: 34)
 
-                transportButton(
+                compactTransportChip(
                     icon: speech.isSpeaking ? "pause.fill" : "play.fill",
                     accent: accent,
+                    surface: surface,
+                    stroke: stroke,
                     prominent: true,
                     disabled: false,
                     action: { rosary.playPauseTapped() }
                 )
                 .accessibilityIdentifier("TransportPlayPause")
-                .frame(maxWidth: .infinity)
-                .frame(height: 34)
 
-                transportButton(
+                compactTransportChip(
                     icon: "forward.fill",
                     accent: accent,
+                    surface: surface,
+                    stroke: stroke,
                     prominent: false,
                     disabled: rosary.steps.isEmpty || rosary.index >= rosary.steps.count - 1,
                     action: { rosary.nextStep() }
                 )
                 .accessibilityLabel("Next")
                 .accessibilityIdentifier("TransportNext")
-                .frame(maxWidth: .infinity)
-                .frame(height: 34)
             }
+            .frame(height: 32)
 
             Button {
                 Task { @MainActor in rosary.stopPlayback() }
@@ -391,7 +392,7 @@ struct RosaryView: View {
             .accessibilityIdentifier("TransportStop")
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(.horizontal, 4)
+        .padding(.horizontal, 6)
         .padding(.top, 8)
         .padding(.bottom, 8)
         .background {
@@ -400,38 +401,37 @@ struct RosaryView: View {
         .shadow(color: .black.opacity(solidChrome ? 0.28 : 0.38), radius: 10, x: 0, y: -4)
     }
 
-    @ViewBuilder
-    private func transportButton(
+    /// Plain chips avoid watchOS bordered button chrome overflowing narrow 42mm widths.
+    private func compactTransportChip(
         icon: String,
         accent: Color,
+        surface: Color,
+        stroke: Color,
         prominent: Bool,
         disabled: Bool,
         action: @escaping () -> Void
     ) -> some View {
-        if prominent {
-            Button(action: action) {
-                Image(systemName: icon)
-                    .font(.system(size: 14, weight: .semibold))
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .contentShape(Rectangle())
-            }
-            .buttonStyle(.borderedProminent)
-            .buttonBorderShape(.roundedRectangle(radius: 8))
-            .controlSize(.mini)
-            .tint(accent)
-            .disabled(disabled)
-        } else {
-            Button(action: action) {
-                Image(systemName: icon)
-                    .font(.system(size: 12, weight: .semibold))
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .contentShape(Rectangle())
-            }
-            .buttonStyle(.bordered)
-            .buttonBorderShape(.roundedRectangle(radius: 8))
-            .controlSize(.mini)
-            .tint(accent)
-            .disabled(disabled)
+        Button(action: action) {
+            Image(systemName: icon)
+                .font(.system(size: prominent ? 13 : 11, weight: .semibold))
+                .foregroundStyle(prominent ? Color.white : accent.opacity(disabled ? 0.38 : 0.92))
+                .symbolRenderingMode(.monochrome)
+                .frame(maxWidth: .infinity)
+                .frame(maxHeight: .infinity)
+                .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .disabled(disabled)
+        .opacity(disabled ? 0.55 : 1)
+        .frame(maxWidth: .infinity)
+        .frame(height: 32)
+        .background {
+            RoundedRectangle(cornerRadius: 8, style: .continuous)
+                .fill(prominent ? accent : surface)
+                .overlay {
+                    RoundedRectangle(cornerRadius: 8, style: .continuous)
+                        .stroke(stroke, lineWidth: 0.5)
+                }
         }
     }
 
