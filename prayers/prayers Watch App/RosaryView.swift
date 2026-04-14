@@ -1,4 +1,3 @@
-import AVKit
 import SwiftUI
 
 struct RosaryView: View {
@@ -197,12 +196,6 @@ struct RosaryView: View {
     /// Music-style layout: blurred hero, small cover art; prayer scrolls full-width with controls overlaid (no text card).
     private var nowPlayingSession: some View {
         ZStack(alignment: .bottom) {
-            /// watchOS keeps a status-bar clock unless a `VideoPlayer` is in the hierarchy; hide it so only the centered header time shows.
-            RosaryWatchSystemTimeSuppressor()
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .allowsHitTesting(false)
-                .accessibilityHidden(true)
-
             if rosary.selectedMystery != nil {
                 mysteryHeroBackground
             }
@@ -229,20 +222,6 @@ struct RosaryView: View {
             }
 
             rosaryFloatingPlayerChrome
-        }
-    }
-
-    /// Invisible full-screen video surface so watchOS suppresses the corner status time (media-style layout).
-    private struct RosaryWatchSystemTimeSuppressor: View {
-        var body: some View {
-            VideoPlayer(player: nil) {
-                EmptyView()
-            }
-            .focusable(false)
-            .disabled(true)
-            .opacity(0)
-            .allowsHitTesting(false)
-            .accessibilityHidden(true)
         }
     }
 
