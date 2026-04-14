@@ -309,118 +309,148 @@ struct RosaryView: View {
 
     private var playerChrome: some View {
         let accent = theme.accentColor(reduceTransparency: reduceTransparency, increaseContrast: increaseContrast)
+        let surface = DivinityChrome.elevatedSurface(theme: theme, reduceTransparency: reduceTransparency, increaseContrast: increaseContrast)
+        let stroke = DivinityChrome.elevatedSurfaceStroke(theme: theme, accent: accent, reduceTransparency: reduceTransparency)
 
-        return VStack(alignment: .leading, spacing: 8) {
+        return VStack(alignment: .leading, spacing: 10) {
             progressSection(accent: accent)
 
-            HStack(spacing: 8) {
-                Button {
-                    rosary.previousStep()
-                } label: {
-                    Image(systemName: "backward.fill")
-                        .font(.body.weight(.semibold))
-                        .frame(width: 36, height: 36)
-                        .frame(maxWidth: .infinity)
-                }
-                .buttonStyle(.bordered)
-                .tint(accent)
-                .disabled(rosary.index == 0)
+            HStack(spacing: 6) {
+                transportButton(
+                    icon: "backward.fill",
+                    accent: accent,
+                    prominent: false,
+                    disabled: rosary.index == 0,
+                    action: { rosary.previousStep() }
+                )
                 .accessibilityLabel("Previous")
                 .accessibilityIdentifier("TransportPrevious")
 
-                Button {
-                    rosary.playPauseTapped()
-                } label: {
-                    Image(systemName: speech.isSpeaking ? "pause.fill" : "play.fill")
-                        .font(.body.weight(.semibold))
-                        .frame(width: 40, height: 40)
-                        .frame(maxWidth: .infinity)
-                }
-                .buttonStyle(.borderedProminent)
-                .tint(accent)
+                transportButton(
+                    icon: speech.isSpeaking ? "pause.fill" : "play.fill",
+                    accent: accent,
+                    prominent: true,
+                    disabled: false,
+                    action: { rosary.playPauseTapped() }
+                )
                 .accessibilityIdentifier("TransportPlayPause")
 
-                Button {
-                    rosary.nextStep()
-                } label: {
-                    Image(systemName: "forward.fill")
-                        .font(.body.weight(.semibold))
-                        .frame(width: 36, height: 36)
-                        .frame(maxWidth: .infinity)
-                        .padding(.horizontal, 2)
-                }
-                .buttonStyle(.bordered)
-                .tint(accent)
-                .disabled(rosary.steps.isEmpty || rosary.index >= rosary.steps.count - 1)
+                transportButton(
+                    icon: "forward.fill",
+                    accent: accent,
+                    prominent: false,
+                    disabled: rosary.steps.isEmpty || rosary.index >= rosary.steps.count - 1,
+                    action: { rosary.nextStep() }
+                )
                 .accessibilityLabel("Next")
                 .accessibilityIdentifier("TransportNext")
             }
+            .frame(height: 42)
 
             Button {
                 Task { @MainActor in rosary.stopPlayback() }
             } label: {
                 Label("Stop", systemImage: "stop.fill")
-                    .font(DivinityFont.caption(13))
+                    .font(DivinityFont.caption(12))
+                    .fontWeight(.medium)
                     .frame(maxWidth: .infinity)
+                    .padding(.vertical, 2)
             }
             .buttonStyle(.bordered)
             .tint(accent)
+            .controlSize(.small)
             .accessibilityIdentifier("TransportStop")
         }
-        .padding(.horizontal, 8)
-        .padding(.top, 10)
-        .padding(.bottom, 6)
-        .background(chromeBackground)
-        .overlay(alignment: .top) {
-            Rectangle()
-                .fill(accent.opacity(reduceTransparency ? 0.22 : 0.35))
-                .frame(height: 0.5)
+        .padding(.horizontal, 10)
+        .padding(.top, 12)
+        .padding(.bottom, 10)
+        .background {
+            playerChromeBackground(surface: surface, stroke: stroke)
         }
+        .shadow(color: .black.opacity(solidChrome ? 0.35 : 0.45), radius: 14, x: 0, y: -6)
+    }
+
+    private func transportButton(
+        icon: String,
+        accent: Color,
+        prominent: Bool,
+        disabled: Bool,
+        action: @escaping () -> Void
+    ) -> some View {
+        Button(action: action) {
+            Image(systemName: icon)
+                .font(.system(size: prominent ? 17 : 15, weight: .semibold))
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .contentShape(Rectangle())
+        }
+        .buttonStyle(prominent ? .borderedProminent : .bordered)
+        .tint(accent)
+        .disabled(disabled)
     }
 
     @ViewBuilder
-    private var chromeBackground: some View {
-        if solidChrome {
-            Color.black.opacity(0.92)
-        } else {
-            ZStack {
-                Color.black.opacity(0.25)
-                Rectangle().fill(.ultraThinMaterial)
+    private func playerChromeBackground(surface: Color, stroke: Color) -> some View {
+        let topRadius: CGFloat = 18
+        let shape = UnevenRoundedRectangle(
+            topLeadingRadius: topRadius,
+            bottomLeadingRadius: 0,
+            bottomTrailingRadius: 0,
+            topTrailingRadius: topRadius,
+            style: .continuous
+        )
+        ZStack {
+            if solidChrome {
+                shape.fill(surface)
+            } else {
+                shape.fill(surface.opacity(0.92))
+                shape.fill(.ultraThinMaterial)
             }
+            shape.stroke(stroke, lineWidth: 0.5)
         }
     }
 
+    private var playerProgressLabelColor: Color {
+        solidChrome ? Color.secondary : Color.white.opacity(0.58)
+    }
+
     private func progressSection(accent: Color) -> some View {
-        VStack(alignment: .leading, spacing: 4) {
+        VStack(alignment: .leading, spacing: 5) {
             if let decade = rosary.decadeProgressFraction() {
                 Text("Decade")
                     .font(DivinityFont.caption(9))
-                    .foregroundStyle(.tertiary)
-                ThinProgressBar(value: decade, accent: accent)
+                    .fontWeight(.medium)
+                    .foregroundStyle(playerProgressLabelColor)
+                    .textCase(.uppercase)
+                    .tracking(0.3)
+                ThinProgressBar(value: decade, accent: accent, dimmed: !solidChrome)
             }
 
             Text("Rosary")
                 .font(DivinityFont.caption(9))
-                .foregroundStyle(.tertiary)
-            ThinProgressBar(value: rosary.overallProgressFraction, accent: accent)
+                .fontWeight(.medium)
+                .foregroundStyle(playerProgressLabelColor)
+                .textCase(.uppercase)
+                .tracking(0.3)
+            ThinProgressBar(value: rosary.overallProgressFraction, accent: accent, dimmed: !solidChrome)
         }
     }
 
     private struct ThinProgressBar: View {
         let value: Double
         let accent: Color
+        var dimmed: Bool = false
 
         var body: some View {
             GeometryReader { geo in
                 ZStack(alignment: .leading) {
                     Capsule()
-                        .fill(Color.secondary.opacity(0.22))
+                        .fill(dimmed ? Color.white.opacity(0.14) : Color.secondary.opacity(0.22))
                     Capsule()
                         .fill(accent)
-                        .frame(width: max(3, geo.size.width * min(1, max(0, value))))
+                        .frame(width: max(4, geo.size.width * min(1, max(0, value))))
                 }
             }
-            .frame(height: 3)
+            .frame(height: 4)
         }
     }
 }

@@ -159,7 +159,7 @@ private struct TransportRow: View {
     var accent: Color
 
     var body: some View {
-        HStack(spacing: 10) {
+        HStack(spacing: 6) {
             Button {
                 if speech.isSpeaking {
                     speech.pause()
@@ -168,22 +168,28 @@ private struct TransportRow: View {
                 }
             } label: {
                 Label(speech.isSpeaking ? "Pause" : "Play", systemImage: speech.isSpeaking ? "pause.fill" : "play.fill")
-                    .font(DivinityFont.caption(13))
+                    .font(DivinityFont.caption(12))
+                    .fontWeight(.medium)
                     .frame(maxWidth: .infinity)
+                    .padding(.vertical, 2)
             }
             .buttonStyle(.borderedProminent)
             .tint(accent)
+            .controlSize(.small)
             .accessibilityIdentifier("TransportPlayPause")
 
             Button {
                 speech.stop()
             } label: {
                 Image(systemName: "stop.fill")
+                    .font(.system(size: 14, weight: .semibold))
+                    .frame(width: 40, height: 34)
             }
             .buttonStyle(.bordered)
             .tint(accent)
             .accessibilityIdentifier("TransportStop")
         }
+        .frame(maxWidth: .infinity)
     }
 }
 
