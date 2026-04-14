@@ -191,37 +191,32 @@ struct RosaryView: View {
         }
     }
 
-    /// Music-style layout: blurred hero, small cover art; transport matches Prayer Library detail hero.
+    /// Music-style layout: blurred hero, small cover art; prayer scrolls full-width with controls overlaid (no text card).
     private var nowPlayingSession: some View {
         ZStack(alignment: .bottom) {
             if rosary.selectedMystery != nil {
                 mysteryHeroBackground
             }
 
-            VStack(spacing: 0) {
-                ScrollView {
-                    VStack(spacing: 10) {
-                        Color.clear.frame(height: 4)
-                        rosaryAlbumArtTile
-                        rosarySessionTitles
-                            .padding(.horizontal, 10)
-                            .onLongPressGesture(minimumDuration: 0.55) {
-                                Task { @MainActor in
-                                    rosary.exitToMysteryPicker()
-                                }
+            ScrollView {
+                VStack(spacing: 10) {
+                    Color.clear.frame(height: 4)
+                    rosaryAlbumArtTile
+                    rosarySessionTitles
+                        .padding(.horizontal, 10)
+                        .onLongPressGesture(minimumDuration: 0.55) {
+                            Task { @MainActor in
+                                rosary.exitToMysteryPicker()
                             }
-                        currentPrayerPanel
-                            .padding(.horizontal, 8)
-                    }
+                        }
+                    rosaryPrayerBody
                 }
-                .frame(maxHeight: .infinity)
-                .scrollIndicators(.hidden)
-
-                rosaryPlayerDock
-                    .padding(.horizontal, 12)
-                    .padding(.top, 4)
-                    .padding(.bottom, 3)
+                .padding(.bottom, 56)
             }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .scrollIndicators(.hidden)
+
+            rosaryFloatingPlayerChrome
         }
     }
 
@@ -271,26 +266,19 @@ struct RosaryView: View {
         solidChrome ? .clear : Color.black.opacity(0.45)
     }
 
-    /// Single “now playing” prayer — avoids a long wall of dimmed sections (unreadable on watch).
-    private var currentPrayerPanel: some View {
+    /// Prayer text only (no rounded card / stroke) so it can run under the floating transport.
+    private var rosaryPrayerBody: some View {
         let bodyText = rosary.textForStep(at: rosary.index) ?? ""
-
-        return ScrollView {
-            Text(bodyText)
-                .font(DivinityFont.prayerEmphasis(14))
-                .foregroundStyle(heroPrimaryText)
-                .multilineTextAlignment(.center)
-                .lineSpacing(4)
-                .minimumScaleFactor(0.78)
-                .frame(maxWidth: .infinity, alignment: .center)
-                .padding(.horizontal, 10)
-                .padding(.vertical, 10)
-                .background(prayerCardBackground)
-                .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
-                .shadow(color: Color.black.opacity(solidChrome ? 0 : 0.35), radius: 8, x: 0, y: 3)
-        }
-        .frame(maxHeight: 118)
-        .scrollIndicators(.hidden)
+        return Text(bodyText)
+            .font(DivinityFont.prayerEmphasis(14))
+            .foregroundStyle(heroPrimaryText)
+            .multilineTextAlignment(.center)
+            .lineSpacing(4)
+            .minimumScaleFactor(0.78)
+            .frame(maxWidth: .infinity, alignment: .center)
+            .padding(.horizontal, 12)
+            .padding(.bottom, 4)
+            .shadow(color: textShadowColor, radius: solidChrome ? 0 : 2, x: 0, y: 1)
     }
 
     private var rosaryAlbumArtTile: some View {
@@ -305,10 +293,6 @@ struct RosaryView: View {
                     .aspectRatio(contentMode: .fill)
                     .frame(width: 102, height: 102)
                     .clipShape(RoundedRectangle(cornerRadius: corner, style: .continuous))
-                    .overlay {
-                        RoundedRectangle(cornerRadius: corner, style: .continuous)
-                            .stroke(Color.white.opacity(0.26), lineWidth: 0.5)
-                    }
                     .shadow(color: Color.black.opacity(solidChrome ? 0 : 0.4), radius: 8, x: 0, y: 3)
                     .id(name)
             }
@@ -365,12 +349,35 @@ struct RosaryView: View {
         .frame(maxWidth: .infinity)
     }
 
-    private var rosaryPlayerDock: some View {
+    /// Progress + transport pinned over scrolling content; soft fade (no box stroke) for contrast.
+    private var rosaryFloatingPlayerChrome: some View {
         let accent = theme.accentColor(reduceTransparency: reduceTransparency, increaseContrast: increaseContrast)
         return VStack(spacing: 4) {
             ThinProgressBar(value: rosary.overallProgressFraction, accent: accent, dimmed: !solidChrome, lineHeight: 3)
-                .padding(.horizontal, 2)
+                .padding(.horizontal, 14)
             rosaryTransportRow
+                .padding(.horizontal, 12)
+        }
+        .padding(.top, 10)
+        .padding(.bottom, 4)
+        .frame(maxWidth: .infinity)
+        .background {
+            if solidChrome {
+                Rectangle()
+                    .fill(.regularMaterial)
+                    .ignoresSafeArea(edges: .bottom)
+            } else {
+                LinearGradient(
+                    colors: [
+                        Color.black.opacity(0),
+                        Color.black.opacity(0.35),
+                        Color.black.opacity(0.55)
+                    ],
+                    startPoint: .top,
+                    endPoint: .bottom
+                )
+                .allowsHitTesting(false)
+            }
         }
     }
 
@@ -451,20 +458,6 @@ struct RosaryView: View {
             .accessibilityIdentifier("TransportStop")
         }
         .frame(maxWidth: .infinity)
-    }
-
-    @ViewBuilder
-    private var prayerCardBackground: some View {
-        if solidChrome {
-            RoundedRectangle(cornerRadius: 14, style: .continuous)
-                .fill(.regularMaterial)
-        } else {
-            ZStack {
-                Color.black.opacity(0.38)
-                RoundedRectangle(cornerRadius: 14, style: .continuous)
-                    .fill(.ultraThinMaterial)
-            }
-        }
     }
 
     private struct ThinProgressBar: View {
