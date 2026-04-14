@@ -426,7 +426,7 @@ struct RosaryView: View {
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(.horizontal, 4)
+        .padding(.horizontal, 8)
         .padding(.top, 6)
         .padding(.bottom, 8)
         .background {
@@ -457,7 +457,7 @@ struct RosaryView: View {
         let secondaryFill = Color.white.opacity(0.16)
         let iconColor: Color = {
             if prominent { return .white }
-            if disabled { return .white.opacity(0.38) }
+            if disabled { return .white.opacity(0.52) }
             return .white.opacity(0.95)
         }()
         return Button(action: action) {
@@ -471,7 +471,7 @@ struct RosaryView: View {
         }
         .buttonStyle(.plain)
         .disabled(disabled)
-        .opacity(disabled ? 0.5 : 1)
+        .opacity(disabled ? 0.62 : 1)
         .frame(maxWidth: .infinity, minHeight: 28, maxHeight: 28)
         .background {
             RoundedRectangle(cornerRadius: 7, style: .continuous)
@@ -531,7 +531,7 @@ struct RosaryView: View {
             ThinProgressBar(value: rosary.overallProgressFraction, accent: accent, dimmed: !solidChrome)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(.horizontal, 1)
+        .padding(.horizontal, 4)
     }
 
     private struct ThinProgressBar: View {
