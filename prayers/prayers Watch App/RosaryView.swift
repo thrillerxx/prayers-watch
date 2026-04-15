@@ -253,8 +253,9 @@ struct RosaryView: View {
         let isLargeWatch = watchWidth >= 200
         /// Small upward nudge; main lift comes from top `overlay` + `ignoresSafeArea` (not `safeAreaInset`).
         let topPad: CGFloat = isLargeWatch ? -18 : -14
-        /// Inset from the round bezel so Back/Stop aren’t clipped in Simulator or on hardware.
-        let edgeInset: CGFloat = isLargeWatch ? 14 : 11
+        /// Round watch face clips rectangular layout; scale inset with width so corners stay inside the mask.
+        let edgeInset: CGFloat = max(isLargeWatch ? 18 : 15, (watchWidth * 0.12).rounded(.down))
+        let chromeButtonSize: CGFloat = isLargeWatch ? 32 : 30
 
         return VStack(alignment: .center, spacing: 0) {
             TimelineView(.periodic(from: .now, by: 60.0)) { context in
@@ -274,12 +275,12 @@ struct RosaryView: View {
                     rosary.exitToMysteryPicker()
                 } label: {
                     Image(systemName: "chevron.left")
-                        .font(.system(size: 14, weight: .semibold))
+                        .font(.system(size: 13, weight: .semibold))
                         .foregroundStyle(heroPrimaryText)
-                        .frame(width: 34, height: 34)
+                        .frame(width: chromeButtonSize, height: chromeButtonSize)
                 }
                 .buttonStyle(.plain)
-                .background { rosaryGlassCircle(diameter: 34) }
+                .background { rosaryGlassCircle(diameter: chromeButtonSize) }
                 .accessibilityLabel("Back")
 
                 Spacer(minLength: 0)
@@ -288,12 +289,12 @@ struct RosaryView: View {
                     Task { @MainActor in rosary.stopPlayback() }
                 } label: {
                     Text("Stop")
-                        .font(.system(size: 11, weight: .semibold, design: .default))
+                        .font(.system(size: 10, weight: .semibold, design: .default))
                         .foregroundStyle(heroPrimaryText)
                         .lineLimit(1)
                         .minimumScaleFactor(0.75)
-                        .padding(.horizontal, 8)
-                        .frame(height: 34)
+                        .padding(.horizontal, 6)
+                        .frame(height: chromeButtonSize)
                 }
                 .buttonStyle(.plain)
                 .background {
