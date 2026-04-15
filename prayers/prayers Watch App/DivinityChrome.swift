@@ -38,10 +38,11 @@ enum DivinityChrome {
 
 struct HomeNavigationTile: View {
 
-    let route: NavRoute
     let title: String
     let subtitle: String
     let icon: String
+    /// Same control type as `mysterySetPickerRow` (`Button`); `NavigationLink` labels often stay content-width in watchOS scroll stacks.
+    let action: () -> Void
 
     @Environment(\.appColorTheme) private var theme
     @Environment(\.accessibilityReduceTransparency) private var reduceTransparency
@@ -60,7 +61,7 @@ struct HomeNavigationTile: View {
     }
 
     var body: some View {
-        NavigationLink(value: route) {
+        Button(action: action) {
             HStack(alignment: .center, spacing: 8) {
                 ZStack {
                     RoundedRectangle(cornerRadius: 9, style: .continuous)
@@ -109,7 +110,6 @@ struct HomeNavigationTile: View {
             }
         }
         .buttonStyle(.plain)
-        /// `NavigationLink` does not expand like `Button`; match mystery rows’ full usable width in a leading `VStack`.
         .frame(maxWidth: .infinity, alignment: .leading)
         .accessibilityLabel(title)
         .accessibilityHint(subtitle)

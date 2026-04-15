@@ -85,6 +85,7 @@ struct ContentView: View {
                     .padding(.horizontal, 10)
                     .padding(.bottom, 8)
                 }
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
                 .scrollIndicators(.hidden)
             }
             .navigationBarTitleDisplayMode(.inline)
@@ -117,7 +118,9 @@ struct ContentView: View {
 
     @ViewBuilder
     private func homeTile(_ route: NavRoute, title: String, subtitle: String, icon: String) -> some View {
-        HomeNavigationTile(route: route, title: title, subtitle: subtitle, icon: icon)
+        HomeNavigationTile(title: title, subtitle: subtitle, icon: icon) {
+            path.append(route)
+        }
     }
 
     private var rosaryMiniPlayer: some View {
