@@ -16,12 +16,13 @@ Use this workflow when a contributor (human or agent) needs to build and run the
 3. Choose a destination (e.g. **Apple Watch Series 11 (46mm)** or current simulator).
 4. Run (⌘R).
 
-## Remote Xcode (MacBook Air)
-- Canonical remote machine: `thrillerx@100.81.139.50` (or `thrillerx@thrillerxs-macbook-air` if local SSH alias exists)
-- Canonical remote project path: `/Users/thrillerx/dev/prayers-watch/prayers/prayers.xcodeproj`
-- From Omarchy, use the automation runner:
+## Remote Xcode (optional)
+- Set **`MAC_HOST`** to your macOS SSH target (see `scripts/remote_mac_xcode.sh`).
+- On the Mac, the repo is often at **`~/dev/prayers-watch`** (override with **`MAC_REPO_DIR`** when invoking from another machine).
+- From your dev host:
 ```bash
-cd /home/car/.openclaw/workspace/prayers-watch
+export MAC_HOST='you@your-mac'
+cd /path/to/prayers-watch
 scripts/remote_mac_xcode.sh main
 ```
 

@@ -1,8 +1,8 @@
 Legacy root-level Xcode project and duplicate app/test directories archived on 2026-03-10.
 Canonical active project:
-  /home/car/dev/prayers-watch/prayers/prayers.xcodeproj
+  prayers/prayers.xcodeproj (relative to repo root)
 Canonical watch app source:
-  /home/car/dev/prayers-watch/prayers/prayers Watch App
+  prayers/prayers Watch App (relative to repo root)
 
 Reason:
 - eliminate ambiguous duplicate roots (root-level vs nested-level project trees)

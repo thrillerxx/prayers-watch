@@ -110,4 +110,7 @@ prayers/artifacts/capture_*.png
 prayers/artifacts/mac-visible/*.png
 prayers/artifacts/rosary_session*.png
 
+# RC sanity logs / xcresult (may contain machine-specific absolute paths)
+artifacts/sanity/
+
 # End of https://www.toptal.com/developers/gitignore/api/xcode,swift

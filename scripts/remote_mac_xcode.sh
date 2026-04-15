@@ -6,8 +6,10 @@ set -euo pipefail
 # - sync Mac clone to that branch
 # - run Xcode build + optional UI tests on Mac
 
-MAC_HOST="${MAC_HOST:-thrillerx@100.81.139.50}"
-MAC_REPO_DIR="${MAC_REPO_DIR:-/Users/thrillerx/dev/prayers-watch}"
+# Set MAC_HOST to your Mac (e.g. export MAC_HOST='you@100.x.x.x' on Tailscale, or you@hostname.local).
+# Optional: MAC_REPO_DIR = absolute path to this repo on the Mac; if unset, the remote shell uses $HOME/dev/prayers-watch.
+MAC_HOST="${MAC_HOST:-}"
+MAC_REPO_DIR="${MAC_REPO_DIR:-}"
 MAC_PROJECT_SUBDIR="${MAC_PROJECT_SUBDIR:-prayers}"
 PROJECT_FILE="${PROJECT_FILE:-prayers.xcodeproj}"
 # Shared CLI builds use the watch app *target*; the scheme is not always checked in.
@@ -30,6 +32,11 @@ cd "$LOCAL_ROOT"
 BRANCH="${1:-$(git rev-parse --abbrev-ref HEAD)}"
 if [[ "$BRANCH" == "HEAD" ]]; then
   echo "Local repo is detached HEAD. Pass an explicit branch: scripts/remote_mac_xcode.sh <branch>" >&2
+  exit 1
+fi
+
+if [[ -z "$MAC_HOST" ]]; then
+  echo "remote_mac_xcode.sh: set MAC_HOST to your macOS SSH target (e.g. export MAC_HOST='you@your-mac.tail-scale.ts.net')." >&2
   exit 1
 fi
 
@@ -67,6 +74,7 @@ echo "[remote] syncing and building on $MAC_HOST"
 ssh -o BatchMode=yes -o StrictHostKeyChecking=accept-new "$MAC_HOST" \
   "set -euo pipefail; \
    MAC_REPO_DIR='$MAC_REPO_DIR'; \
+   if [ -z \"\$MAC_REPO_DIR\" ]; then MAC_REPO_DIR=\"\$HOME/dev/prayers-watch\"; fi; \
    MAC_PROJECT_SUBDIR='$MAC_PROJECT_SUBDIR'; \
    PROJECT_FILE='$PROJECT_FILE'; \
    BUILD_TARGET='$BUILD_TARGET'; \

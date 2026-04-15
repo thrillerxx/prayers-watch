@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Run ON the MacBook Air (or via: ssh thrillerx@100.81.139.50 bash -s < scripts/mac_watch_46mm_run.sh)
+# Run ON a Mac with Xcode (or via SSH: ssh you@your-mac bash -s < scripts/mac_watch_46mm_run.sh)
 set -euo pipefail
 eval "$(/opt/homebrew/bin/brew shellenv)" 2>/dev/null || true
 

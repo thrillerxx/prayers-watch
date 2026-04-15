@@ -1,20 +1,7 @@
 # Archive Status (2026-03-10)
 
-Canonical app repository/worktree:
-- `/home/car/dev/prayers-watch`
-- Canonical Xcode project:
-  - `/home/car/dev/prayers-watch/prayers/prayers.xcodeproj`
-- Canonical watch app source:
-  - `/home/car/dev/prayers-watch/prayers/prayers Watch App`
+Historical note: older duplicate workspaces and `divinity*` copies were archived on a private dev machine to avoid confusion. The **active** codebase is this **`prayers-watch`** repository.
 
-Archived to avoid confusion with older `divinity*` copies:
-- `/home/car/archive/prayers-app-archive-2026-03-10/divinity-app-work`
-- `/home/car/archive/prayers-app-archive-2026-03-10/divinity-app.git`
-- `/home/car/archive/prayers-app-archive-2026-03-10/divinity-work`
-- `/home/car/archive/prayers-app-archive-2026-03-10/divinity.git`
-
-Notes:
-- `prayers-watch` is the active codebase used on the MacBook Xcode path.
-- Archived prayer JSON content matches the active `prayers/prayers Watch App/rosary_prayers_en.json`.
-- Additional in-repo cleanup archive:
-  - `/home/car/dev/prayers-watch/archive/legacy-root-layout-2026-03-10`
+- Canonical Xcode project: `prayers/prayers.xcodeproj`
+- Canonical watch app source: `prayers/prayers Watch App`
+- In-repo snapshot of an old layout (if present): `archive/legacy-root-layout-2026-03-10/`

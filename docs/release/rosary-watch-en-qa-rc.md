@@ -49,7 +49,8 @@ Tag: `rosary-watch-en-qa-rc`
 Scheme: `prayers-watch-uitests`
 
 ```bash
-cd /home/car/dev/prayers-watch/prayers
+# From the repository root:
+cd prayers
 rm -rf /tmp/uitest-results.xcresult /tmp/uitest.log
 xcodebuild test -project prayers.xcodeproj \
   -scheme prayers-watch-uitests \

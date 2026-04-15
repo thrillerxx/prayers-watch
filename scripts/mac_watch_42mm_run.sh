@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Run ON the MacBook Air (or via: ssh user@mac bash -s < scripts/mac_watch_42mm_run.sh)
+# Run ON a Mac with Xcode (or via SSH: ssh you@your-mac bash -s < scripts/mac_watch_42mm_run.sh)
 # Syncs to origin/main first (same as mac_watch_46mm_run.sh) so builds aren’t stale.
 set -euo pipefail
 eval "$(/opt/homebrew/bin/brew shellenv)" 2>/dev/null || true

@@ -13,7 +13,7 @@ A watchOS (and companion iOS) app for Catholic prayers and guided Rosary. Built 
 - **Settings** — User preferences (e.g. speech, display).
 - **Watch-first** — Layout and interactions tuned for watchOS (marquee for long titles, compact controls).
 
-**Agents / automation:** read **`docs/agent-environment.md`** (SSH to Mac, Xcode Simulator, Homebrew PATH, BlackHole, canonical paths). The full tailnet reference on omarchy is **`/home/car/.openclaw/workspace/OPENCLAW_ENVIRONMENT.md`** (§5 prayers-watch).
+**Agents / automation:** read **`docs/agent-environment.md`** (Xcode on macOS, Simulator, Homebrew PATH, BlackHole). Keep private hostnames, VPN addresses, and personal paths in **local** notes—not in this repo.
 
 ## Open in Xcode
 - **Project:** `prayers/prayers.xcodeproj`
@@ -59,7 +59,7 @@ Simulator builds use `CODE_SIGNING_ALLOWED=NO`. For real Apple Watch deployment:
 3. In Xcode, set each target's signing team, or use the remote script:
 
 ```bash
-SIGN=1 DEVELOPMENT_TEAM=YOUR_TEAM_ID bash scripts/remote_mac_xcode.sh
+MAC_HOST=you@your-mac SIGN=1 DEVELOPMENT_TEAM=YOUR_TEAM_ID bash scripts/remote_mac_xcode.sh
 ```
 
 Requirements:

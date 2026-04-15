@@ -34,18 +34,13 @@ v1 is currently scoped as:
 
 **Canonical repo/worktree:**
 
-`/home/car/.openclaw/workspace/prayers-watch`
+This Git repository (your clone path on disk).
 
-This is the repo that should be treated as the **source of truth** going forward.
+This repo is the **source of truth** going forward.
 
 **Primary IDE / dev environment:** We use **Cursor** for this project now. Agents and runbooks should assume Cursor as the editing and agent context (not another IDE or workspace tool).
 
-**Stale workspace (do not use):**
-
-`/home/car/dev/prayers-watch` (archived)
-`/home/car/.openclaw/workspace/divinity-app-work` (archived)
-
-That older workspace was confirmed to be stale / wrong for current work and **should not be used** for active development.
+**Stale workspace (do not use):** older duplicate clones or archived copies of this project on any machine—verify `git remote` and `main` before working.
 
 ---
 
@@ -63,7 +58,7 @@ That is the RC you should think of as the **current pinned release-validation ba
 
 There are newer branches / older stale work references floating around; the safest thing is:
 
-**Use the canonical repo at `/home/car/.openclaw/workspace/prayers-watch` and pin to tag `rosary-watch-en-final-ui-rc` unless we intentionally decide to move forward from there.**
+**Use this canonical repository and pin to tag `rosary-watch-en-final-ui-rc` unless we intentionally decide to move forward from there.**
 
 ---
 
@@ -183,11 +178,11 @@ Screenshots during UI test and polish work were commonly saved under a temporary
 
 | What | Path |
 |------|------|
-| Canonical code and content | `/home/car/.openclaw/workspace/prayers-watch` |
+| Canonical code and content | This repository (clone root) |
 | Canonical English prayer JSON | `prayers/prayers Watch App/rosary_prayers_en.json` |
 | UI tests | `prayers Watch AppUITests/prayers_Watch_AppUITests.swift` |
 | Temporary logs/screenshots | `/tmp` and repo-local temp outputs unless explicitly preserved |
-| **Stale workspace (avoid)** | `/home/car/dev/prayers-watch` and `/home/car/.openclaw/workspace/divinity-app-work` (archived under `/home/car/archive/prayers-workspace-duplicates-20260319-143035/`) |
+| **Stale workspace (avoid)** | Old duplicate paths on disk; always confirm you are in the intended clone. |
 
 ---
 

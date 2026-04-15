@@ -7,7 +7,7 @@ Purpose: Record the March 19, 2026 RC sanity pass and audio artifact preservatio
 - Active development continues on `main`.
 
 ## RC baseline confirmation (remote Mac)
-- Host: `thrillerx@100.81.139.50`
+- Host: private SSH target (macOS builder; not recorded in-repo)
 - `git describe --tags --always --dirty`: `rosary-watch-en-final-ui-rc`
 - `git rev-parse HEAD`: `21fde32a87b6830c791c1581e3cca9f7935fdc32`
 - `git log -1 --format=%ci`: `2026-02-26 20:42:56 -0600`
@@ -17,10 +17,7 @@ Purpose: Record the March 19, 2026 RC sanity pass and audio artifact preservatio
   - `Apple Watch Series 11 (42mm)`
   - `Apple Watch Ultra 3 (49mm)`
 - `xcodebuild test` on RC with scheme `prayers Watch App` passed for the watch targets available in that scheme.
-- Artifacts pulled into canonical repo:
-  - `artifacts/sanity/2026-03-19/rosary-watch-en-final-ui-rc_21fde32/rc_build_42.log`
-  - `artifacts/sanity/2026-03-19/rosary-watch-en-final-ui-rc_21fde32/rc_build_49.log`
-  - `artifacts/sanity/2026-03-19/rosary-watch-en-final-ui-rc_21fde32/rc-watchapp-tests.xcresult`
+- Build logs and `xcresult` from this pass were kept **outside** the public tree (they embed machine-specific paths). Regenerate locally if needed.
 
 ## Mainline test stabilization verification
 - Branch: `main` at commit `b63e72c`.

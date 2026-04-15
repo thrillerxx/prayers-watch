@@ -1,11 +1,11 @@
 # Watch UI capture for agents (screenshots + video)
 
-Use this when you need **visual evidence** of Simulator UX (flows, regressions, design review). The agent on **omarchy** cannot see your screen; artifacts must be **files** (PNGs, mp4) on the **Mac** or synced back to the repo.
+Use this when you need **visual evidence** of Simulator UX (flows, regressions, design review). Headless agents cannot see your screen; artifacts must be **files** (PNGs, mp4) on the **Mac** or synced back to the repo.
 
-## Requirements (MacBook Air)
+## Requirements (macOS)
 
 - Xcode + watchOS Simulator (same as `docs/agent-environment.md`).
-- Repo path: `/Users/thrillerx/dev/prayers-watch`.
+- Repo: your local clone (e.g. `~/dev/prayers-watch`).
 - **Homebrew** on `PATH` (non-interactive SSH):
 
   ```bash
@@ -20,7 +20,7 @@ Use this when you need **visual evidence** of Simulator UX (flows, regressions, 
 From the **Mac** (Terminal or SSH session with GUI / Simulator available):
 
 ```bash
-cd /Users/thrillerx/dev/prayers-watch
+cd ~/dev/prayers-watch
 git pull origin main
 chmod +x scripts/capture_watch_ui_flow.sh
 ./scripts/capture_watch_ui_flow.sh
@@ -70,4 +70,4 @@ xcrun simctl io "$UDID" screenshot /tmp/watch.png
 
 ## Keeping docs in sync
 
-Update **`docs/agent-environment.md`** and omarchy **`OPENCLAW_ENVIRONMENT.md`** (§5 prayers-watch) when capture paths or prerequisites change.
+Update **`docs/agent-environment.md`** when capture paths or prerequisites change. Keep private host/path notes in local docs only.

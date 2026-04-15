@@ -1,29 +1,23 @@
 # Agent environment — prayers-watch (watchOS)
 
-This file is **in-repo** so anyone with the GitHub clone (including agents without omarchy access) knows how **builds, SSH, and audio** work.
+This file is **in-repo** so anyone with the GitHub clone knows how **builds, SSH, and audio** work. **Do not** put private hostnames, VPN IPs, or personal home-directory paths in this repo—keep those in local shell config or a private notes doc.
 
 ## Canonical sources of truth
 
 | What | Where |
 | --- | --- |
-| **Git / development** | `omarchy` Linux host, repo path **`/home/car/.openclaw/workspace/prayers-watch`** (or your local clone). |
-| **Full tailnet + OpenClaw reference** | On omarchy: **`/home/car/.openclaw/workspace/OPENCLAW_ENVIRONMENT.md`** — section **§5 prayers-watch** and **MacBook Air** notes (updated over time). |
+| **Git / development** | Your clone of this repository (any path). |
+| **Private infra** | If you use a shared Linux + Mac setup, keep SSH targets, Tailscale IPs, and non-portable paths in **local** documentation (not committed here). |
 
-If something conflicts, prefer **`OPENCLAW_ENVIRONMENT.md`** on omarchy, then this file, then `README.md`.
+If something conflicts, prefer **`README.md`**, then this file.
 
-## Apple Watch builds (MacBook Air)
+## Apple Watch builds (macOS)
 
-Xcode and the **watchOS Simulator** run on **ThrillerX’s MacBook Air**, not on omarchy.
+Xcode and the **watchOS Simulator** run on **macOS**, not on Linux CI unless you provide your own runners.
 
-- **Tailscale IP:** `100.81.139.50`
-- **SSH user:** `thrillerx` (not `car`)
-
-```bash
-ssh thrillerx@100.81.139.50
-```
-
-- **Repo on Mac:** `/Users/thrillerx/dev/prayers-watch`
-- **Xcode:** App at `/Applications/Xcode.app` (CLI via `xcodebuild`).
+- **SSH:** use your own `user@host` (e.g. Tailscale MagicDNS, or `hostname.local`).
+- **Repo on Mac:** common convention is `~/dev/prayers-watch` (override with `MAC_REPO_DIR` when using `scripts/remote_mac_xcode.sh`).
+- **Xcode:** `/Applications/Xcode.app` (CLI via `xcodebuild`).
 
 ### Why `-sdk watchsimulator` matters
 
@@ -46,12 +40,12 @@ Install the app from **`prayers/build/Debug-watchsimulator/prayers Watch App.app
 
 ### UI/UX capture for agents (screenshots + video)
 
-Agents on **omarchy** cannot see the Simulator. To produce **PNGs + optional mp4** on the Mac:
+Agents without a GUI cannot see the Simulator. To produce **PNGs + optional mp4** on the Mac:
 
 - **Runbook:** `docs/ui-capture.md`
 - **Script:** `scripts/capture_watch_ui_flow.sh` (run on the Mac; sets `PRAYERS_UI_CAPTURE=1` and writes under `prayers/artifacts/ui-capture/<timestamp>/`).
 - **Tools:** `xcodebuild` + UITest `testUIReferenceFlowCapture`; optional `RECORD_VIDEO=1` uses `xcrun simctl io <UDID> recordVideo`; **`xcbeautify`** (`brew install xcbeautify`) for readable logs; **`ffmpeg`** optional for GIFs from PNGs.
-- Sync artifact folders back to omarchy (e.g. `scp`) if an agent should inspect images in the workspace.
+- Sync artifact folders back to your dev machine (e.g. `scp`) if an agent should inspect images in the workspace.
 
 ## Homebrew on the Mac (`/opt/homebrew`)
 
@@ -63,18 +57,16 @@ eval "$(/opt/homebrew/bin/brew shellenv)"
 
 Then e.g. **`ffmpeg`**, **`rg`** (ripgrep), **`SwitchAudioSource`** are available.
 
-**Verified 2026-04-12:** **ripgrep** is installed (`brew install ripgrep`); **BlackHole 2ch** exists as HAL driver **`BlackHole2ch.driver`** and as Cask **`blackhole-2ch`**.
-
 ## BlackHole and “hearing” audio
 
 **BlackHole 2ch** is a **virtual audio device** on macOS. It lets you **route** or **record** system/simulator audio into tools like **ffmpeg**. It does **not** stream sound into Cursor or an LLM session.
 
-To **verify** audio, produce a **file** on the Mac (e.g. `wav`/`mp3` under `/Users/thrillerx/dev/prayers-watch/artifacts/audio/` or a path you choose) and inspect duration/levels—or have a human listen locally.
+To **verify** audio, produce a **file** on the Mac (e.g. `wav`/`mp3` under your repo’s `artifacts/audio/` or a path you choose) and inspect duration/levels—or have a human listen locally.
 
-## omarchy (this Linux machine)
+## Linux dev hosts
 
-- **`rg` (ripgrep)** is available on typical omarchy images (e.g. `/usr/bin/rg`).
-- **Swift / Xcode** are **not** here; do watch builds on the Mac.
+- **`rg` (ripgrep)** is often available.
+- **Swift / Xcode** are **not** typical on Linux; do watch builds on macOS.
 
 ## Related docs
 

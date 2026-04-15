@@ -1,23 +1,21 @@
 # Remote Mac Build/Test Workflow
 
-Canonical code repo (edit here):
-- `/home/car/dev/prayers-watch` (Omarchy)
+- **Edit code** in your canonical clone of this repo (any machine).
+- **Build and test** with Xcode on **macOS** (local or via SSH).
 
-Canonical Xcode project (build/test here):
-- `/Users/thrillerx/dev/prayers-watch/prayers/prayers.xcodeproj` (MacBook Air)
-
-## One-command runner (from Omarchy)
+## One-command runner (from a non-Mac dev host)
 
 ```bash
-cd /home/car/dev/prayers-watch
+export MAC_HOST='you@your-mac'
+cd /path/to/your/prayers-watch/clone
 scripts/remote_mac_xcode.sh
 ```
 
 What it does:
 - Pushes current local branch to `origin`.
-- SSHes to `thrillerx@thrillerxs-macbook-air`.
-- Ensures Mac repo exists and points `origin` to the same remote URL as Omarchy.
-- Switches Mac repo to the same branch and hard-resets to `origin/<branch>`.
+- SSHs to **`MAC_HOST`**.
+- Ensures the Mac repo exists and points `origin` at the same remote URL as the invoking clone.
+- Switches the Mac repo to the same branch and hard-resets to `origin/<branch>`.
 - Runs watch build via `xcodebuild` target `prayers Watch App`.
 - Runs tests via default scheme `prayers-watch-uitests` (override with `TEST_SCHEME=...`).
 
@@ -44,5 +42,5 @@ DESTINATION='platform=watchOS Simulator,name=Apple Watch Ultra 3 (49mm)' scripts
 ```
 
 ## Notes
-- If local Omarchy changes are not committed/pushed, the Mac builds the latest pushed commit only.
-- Script defaults can be overridden via env vars: `MAC_HOST`, `MAC_REPO_DIR`, `MAC_PROJECT_SUBDIR`, `PROJECT_FILE`, `BUILD_TARGET`, `TEST_SCHEME`, `DESTINATION`, `RUN_TESTS`, `PUSH_FIRST`.
+- If local changes are not committed/pushed, the Mac builds the latest pushed commit only.
+- Override via env vars: `MAC_HOST`, `MAC_REPO_DIR`, `MAC_PROJECT_SUBDIR`, `PROJECT_FILE`, `BUILD_TARGET`, `TEST_SCHEME`, `DESTINATION`, `RUN_TESTS`, `PUSH_FIRST`, `SIGN`, `DEVELOPMENT_TEAM`.

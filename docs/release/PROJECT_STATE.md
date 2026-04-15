@@ -1,9 +1,9 @@
 # prayers-watch — Project State
 
 ## Canonical repo/worktree
-- `/home/car/dev/prayers-watch`
-- Canonical Xcode project: `/home/car/dev/prayers-watch/prayers/prayers.xcodeproj`
-- Canonical watch app source folder: `/home/car/dev/prayers-watch/prayers/prayers Watch App`
+- This repository (any clone path).
+- Xcode project: `prayers/prayers.xcodeproj`
+- Watch app source folder: `prayers/prayers Watch App`
 
 ## Validated release candidate (RC)
 - Tag: `rosary-watch-en-final-ui-rc`
@@ -17,11 +17,9 @@
   - Note: text appears to be from the Roman Missal (ICEL 2011). Confirm licensing before shipping.
 
 ## macOS build/capture runner
-- Tailscale device: `thrillerxs-macbook-air` (macOS)
-- SSH (from omarchy): `ssh thrillerx@thrillerxs-macbook-air`
-- Xcode: 26.2 (Build 17C52) confirmed
-- Watch sim devices observed: Apple Watch Series 11 (42mm/46mm), Ultra 3 (49mm), SE 3 (40mm/44mm)
-- BlackHole installed: `/Library/Audio/Plug-Ins/HAL/BlackHole*.driver`
+- Use **Xcode** on macOS; SSH target and paths are **local/private** (not documented in-repo).
+- Watch sim devices observed historically: Apple Watch Series 11 (42mm/46mm), Ultra 3 (49mm), SE 3 (40mm/44mm)
+- **BlackHole** (optional): virtual audio device for capturing simulator audio on macOS.
 
 ## Build command (watchOS Simulator)
 ```bash
