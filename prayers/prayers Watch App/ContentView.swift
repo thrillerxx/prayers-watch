@@ -59,14 +59,14 @@ struct ContentView: View {
                     VStack(alignment: .leading, spacing: 12) {
                         HStack {
                             Spacer(minLength: 0)
-                            /// Hero scale matches `RosaryView.mysteryPicker` (20 pt title / 12 pt tagline); “Divinity” stays Cinzel branding.
+                            /// Hero title 20 / tagline 12 to match mystery picker scale; Cinzel + Cormorant branding.
                             VStack(alignment: .center, spacing: 6) {
                                 Text("Divinity")
                                     .font(DivinityFont.chrome(20))
                                     .foregroundStyle(.primary)
                                     .multilineTextAlignment(.center)
                                 Text("Prayers & Rosary")
-                                    .font(.system(size: 12, weight: .medium, design: .default))
+                                    .font(DivinityFont.caption(12))
                                     .foregroundStyle(.secondary)
                                     .multilineTextAlignment(.center)
                             }
