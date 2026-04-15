@@ -105,4 +105,9 @@ prayers/Signing.local.xcconfig
 prayers/artifacts/ui-capture/**/*
 !prayers/artifacts/ui-capture/README.md
 
+# Local / CI screenshots and one-off captures (regenerate with scripts/mac_watch_*mm_run.sh or capture scripts)
+prayers/artifacts/capture_*.png
+prayers/artifacts/mac-visible/*.png
+prayers/artifacts/rosary_session*.png
+
 # End of https://www.toptal.com/developers/gitignore/api/xcode,swift
