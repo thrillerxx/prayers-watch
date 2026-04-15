@@ -84,7 +84,6 @@ struct ContentView: View {
                     }
                 }
                 .listSectionSpacing(12)
-                .listRowSpacing(12)
                 .listStyle(.plain)
                 .scrollContentBackground(.hidden)
                 .scrollIndicators(.hidden)
@@ -120,7 +119,8 @@ struct ContentView: View {
     @ViewBuilder
     private func homeTile(_ route: NavRoute, title: String, subtitle: String, icon: String) -> some View {
         HomeNavigationTile(route: route, title: title, subtitle: subtitle, icon: icon)
-            .listRowInsets(EdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 10))
+            /// watchOS has no `listRowSpacing`; 6+6 between adjacent rows ≈ mystery `VStack(spacing: 12)`.
+            .listRowInsets(EdgeInsets(top: 6, leading: 10, bottom: 6, trailing: 10))
             .listRowBackground(Color.clear)
     }
 
