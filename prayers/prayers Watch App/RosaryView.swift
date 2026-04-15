@@ -219,7 +219,7 @@ struct RosaryView: View {
                         rosaryPrayerBody
                     }
                     .padding(.top, rosaryNowPlayingScrollTopInset(watchWidth: geo.size.width))
-                    .padding(.bottom, 62)
+                    .padding(.bottom, 68)
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .scrollIndicators(.hidden)
@@ -497,6 +497,8 @@ struct RosaryView: View {
                 .allowsHitTesting(false)
             }
         }
+        /// Nudge toward the chin; paired with extra scroll bottom inset so text stays clear.
+        .offset(y: 6)
     }
 
     private func rosaryGlassTransportSideButton(
