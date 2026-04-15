@@ -20,58 +20,30 @@ struct ContentView: View {
         theme.accentColor(reduceTransparency: reduceTransparency, increaseContrast: differentiateWithoutColor)
     }
 
-    private var homeSolidChrome: Bool {
-        reduceTransparency || differentiateWithoutColor
-    }
-
-    /// Same treatment as rosary now-playing: blurred mystery art + theme hero gradient. Image picked once per cold start.
-    private var homeMysteryHeroBackdrop: some View {
-        let name = MysteryArt.homeHeroAssetNameForProcess()
-        let colors = theme.heroGradientColors(reduceTransparency: reduceTransparency, increaseContrast: differentiateWithoutColor)
-        return ZStack {
-            Image(name)
-                .renderingMode(.original)
-                .resizable()
-                .aspectRatio(contentMode: .fill)
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .clipped()
-                .blur(radius: homeSolidChrome ? 0 : 20)
-                .id(name)
-
-            LinearGradient(
-                colors: colors,
-                startPoint: .top,
-                endPoint: .bottom
-            )
-            .allowsHitTesting(false)
-        }
-        .ignoresSafeArea()
-    }
-
     var body: some View {
         NavigationStack(path: $path) {
             ZStack {
-                homeMysteryHeroBackdrop
+                /// Match `RosaryView.mysteryPicker`: solid canvas so gray row cards read the same (no full-bleed hero behind tiles).
+                DivinityChrome.canvasBackground.ignoresSafeArea()
 
                 /// Same layout container as `RosaryView.mysteryPicker` (`ScrollView` + `VStack(spacing: 12)` + `.padding(.horizontal, 10)`).
-                /// watchOS `List` was shrinking rows / adding insets so tiles never matched mystery rows.
                 ScrollView {
                     VStack(alignment: .leading, spacing: 12) {
-                        HStack {
-                            Spacer(minLength: 0)
-                            /// Hero title 20 / tagline 12 to match mystery picker scale; Cinzel + Cormorant branding.
-                            VStack(alignment: .center, spacing: 6) {
-                                Text("Divinity")
-                                    .font(DivinityFont.chrome(20))
-                                    .foregroundStyle(.primary)
-                                    .multilineTextAlignment(.center)
-                                Text("Prayers & Rosary")
-                                    .font(DivinityFont.caption(12))
-                                    .foregroundStyle(.secondary)
-                                    .multilineTextAlignment(.center)
-                            }
-                            .fixedSize(horizontal: false, vertical: true)
-                            Spacer(minLength: 0)
+                        /// Same header structure and system typography as mystery picker (`Mysteries` / `Rosary` / `Choose a set…`).
+                        VStack(alignment: .center, spacing: 6) {
+                            Text("Home")
+                                .font(.system(size: 10, weight: .semibold, design: .default))
+                                .foregroundStyle(accent.opacity(0.95))
+                                .textCase(.uppercase)
+                                .tracking(0.6)
+                            Text("Divinity")
+                                .font(.system(size: 20, weight: .bold, design: .default))
+                                .foregroundStyle(.primary)
+                                .multilineTextAlignment(.center)
+                            Text("Prayers & Rosary")
+                                .font(.system(size: 12, weight: .medium, design: .default))
+                                .foregroundStyle(.secondary)
+                                .multilineTextAlignment(.center)
                         }
                         .frame(maxWidth: .infinity)
                         .padding(.top, 6)
@@ -91,10 +63,8 @@ struct ContentView: View {
             }
             .navigationBarTitleDisplayMode(.inline)
             .navigationTitle("")
-            .toolbarBackground(Color.clear, for: .navigationBar)
+            .toolbarBackground(DivinityChrome.canvasBackground, for: .navigationBar)
             .toolbarBackground(.visible, for: .navigationBar)
-            .safeAreaPadding(.top, 4)
-            .safeAreaPadding(.bottom, 6)
             .navigationDestination(for: NavRoute.self) { route in
                 switch route {
                 case .rosary:
