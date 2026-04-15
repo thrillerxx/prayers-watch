@@ -68,7 +68,7 @@ struct HomeNavigationTile: View {
                         .fill(accent.opacity(reduceTransparency ? 0.28 : 0.22))
                         .frame(width: 40, height: 40)
                     Image(systemName: icon)
-                        .font(.system(size: 16, weight: .semibold))
+                        .font(DivinityPickerRow.iconFont)
                         .foregroundStyle(.white)
                         .symbolRenderingMode(.monochrome)
                 }
@@ -76,13 +76,13 @@ struct HomeNavigationTile: View {
 
                 VStack(alignment: .leading, spacing: 3) {
                     Text(title)
-                        .font(.system(size: 15, weight: .semibold, design: .default))
+                        .font(DivinityPickerRow.titleFont)
                         .foregroundStyle(.primary)
                         .lineLimit(2)
                         .minimumScaleFactor(0.82)
                         .multilineTextAlignment(.leading)
                     Text(subtitle)
-                        .font(.system(size: 11, weight: .medium, design: .default))
+                        .font(DivinityPickerRow.subtitleFont)
                         .foregroundStyle(.secondary)
                         .lineLimit(1)
                         .minimumScaleFactor(0.75)
@@ -91,7 +91,7 @@ struct HomeNavigationTile: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
 
                 Image(systemName: "chevron.right")
-                    .font(.system(size: 11, weight: .semibold))
+                    .font(DivinityPickerRow.chevronFont)
                     .foregroundStyle(Color.secondary.opacity(0.85))
                     .frame(width: 14, height: 14)
             }

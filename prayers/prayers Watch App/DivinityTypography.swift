@@ -31,3 +31,11 @@ enum DivinityFont {
         custom("Cormorant-Medium", size: size, fallbackWeight: .medium)
     }
 }
+
+/// Shared metrics for home navigation tiles and Rosary mystery set rows (must stay in lockstep).
+enum DivinityPickerRow {
+    static let titleFont = Font.system(size: 15, weight: .semibold, design: .default)
+    static let subtitleFont = Font.system(size: 11, weight: .medium, design: .default)
+    static let iconFont = Font.system(size: 16, weight: .semibold)
+    static let chevronFont = Font.system(size: 11, weight: .semibold)
+}

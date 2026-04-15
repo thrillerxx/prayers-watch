@@ -59,13 +59,14 @@ struct ContentView: View {
                     VStack(alignment: .leading, spacing: 12) {
                         HStack {
                             Spacer(minLength: 0)
-                            VStack(alignment: .center, spacing: 4) {
+                            /// Same scale as `RosaryView.mysteryPicker` hero (`Rosary` 20 bold + tagline 12 medium) so row options read at the same relative size.
+                            VStack(alignment: .center, spacing: 6) {
                                 Text("Divinity")
-                                    .font(DivinityFont.chrome(17))
+                                    .font(.system(size: 20, weight: .bold, design: .default))
                                     .foregroundStyle(.primary)
                                     .multilineTextAlignment(.center)
                                 Text("Prayers & Rosary")
-                                    .font(DivinityFont.caption(11))
+                                    .font(.system(size: 12, weight: .medium, design: .default))
                                     .foregroundStyle(.secondary)
                                     .multilineTextAlignment(.center)
                             }
@@ -73,7 +74,7 @@ struct ContentView: View {
                             Spacer(minLength: 0)
                         }
                         .frame(maxWidth: .infinity)
-                        .padding(.top, 2)
+                        .padding(.top, 6)
                         .padding(.bottom, 4)
 
                         homeTile(.rosary, title: "Rosary", subtitle: "Mysteries", icon: "cross")
