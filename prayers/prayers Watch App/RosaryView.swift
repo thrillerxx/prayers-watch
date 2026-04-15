@@ -218,12 +218,14 @@ struct RosaryView: View {
                             }
                         rosaryPrayerBody
                     }
+                    .padding(.top, rosaryNowPlayingScrollTopInset(watchWidth: geo.size.width))
                     .padding(.bottom, 56)
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .scrollIndicators(.hidden)
-                .safeAreaInset(edge: .top, spacing: 0) {
+                .overlay(alignment: .top) {
                     rosaryMusicTopChrome(watchWidth: geo.size.width)
+                        .ignoresSafeArea(edges: .top)
                 }
 
                 rosaryFloatingPlayerChrome
@@ -241,15 +243,20 @@ struct RosaryView: View {
         #endif
     }
 
+    /// Keeps scroll content below the floating top chrome (time + Back/Stop) on 42mm / 46mm.
+    private func rosaryNowPlayingScrollTopInset(watchWidth: CGFloat) -> CGFloat {
+        watchWidth >= 200 ? 58 : 54
+    }
+
     /// Top bar: time on the first row; back and Stop on the second row at left/right, inset from the curved bezel.
     private func rosaryMusicTopChrome(watchWidth: CGFloat) -> some View {
         let isLargeWatch = watchWidth >= 200
-        /// Strong negative top pulls the clock toward the physical top; a bit more on 46mm.
-        let topPad: CGFloat = isLargeWatch ? -28 : -22
+        /// Small upward nudge; main lift comes from top `overlay` + `ignoresSafeArea` (not `safeAreaInset`).
+        let topPad: CGFloat = isLargeWatch ? -18 : -14
         /// Inset from the round bezel so Back/Stop aren’t clipped in Simulator or on hardware.
         let edgeInset: CGFloat = isLargeWatch ? 14 : 11
 
-        return VStack(alignment: .center, spacing: 1) {
+        return VStack(alignment: .center, spacing: 0) {
             TimelineView(.periodic(from: .now, by: 60.0)) { context in
                 Text(context.date, format: .dateTime.hour().minute())
                     .font(.system(size: 14, weight: .semibold, design: .default))
