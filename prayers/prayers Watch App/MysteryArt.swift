@@ -4,15 +4,29 @@ enum MysteryArt {
     /// Cached pick so the home hero stays stable until the app process exits (cold start gets a new one).
     private static var cachedHomeHeroAssetName: String?
 
+    private static var allDecadeHeroAssetNames: [String] {
+        RosaryMystery.allCases.flatMap { mystery in
+            (1...5).map { "\(mystery.contentKey)_\($0)" }
+        }
+    }
+
+    /// Random decade image (`joyful_1` … `luminous_5`); avoids repeating `excluding` when possible (e.g. each return to home).
+    static func randomHomeHeroAssetName(excluding: String? = nil) -> String {
+        let all = allDecadeHeroAssetNames
+        guard !all.isEmpty else { return "joyful_1" }
+        if let ex = excluding, all.count > 1 {
+            let filtered = all.filter { $0 != ex }
+            return filtered.randomElement() ?? all.randomElement()!
+        }
+        return all.randomElement() ?? "joyful_1"
+    }
+
     /// Random decade image (`joyful_1` … `luminous_5`); chosen once per app launch.
     static func homeHeroAssetNameForProcess() -> String {
         if let cachedHomeHeroAssetName {
             return cachedHomeHeroAssetName
         }
-        let all = RosaryMystery.allCases.flatMap { mystery in
-            (1...5).map { "\(mystery.contentKey)_\($0)" }
-        }
-        let pick = all.randomElement() ?? "joyful_1"
+        let pick = randomHomeHeroAssetName()
         cachedHomeHeroAssetName = pick
         return pick
     }

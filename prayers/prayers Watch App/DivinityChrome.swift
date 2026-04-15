@@ -36,6 +36,45 @@ enum DivinityChrome {
     }
 }
 
+/// Full-bleed mystery art + theme scrim for **home** only (`ContentView`). Asset name is driven by parent state.
+struct DivinityHomeHeroBackdrop: View {
+    let assetName: String
+
+    @Environment(\.appColorTheme) private var theme
+    @Environment(\.accessibilityReduceTransparency) private var reduceTransparency
+    @Environment(\.accessibilityDifferentiateWithoutColor) private var differentiateWithoutColor
+
+    private var solidChrome: Bool {
+        reduceTransparency || differentiateWithoutColor
+    }
+
+    private var increaseContrast: Bool {
+        differentiateWithoutColor
+    }
+
+    var body: some View {
+        let colors = theme.heroGradientColors(reduceTransparency: reduceTransparency, increaseContrast: increaseContrast)
+        ZStack {
+            Image(assetName)
+                .renderingMode(.original)
+                .resizable()
+                .aspectRatio(contentMode: .fill)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .clipped()
+                .blur(radius: solidChrome ? 0 : 20)
+                .id(assetName)
+
+            LinearGradient(
+                colors: colors,
+                startPoint: .top,
+                endPoint: .bottom
+            )
+            .allowsHitTesting(false)
+        }
+        .ignoresSafeArea()
+    }
+}
+
 /// Full-width row used on home, Rosary mystery picker, and Prayer Library (identical geometry).
 struct DivinityPickerRowButton: View {
 

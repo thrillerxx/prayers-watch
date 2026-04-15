@@ -11,6 +11,8 @@ struct ContentView: View {
 
     @State private var path = NavigationPath()
     @State private var rosaryScreenActive = false
+    /// Rotates whenever navigation returns to root so the home backdrop is not stuck on one image per session.
+    @State private var homeHeroAssetName: String = MysteryArt.randomHomeHeroAssetName()
 
     private var theme: AppColorTheme {
         AppColorTheme(rawValue: themeRaw) ?? .marian
@@ -23,8 +25,7 @@ struct ContentView: View {
     var body: some View {
         NavigationStack(path: $path) {
             ZStack {
-                /// Match `RosaryView.mysteryPicker`: solid canvas so gray row cards read the same (no full-bleed hero behind tiles).
-                DivinityChrome.canvasBackground.ignoresSafeArea()
+                DivinityHomeHeroBackdrop(assetName: homeHeroAssetName)
 
                 /// Same layout container as `RosaryView.mysteryPicker` (`ScrollView` + `VStack(spacing: 12)` + `.padding(.horizontal, 10)`).
                 ScrollView {
@@ -56,9 +57,14 @@ struct ContentView: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
                 .scrollIndicators(.hidden)
             }
+            .onChange(of: path.count) { oldCount, newCount in
+                if newCount == 0, oldCount > 0 {
+                    homeHeroAssetName = MysteryArt.randomHomeHeroAssetName(excluding: homeHeroAssetName)
+                }
+            }
             .navigationBarTitleDisplayMode(.inline)
             .navigationTitle("")
-            .toolbarBackground(DivinityChrome.canvasBackground, for: .navigationBar)
+            .toolbarBackground(Color.clear, for: .navigationBar)
             .toolbarBackground(.visible, for: .navigationBar)
             .navigationDestination(for: NavRoute.self) { route in
                 switch route {
