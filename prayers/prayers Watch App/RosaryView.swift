@@ -254,7 +254,7 @@ struct RosaryView: View {
         /// Small upward nudge; main lift comes from top `overlay` + `ignoresSafeArea` (not `safeAreaInset`).
         let topPad: CGFloat = isLargeWatch ? -18 : -14
         /// Round watch face clips rectangular layout; keep controls clearly inside the circular mask.
-        let edgeInset: CGFloat = max(isLargeWatch ? 44 : 40, (watchWidth * 0.25).rounded(.down))
+        let edgeInset: CGFloat = max(isLargeWatch ? 52 : 48, (watchWidth * 0.29).rounded(.down))
         let chromeButtonSize: CGFloat = isLargeWatch ? 32 : 30
 
         return VStack(alignment: .center, spacing: 0) {
