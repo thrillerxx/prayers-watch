@@ -210,7 +210,6 @@ struct RosaryView: View {
                         Color.clear.frame(height: 4)
                         rosaryAlbumArtTile
                         rosarySessionTitles
-                            .padding(.horizontal, 10)
                             .onLongPressGesture(minimumDuration: 0.55) {
                                 Task { @MainActor in
                                     rosary.exitToMysteryPicker()
@@ -218,6 +217,7 @@ struct RosaryView: View {
                             }
                         rosaryPrayerBody
                     }
+                    .padding(.horizontal, rosaryReadableWidthInset(watchWidth: geo.size.width))
                     .padding(.top, rosaryNowPlayingScrollTopInset(watchWidth: geo.size.width))
                     .padding(.bottom, 74)
                 }
@@ -247,6 +247,11 @@ struct RosaryView: View {
     private func rosaryNowPlayingScrollTopInset(watchWidth: CGFloat) -> CGFloat {
         /// Keep scroll content below top chrome; grows when chrome sits lower (`topPad`).
         watchWidth >= 200 ? 85 : 69
+    }
+
+    /// Horizontal inset so titles and prayer text stay inside the round watch mask.
+    private func rosaryReadableWidthInset(watchWidth: CGFloat) -> CGFloat {
+        max(16, (watchWidth * 0.12).rounded(.down))
     }
 
     /// Top bar: time on the first row; back and Stop on the second row at left/right, inset from the curved bezel.
@@ -370,9 +375,10 @@ struct RosaryView: View {
             .foregroundStyle(heroPrimaryText)
             .multilineTextAlignment(.center)
             .lineSpacing(4)
-            .minimumScaleFactor(0.78)
+            .minimumScaleFactor(0.68)
+            .lineLimit(nil)
+            .fixedSize(horizontal: false, vertical: true)
             .frame(maxWidth: .infinity, alignment: .center)
-            .padding(.horizontal, 12)
             .padding(.bottom, 4)
             .shadow(color: textShadowColor, radius: solidChrome ? 0 : 2, x: 0, y: 1)
     }
@@ -405,8 +411,8 @@ struct RosaryView: View {
                     .textCase(.uppercase)
                     .tracking(0.45)
                     .multilineTextAlignment(.center)
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.85)
+                    .lineLimit(2)
+                    .minimumScaleFactor(0.75)
                     .shadow(color: textShadowColor, radius: solidChrome ? 0 : 2, x: 0, y: 1)
             }
 
@@ -415,9 +421,9 @@ struct RosaryView: View {
                     .font(.system(size: 15, weight: .bold, design: .default))
                     .foregroundStyle(heroPrimaryText)
                     .multilineTextAlignment(.center)
-                    .lineLimit(3)
+                    .lineLimit(4)
                     .lineSpacing(2)
-                    .minimumScaleFactor(0.72)
+                    .minimumScaleFactor(0.65)
                     .shadow(color: textShadowColor, radius: solidChrome ? 0 : 3, x: 0, y: 1)
             } else if let step = rosary.currentStep {
                 let fallback = step.title.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -426,9 +432,9 @@ struct RosaryView: View {
                         .font(.system(size: 15, weight: .bold, design: .default))
                         .foregroundStyle(heroPrimaryText)
                         .multilineTextAlignment(.center)
-                        .lineLimit(3)
+                        .lineLimit(4)
                         .lineSpacing(2)
-                        .minimumScaleFactor(0.72)
+                        .minimumScaleFactor(0.65)
                         .shadow(color: textShadowColor, radius: solidChrome ? 0 : 3, x: 0, y: 1)
                 }
             }
