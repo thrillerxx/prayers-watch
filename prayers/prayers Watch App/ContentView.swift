@@ -53,8 +53,10 @@ struct ContentView: View {
             ZStack {
                 homeMysteryHeroBackdrop
 
-                List {
-                    Section {
+                /// Same layout container as `RosaryView.mysteryPicker` (`ScrollView` + `VStack(spacing: 12)` + `.padding(.horizontal, 10)`).
+                /// watchOS `List` was shrinking rows / adding insets so tiles never matched mystery rows.
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 12) {
                         HStack {
                             Spacer(minLength: 0)
                             VStack(alignment: .center, spacing: 4) {
@@ -70,22 +72,18 @@ struct ContentView: View {
                             .fixedSize(horizontal: false, vertical: true)
                             Spacer(minLength: 0)
                         }
+                        .frame(maxWidth: .infinity)
                         .padding(.top, 2)
                         .padding(.bottom, 4)
-                        .listRowInsets(EdgeInsets(top: 10, leading: 6, bottom: 10, trailing: 6))
-                        .listRowBackground(Color.clear)
-                    }
 
-                    Section {
                         homeTile(.rosary, title: "Rosary", subtitle: "Mysteries", icon: "cross")
                         homeTile(.prayerLibrary, title: "Prayer Library", subtitle: "Browse & listen", icon: "books.vertical.fill")
                         homeTile(.massResponses, title: "Mass Responses", subtitle: "At Mass", icon: "text.book.closed.fill")
                         homeTile(.settings, title: "Settings", subtitle: "Theme & voice", icon: "gearshape.fill")
                     }
+                    .padding(.horizontal, 10)
+                    .padding(.bottom, 8)
                 }
-                .listSectionSpacing(12)
-                .listStyle(.plain)
-                .scrollContentBackground(.hidden)
                 .scrollIndicators(.hidden)
             }
             .navigationBarTitleDisplayMode(.inline)
@@ -119,9 +117,6 @@ struct ContentView: View {
     @ViewBuilder
     private func homeTile(_ route: NavRoute, title: String, subtitle: String, icon: String) -> some View {
         HomeNavigationTile(route: route, title: title, subtitle: subtitle, icon: icon)
-            /// watchOS has no `listRowSpacing`; 6+6 between adjacent rows ≈ mystery `VStack(spacing: 12)`.
-            .listRowInsets(EdgeInsets(top: 6, leading: 10, bottom: 6, trailing: 10))
-            .listRowBackground(Color.clear)
     }
 
     private var rosaryMiniPlayer: some View {
