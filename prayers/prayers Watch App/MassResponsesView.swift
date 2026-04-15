@@ -14,7 +14,7 @@ struct MassResponsesView: View {
 
     var body: some View {
         ZStack {
-            DivinityMysteryHeroBackdrop()
+            DivinityChrome.canvasBackground.ignoresSafeArea()
 
             LinearGradient(
                 colors: [
@@ -51,7 +51,7 @@ struct MassResponsesView: View {
             }
         }
         .navigationBarTitleDisplayMode(.inline)
-        .toolbarBackground(Color.clear, for: .navigationBar)
+        .toolbarBackground(DivinityChrome.canvasBackground, for: .navigationBar)
         .toolbarBackground(.visible, for: .navigationBar)
         .navigationTitle("Mass Responses")
         .task {

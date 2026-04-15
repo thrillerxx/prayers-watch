@@ -24,7 +24,7 @@ struct SettingsView: View {
 
     var body: some View {
         ZStack {
-            DivinityMysteryHeroBackdrop()
+            DivinityChrome.canvasBackground.ignoresSafeArea()
             List {
                 Section {
                     Picker("Color theme", selection: $colorThemeRaw) {
@@ -114,7 +114,7 @@ struct SettingsView: View {
         }
         .navigationTitle("Settings")
         .navigationBarTitleDisplayMode(.inline)
-        .toolbarBackground(Color.clear, for: .navigationBar)
+        .toolbarBackground(DivinityChrome.canvasBackground, for: .navigationBar)
         .toolbarBackground(.visible, for: .navigationBar)
         .tint(accent)
     }

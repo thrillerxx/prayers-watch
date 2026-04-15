@@ -54,7 +54,7 @@ struct RosaryView: View {
         Group {
             if let errorText = rosary.errorText {
                 ZStack {
-                    DivinityMysteryHeroBackdrop()
+                    DivinityChrome.canvasBackground.ignoresSafeArea()
                     Text(errorText)
                         .font(DivinityFont.caption(11))
                         .foregroundStyle(.red)
@@ -71,7 +71,7 @@ struct RosaryView: View {
         // Empty title: inline "Rosary" collided with hero typography and duplicated the picker header.
         .navigationTitle("")
         .navigationBarTitleDisplayMode(.inline)
-        .toolbarBackground(Color.clear, for: .navigationBar)
+        .toolbarBackground(rosary.selectedMystery == nil ? DivinityChrome.canvasBackground : Color.clear, for: .navigationBar)
         .toolbarBackground(.visible, for: .navigationBar)
         .toolbar(rosary.selectedMystery != nil ? .hidden : .automatic, for: .navigationBar)
         .navigationBarBackButtonHidden(rosary.selectedMystery != nil)
@@ -96,7 +96,7 @@ struct RosaryView: View {
         let accent = theme.accentColor(reduceTransparency: reduceTransparency, increaseContrast: increaseContrast)
 
         return ZStack {
-            DivinityMysteryHeroBackdrop()
+            DivinityChrome.canvasBackground.ignoresSafeArea()
 
             ScrollView {
                 VStack(alignment: .leading, spacing: 12) {
