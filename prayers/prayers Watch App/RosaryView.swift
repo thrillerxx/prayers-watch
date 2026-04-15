@@ -245,14 +245,15 @@ struct RosaryView: View {
 
     /// Keeps scroll content below the floating top chrome (time + Back/Stop) on 42mm / 46mm.
     private func rosaryNowPlayingScrollTopInset(watchWidth: CGFloat) -> CGFloat {
-        watchWidth >= 200 ? 58 : 54
+        /// 46mm chrome sits slightly lower than 42mm (`topPad`); match scroll clearance.
+        watchWidth >= 200 ? 64 : 54
     }
 
     /// Top bar: time on the first row; back and Stop on the second row at left/right, inset from the curved bezel.
     private func rosaryMusicTopChrome(watchWidth: CGFloat) -> some View {
         let isLargeWatch = watchWidth >= 200
-        /// Small upward nudge; main lift comes from top `overlay` + `ignoresSafeArea` (not `safeAreaInset`).
-        let topPad: CGFloat = isLargeWatch ? -18 : -14
+        /// Small upward nudge; 46mm sits a little lower than 42mm (larger face / safe area).
+        let topPad: CGFloat = isLargeWatch ? -11 : -14
         /// Round watch face clips rectangular layout; keep controls clearly inside the circular mask.
         let edgeInset: CGFloat = max(isLargeWatch ? 52 : 48, (watchWidth * 0.29).rounded(.down))
         let chromeButtonSize: CGFloat = isLargeWatch ? 32 : 30
