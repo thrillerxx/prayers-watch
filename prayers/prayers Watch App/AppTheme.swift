@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// Named color schemes (accent + scrims). Default: Marian blue.
+/// Named color schemes (accent + scrims). Default: Divinity (app icon gold).
 enum AppColorTheme: String, CaseIterable, Identifiable {
     case marian
     case roman
@@ -9,6 +9,10 @@ enum AppColorTheme: String, CaseIterable, Identifiable {
     case pentecost
     case ordinary
     case night
+    /// App icon gold (#F9E29C → #B8860B); matches rosary transport chrome in `RosaryView`.
+    case divinity
+    /// White accent (papal / liturgical white); listed after Divinity near the bottom of the picker.
+    case holyFather
     case highContrast
 
     var id: String { rawValue }
@@ -22,6 +26,8 @@ enum AppColorTheme: String, CaseIterable, Identifiable {
         case .pentecost: return "Pentecost"
         case .ordinary: return "Ordinary Time"
         case .night: return "Night Prayer"
+        case .divinity: return "Divinity"
+        case .holyFather: return "Holy Father"
         case .highContrast: return "High Contrast"
         }
     }
@@ -43,6 +49,13 @@ enum AppColorTheme: String, CaseIterable, Identifiable {
             return Color(red: 0.35, green: 0.55, blue: 0.48)
         case .night:
             return Color(red: 0.55, green: 0.65, blue: 0.85)
+        case .divinity:
+            if increaseContrast || reduceTransparency {
+                return Color(red: 0.722, green: 0.525, blue: 0.043)
+            }
+            return Color(red: 0.976, green: 0.886, blue: 0.612)
+        case .holyFather:
+            return Color.white
         case .highContrast:
             return Color(red: 0.0, green: 0.48, blue: 1.0)
         }
@@ -63,6 +76,12 @@ enum AppColorTheme: String, CaseIterable, Identifiable {
                 Color.black.opacity(0.25),
                 Color.black.opacity(0.55),
                 Color.black.opacity(0.78)
+            ]
+        case .divinity:
+            return [
+                Color.black.opacity(0.30),
+                Color.black.opacity(0.55),
+                Color(red: 0.08, green: 0.05, blue: 0.01).opacity(0.88)
             ]
         default:
             return [

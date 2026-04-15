@@ -29,5 +29,5 @@ enum AppSettings {
     static let defaultIncludeFatima = true
     static let defaultIncludeStJoseph = false
 
-    static let defaultColorTheme = AppColorTheme.marian.rawValue
+    static let defaultColorTheme = AppColorTheme.divinity.rawValue
 }
