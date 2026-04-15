@@ -83,7 +83,8 @@ struct ContentView: View {
                         homeTile(.settings, title: "Settings", subtitle: "Theme & voice", icon: "gearshape.fill")
                     }
                 }
-                .listSectionSpacing(6)
+                .listSectionSpacing(12)
+                .listRowSpacing(12)
                 .listStyle(.plain)
                 .scrollContentBackground(.hidden)
                 .scrollIndicators(.hidden)
@@ -119,7 +120,7 @@ struct ContentView: View {
     @ViewBuilder
     private func homeTile(_ route: NavRoute, title: String, subtitle: String, icon: String) -> some View {
         HomeNavigationTile(route: route, title: title, subtitle: subtitle, icon: icon)
-            .listRowInsets(EdgeInsets(top: 3, leading: 10, bottom: 3, trailing: 10))
+            .listRowInsets(EdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 10))
             .listRowBackground(Color.clear)
     }
 

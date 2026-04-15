@@ -75,13 +75,13 @@ struct HomeNavigationTile: View {
 
                 VStack(alignment: .leading, spacing: 3) {
                     Text(title)
-                        .font(DivinityFont.title(14))
+                        .font(.system(size: 15, weight: .semibold, design: .default))
                         .foregroundStyle(.primary)
                         .lineLimit(2)
                         .minimumScaleFactor(0.82)
                         .multilineTextAlignment(.leading)
                     Text(subtitle)
-                        .font(DivinityFont.caption(10))
+                        .font(.system(size: 11, weight: .medium, design: .default))
                         .foregroundStyle(.secondary)
                         .lineLimit(1)
                         .minimumScaleFactor(0.75)
@@ -90,16 +90,17 @@ struct HomeNavigationTile: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
 
                 Image(systemName: "chevron.right")
-                    .font(.system(size: 10, weight: .bold))
-                    .foregroundStyle(.tertiary)
-                    .frame(width: 16, height: 16)
+                    .font(.system(size: 11, weight: .semibold))
+                    .foregroundStyle(Color.secondary.opacity(0.85))
+                    .frame(width: 14, height: 14)
             }
-            .padding(.horizontal, 9)
-            .padding(.vertical, 11)
+            /// Match `RosaryView.mysterySetPickerRow` padding and card shape.
+            .padding(.horizontal, 10)
+            .padding(.vertical, 12)
             .frame(maxWidth: .infinity, alignment: .leading)
             .contentShape(Rectangle())
             .background {
-                RoundedRectangle(cornerRadius: 12, style: .continuous)
+                RoundedRectangle(cornerRadius: 14, style: .continuous)
                     .fill(surface)
                     .overlay {
                         RoundedRectangle(cornerRadius: 12, style: .continuous)
