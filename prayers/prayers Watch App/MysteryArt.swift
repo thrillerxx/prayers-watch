@@ -1,6 +1,22 @@
 import Foundation
 
 enum MysteryArt {
+    /// Cached pick so the home hero stays stable until the app process exits (cold start gets a new one).
+    private static var cachedHomeHeroAssetName: String?
+
+    /// Random decade image (`joyful_1` … `luminous_5`); chosen once per app launch.
+    static func homeHeroAssetNameForProcess() -> String {
+        if let cachedHomeHeroAssetName {
+            return cachedHomeHeroAssetName
+        }
+        let all = RosaryMystery.allCases.flatMap { mystery in
+            (1...5).map { "\(mystery.contentKey)_\($0)" }
+        }
+        let pick = all.randomElement() ?? "joyful_1"
+        cachedHomeHeroAssetName = pick
+        return pick
+    }
+
     /// Asset catalog base name, e.g. `joyful_3`.
     static func assetName(mystery: RosaryMystery, stepIndex: Int, steps: [RosaryStep]) -> String {
         let d = decadeNumber(mystery: mystery, stepIndex: stepIndex, steps: steps) ?? 1

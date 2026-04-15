@@ -20,46 +20,77 @@ struct ContentView: View {
         theme.accentColor(reduceTransparency: reduceTransparency, increaseContrast: differentiateWithoutColor)
     }
 
+    private var homeSolidChrome: Bool {
+        reduceTransparency || differentiateWithoutColor
+    }
+
+    /// Same treatment as rosary now-playing: blurred mystery art + theme hero gradient. Image picked once per cold start.
+    private var homeMysteryHeroBackdrop: some View {
+        let name = MysteryArt.homeHeroAssetNameForProcess()
+        let colors = theme.heroGradientColors(reduceTransparency: reduceTransparency, increaseContrast: differentiateWithoutColor)
+        return ZStack {
+            Image(name)
+                .renderingMode(.original)
+                .resizable()
+                .aspectRatio(contentMode: .fill)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .clipped()
+                .blur(radius: homeSolidChrome ? 0 : 20)
+                .id(name)
+
+            LinearGradient(
+                colors: colors,
+                startPoint: .top,
+                endPoint: .bottom
+            )
+            .allowsHitTesting(false)
+        }
+        .ignoresSafeArea()
+    }
+
     var body: some View {
         NavigationStack(path: $path) {
-            List {
-                Section {
-                    HStack {
-                        Spacer(minLength: 0)
-                        VStack(alignment: .center, spacing: 4) {
-                            Text("Divinity")
-                                .font(DivinityFont.chrome(17))
-                                .foregroundStyle(.primary)
-                                .multilineTextAlignment(.center)
-                            Text("Prayers & Rosary")
-                                .font(DivinityFont.caption(11))
-                                .foregroundStyle(.secondary)
-                                .multilineTextAlignment(.center)
-                        }
-                        .fixedSize(horizontal: false, vertical: true)
-                        Spacer(minLength: 0)
-                    }
-                    .padding(.top, 2)
-                    .padding(.bottom, 4)
-                    .listRowInsets(EdgeInsets(top: 10, leading: 6, bottom: 10, trailing: 6))
-                    .listRowBackground(Color.clear)
-                }
+            ZStack {
+                homeMysteryHeroBackdrop
 
-                Section {
-                    homeTile(.rosary, title: "Rosary", subtitle: "Mysteries", icon: "cross")
-                    homeTile(.prayerLibrary, title: "Prayer Library", subtitle: "Browse & listen", icon: "books.vertical.fill")
-                    homeTile(.massResponses, title: "Mass Responses", subtitle: "At Mass", icon: "text.book.closed.fill")
-                    homeTile(.settings, title: "Settings", subtitle: "Theme & voice", icon: "gearshape.fill")
+                List {
+                    Section {
+                        HStack {
+                            Spacer(minLength: 0)
+                            VStack(alignment: .center, spacing: 4) {
+                                Text("Divinity")
+                                    .font(DivinityFont.chrome(17))
+                                    .foregroundStyle(.primary)
+                                    .multilineTextAlignment(.center)
+                                Text("Prayers & Rosary")
+                                    .font(DivinityFont.caption(11))
+                                    .foregroundStyle(.secondary)
+                                    .multilineTextAlignment(.center)
+                            }
+                            .fixedSize(horizontal: false, vertical: true)
+                            Spacer(minLength: 0)
+                        }
+                        .padding(.top, 2)
+                        .padding(.bottom, 4)
+                        .listRowInsets(EdgeInsets(top: 10, leading: 6, bottom: 10, trailing: 6))
+                        .listRowBackground(Color.clear)
+                    }
+
+                    Section {
+                        homeTile(.rosary, title: "Rosary", subtitle: "Mysteries", icon: "cross")
+                        homeTile(.prayerLibrary, title: "Prayer Library", subtitle: "Browse & listen", icon: "books.vertical.fill")
+                        homeTile(.massResponses, title: "Mass Responses", subtitle: "At Mass", icon: "text.book.closed.fill")
+                        homeTile(.settings, title: "Settings", subtitle: "Theme & voice", icon: "gearshape.fill")
+                    }
                 }
+                .listSectionSpacing(6)
+                .listStyle(.plain)
+                .scrollContentBackground(.hidden)
+                .scrollIndicators(.hidden)
             }
-            .listSectionSpacing(6)
-            .listStyle(.plain)
-            .scrollContentBackground(.hidden)
-            .scrollIndicators(.hidden)
-            .background(DivinityChrome.canvasBackground)
             .navigationBarTitleDisplayMode(.inline)
             .navigationTitle("")
-            .toolbarBackground(DivinityChrome.canvasBackground, for: .navigationBar)
+            .toolbarBackground(Color.clear, for: .navigationBar)
             .toolbarBackground(.visible, for: .navigationBar)
             .safeAreaPadding(.top, 4)
             .safeAreaPadding(.bottom, 6)
