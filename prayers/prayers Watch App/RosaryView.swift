@@ -28,6 +28,28 @@ struct RosaryView: View {
         solidChrome ? Color.secondary : Color.white.opacity(0.78)
     }
 
+    /// App-icon gold (#F9E29C → #B8860B) for rosary controls (transport + top Back/Stop).
+    private var rosaryBrandGoldLight: Color { Color(red: 0.976, green: 0.886, blue: 0.612) }
+    private var rosaryBrandGoldDark: Color { Color(red: 0.722, green: 0.525, blue: 0.043) }
+
+    private var rosaryControlGoldGradient: LinearGradient {
+        LinearGradient(
+            colors: [rosaryBrandGoldLight, rosaryBrandGoldDark],
+            startPoint: .top,
+            endPoint: .bottom
+        )
+    }
+
+    /// SF Symbol tint on glass; darker gold on solid chrome for contrast.
+    private var rosaryControlButtonForeground: Color {
+        solidChrome ? Color(red: 0.45, green: 0.32, blue: 0.08) : rosaryBrandGoldLight
+    }
+
+    /// Progress / filled controls on hero (single mid-gold reads well on dark scrim).
+    private var rosaryControlAccentColor: Color {
+        Color(red: 0.88, green: 0.72, blue: 0.38)
+    }
+
     var body: some View {
         Group {
             if let errorText = rosary.errorText {
@@ -284,7 +306,7 @@ struct RosaryView: View {
                 } label: {
                     Image(systemName: "chevron.left")
                         .font(.system(size: 13, weight: .semibold))
-                        .foregroundStyle(heroPrimaryText)
+                        .foregroundStyle(rosaryControlButtonForeground)
                         .frame(width: chromeButtonSize, height: chromeButtonSize)
                 }
                 .buttonStyle(.plain)
@@ -298,7 +320,7 @@ struct RosaryView: View {
                 } label: {
                     Image(systemName: "stop.fill")
                         .font(.system(size: isLargeWatch ? 12 : 11, weight: .semibold))
-                        .foregroundStyle(heroPrimaryText)
+                        .foregroundStyle(rosaryControlButtonForeground)
                         .frame(width: chromeButtonSize, height: chromeButtonSize)
                 }
                 .buttonStyle(.plain)
@@ -319,7 +341,10 @@ struct RosaryView: View {
             .background(.ultraThinMaterial, in: Circle())
             .overlay {
                 Circle()
-                    .stroke(Color.white.opacity(solidChrome ? 0.22 : 0.28), lineWidth: 0.5)
+                    .stroke(
+                        solidChrome ? Color.primary.opacity(0.22) : rosaryBrandGoldLight.opacity(0.45),
+                        lineWidth: 0.5
+                    )
             }
             .frame(width: diameter, height: diameter)
     }
@@ -456,10 +481,9 @@ struct RosaryView: View {
 
     /// Progress + Music-style glass transport (side orbs + ringed play); Stop lives in the top bar.
     private var rosaryFloatingPlayerChrome: some View {
-        let accent = theme.accentColor(reduceTransparency: reduceTransparency, increaseContrast: increaseContrast)
         let nextDisabled = rosary.steps.isEmpty || rosary.index >= rosary.steps.count - 1
         return VStack(spacing: 6) {
-            ThinProgressBar(value: rosary.overallProgressFraction, accent: accent, dimmed: !solidChrome, lineHeight: 3)
+            ThinProgressBar(value: rosary.overallProgressFraction, accent: rosaryControlAccentColor, dimmed: !solidChrome, lineHeight: 3)
                 .padding(.horizontal, 14)
             HStack(spacing: 18) {
                 Spacer(minLength: 0)
@@ -471,7 +495,7 @@ struct RosaryView: View {
                 ) {
                     rosary.previousStep()
                 }
-                rosaryGlassTransportMainButton(accent: accent)
+                rosaryGlassTransportMainButton()
                 rosaryGlassTransportSideButton(
                     icon: "forward.fill",
                     disabled: nextDisabled,
@@ -520,7 +544,7 @@ struct RosaryView: View {
         Button(action: action) {
             Image(systemName: icon)
                 .font(.system(size: 14, weight: .semibold))
-                .foregroundStyle(heroPrimaryText.opacity(disabled ? 0.4 : 0.98))
+                .foregroundStyle(rosaryControlButtonForeground.opacity(disabled ? 0.4 : 0.98))
                 .symbolRenderingMode(.monochrome)
                 .frame(width: 40, height: 40)
         }
@@ -531,24 +555,27 @@ struct RosaryView: View {
         .accessibilityIdentifier(identifier)
     }
 
-    private func rosaryGlassTransportMainButton(accent: Color) -> some View {
+    private func rosaryGlassTransportMainButton() -> some View {
         Button {
             rosary.playPauseTapped()
         } label: {
             Image(systemName: speech.isSpeaking ? "pause.fill" : "play.fill")
                 .font(.system(size: 19, weight: .semibold))
-                .foregroundStyle(.white)
+                .foregroundStyle(solidChrome ? Color.black.opacity(0.88) : Color.black.opacity(0.82))
                 .symbolRenderingMode(.monochrome)
                 .frame(width: 48, height: 48)
         }
         .buttonStyle(.plain)
         .background {
-            Circle()
-                .fill(accent)
+            if solidChrome {
+                Circle().fill(rosaryBrandGoldDark)
+            } else {
+                Circle().fill(rosaryControlGoldGradient)
+            }
         }
         .overlay {
             Circle()
-                .stroke(Color.white.opacity(0.92), lineWidth: 2.5)
+                .stroke(rosaryBrandGoldLight.opacity(0.95), lineWidth: 2.5)
         }
         .accessibilityLabel(speech.isSpeaking ? "Pause" : "Play")
         .accessibilityIdentifier("TransportPlayPause")
