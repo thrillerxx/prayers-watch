@@ -253,8 +253,8 @@ struct RosaryView: View {
         let isLargeWatch = watchWidth >= 200
         /// Small upward nudge; main lift comes from top `overlay` + `ignoresSafeArea` (not `safeAreaInset`).
         let topPad: CGFloat = isLargeWatch ? -18 : -14
-        /// Round watch face clips rectangular layout; scale inset with width so corners stay inside the mask.
-        let edgeInset: CGFloat = max(isLargeWatch ? 18 : 15, (watchWidth * 0.12).rounded(.down))
+        /// Round watch face clips rectangular layout; keep controls clearly inside the circular mask.
+        let edgeInset: CGFloat = max(isLargeWatch ? 24 : 20, (watchWidth * 0.165).rounded(.down))
         let chromeButtonSize: CGFloat = isLargeWatch ? 32 : 30
 
         return VStack(alignment: .center, spacing: 0) {
@@ -288,24 +288,13 @@ struct RosaryView: View {
                 Button {
                     Task { @MainActor in rosary.stopPlayback() }
                 } label: {
-                    Text("Stop")
-                        .font(.system(size: 10, weight: .semibold, design: .default))
+                    Image(systemName: "stop.fill")
+                        .font(.system(size: isLargeWatch ? 12 : 11, weight: .semibold))
                         .foregroundStyle(heroPrimaryText)
-                        .lineLimit(1)
-                        .minimumScaleFactor(0.75)
-                        .padding(.horizontal, 6)
-                        .frame(height: chromeButtonSize)
+                        .frame(width: chromeButtonSize, height: chromeButtonSize)
                 }
                 .buttonStyle(.plain)
-                .background {
-                    Capsule()
-                        .fill(solidChrome ? Color.primary.opacity(0.14) : Color.clear)
-                        .background(.ultraThinMaterial, in: Capsule())
-                        .overlay {
-                            Capsule()
-                                .stroke(Color.white.opacity(solidChrome ? 0.22 : 0.28), lineWidth: 0.5)
-                        }
-                }
+                .background { rosaryGlassCircle(diameter: chromeButtonSize) }
                 .accessibilityLabel("Stop")
                 .accessibilityIdentifier("TransportStop")
             }
