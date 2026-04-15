@@ -81,6 +81,7 @@ struct ContentView: View {
                         homeTile(.massResponses, title: "Mass Responses", subtitle: "At Mass", icon: "text.book.closed.fill")
                         homeTile(.settings, title: "Settings", subtitle: "Theme & voice", icon: "gearshape.fill")
                     }
+                    .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.horizontal, 10)
                     .padding(.bottom, 8)
                 }

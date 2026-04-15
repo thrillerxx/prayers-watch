@@ -109,6 +109,8 @@ struct HomeNavigationTile: View {
             }
         }
         .buttonStyle(.plain)
+        /// `NavigationLink` does not expand like `Button`; match mystery rows’ full usable width in a leading `VStack`.
+        .frame(maxWidth: .infinity, alignment: .leading)
         .accessibilityLabel(title)
         .accessibilityHint(subtitle)
     }
