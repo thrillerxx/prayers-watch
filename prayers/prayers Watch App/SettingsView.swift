@@ -26,76 +26,88 @@ struct SettingsView: View {
         ZStack {
             DivinityChrome.canvasBackground.ignoresSafeArea()
             List {
-            Section("Appearance") {
-                Picker("Color theme", selection: $colorThemeRaw) {
-                    ForEach(AppColorTheme.allCases) { t in
-                        Text(t.displayName).tag(t.rawValue)
+                Section {
+                    Picker("Color theme", selection: $colorThemeRaw) {
+                        ForEach(AppColorTheme.allCases) { t in
+                            Text(t.displayName).tag(t.rawValue)
+                        }
                     }
+                    .font(DivinityPickerRow.titleFont)
+                } header: {
+                    settingsSectionHeader("Appearance")
                 }
-                .font(DivinityFont.caption(14))
-            }
 
-            Section("Rosary") {
-                Toggle("Auto-advance", isOn: $autoAdvance)
-                Toggle("Haptics", isOn: $haptics)
-                Toggle("Fatima after each decade", isOn: $includeFatima)
-                Toggle("St. Joseph after Rosary", isOn: $includeStJoseph)
-                Text("Long-press the title on the Rosary screen to choose another mystery.")
-                    .font(DivinityFont.caption(11))
-                    .foregroundStyle(.secondary)
-            }
-
-            Section("Speech") {
-                Picker("Voice", selection: $voiceLanguage) {
-                    Text("English (US)").tag("en-US")
-                    Text("English (UK)").tag("en-GB")
+                Section {
+                    Toggle("Auto-advance", isOn: $autoAdvance)
+                        .font(DivinityPickerRow.titleFont)
+                    Toggle("Haptics", isOn: $haptics)
+                        .font(DivinityPickerRow.titleFont)
+                    Toggle("Fatima after each decade", isOn: $includeFatima)
+                        .font(DivinityPickerRow.titleFont)
+                    Toggle("St. Joseph after Rosary", isOn: $includeStJoseph)
+                        .font(DivinityPickerRow.titleFont)
+                    Text("Long-press the title on the Rosary screen to choose another mystery.")
+                        .font(DivinityPickerRow.subtitleFont)
+                        .foregroundStyle(.secondary)
+                } header: {
+                    settingsSectionHeader("Rosary")
                 }
-                .font(DivinityFont.caption(14))
 
-                Picker("Speech Speed", selection: $speechSpeed) {
-                    Text("Very Slow").tag("veryslow")
-                    Text("Slow").tag("slow")
-                    Text("Normal").tag("normal")
-                }
-                .font(DivinityFont.caption(14))
+                Section {
+                    Picker("Voice", selection: $voiceLanguage) {
+                        Text("English (US)").tag("en-US")
+                        Text("English (UK)").tag("en-GB")
+                    }
+                    .font(DivinityPickerRow.titleFont)
 
-                HStack(spacing: 6) {
-                    Text("Pause")
-                        .font(DivinityFont.caption(14))
-                        .lineLimit(1)
-                        .frame(maxWidth: .infinity, alignment: .leading)
+                    Picker("Speech Speed", selection: $speechSpeed) {
+                        Text("Very Slow").tag("veryslow")
+                        Text("Slow").tag("slow")
+                        Text("Normal").tag("normal")
+                    }
+                    .font(DivinityPickerRow.titleFont)
 
                     HStack(spacing: 6) {
-                        Button {
-                            pauseBetweenPartsSeconds = max(1, pauseBetweenPartsSeconds - 1)
-                        } label: {
-                            Image(systemName: "minus.circle")
-                        }
-                        .buttonStyle(.plain)
-                        .tint(accent)
+                        Text("Pause")
+                            .font(DivinityPickerRow.titleFont)
+                            .lineLimit(1)
+                            .frame(maxWidth: .infinity, alignment: .leading)
 
-                        Text("\(pauseBetweenPartsSeconds)s")
-                            .font(DivinityFont.caption(14))
-                            .monospacedDigit()
-                            .frame(minWidth: 30, alignment: .center)
+                        HStack(spacing: 6) {
+                            Button {
+                                pauseBetweenPartsSeconds = max(1, pauseBetweenPartsSeconds - 1)
+                            } label: {
+                                Image(systemName: "minus.circle")
+                            }
+                            .buttonStyle(.plain)
+                            .tint(accent)
 
-                        Button {
-                            pauseBetweenPartsSeconds = min(10, pauseBetweenPartsSeconds + 1)
-                        } label: {
-                            Image(systemName: "plus.circle")
+                            Text("\(pauseBetweenPartsSeconds)s")
+                                .font(DivinityPickerRow.subtitleFont)
+                                .monospacedDigit()
+                                .frame(minWidth: 30, alignment: .center)
+
+                            Button {
+                                pauseBetweenPartsSeconds = min(10, pauseBetweenPartsSeconds + 1)
+                            } label: {
+                                Image(systemName: "plus.circle")
+                            }
+                            .buttonStyle(.plain)
+                            .tint(accent)
                         }
-                        .buttonStyle(.plain)
-                        .tint(accent)
                     }
+                    .contentShape(Rectangle())
+                } header: {
+                    settingsSectionHeader("Speech")
                 }
-                .contentShape(Rectangle())
-            }
 
-            Section {
-                Text("Add the Divinity complication to your watch face for quick access.")
-                    .font(DivinityFont.caption(11))
-                    .foregroundStyle(.secondary)
-            }
+                Section {
+                    Text("Add the Divinity complication to your watch face for quick access.")
+                        .font(DivinityPickerRow.subtitleFont)
+                        .foregroundStyle(.secondary)
+                } header: {
+                    settingsSectionHeader("Watch face")
+                }
             }
             .listStyle(.plain)
             .scrollContentBackground(.hidden)
@@ -105,6 +117,14 @@ struct SettingsView: View {
         .toolbarBackground(DivinityChrome.canvasBackground, for: .navigationBar)
         .toolbarBackground(.visible, for: .navigationBar)
         .tint(accent)
+    }
+
+    private func settingsSectionHeader(_ text: String) -> some View {
+        Text(text)
+            .font(DivinityMenuSection.labelFont)
+            .foregroundStyle(accent.opacity(0.95))
+            .textCase(.uppercase)
+            .tracking(0.6)
     }
 }
 

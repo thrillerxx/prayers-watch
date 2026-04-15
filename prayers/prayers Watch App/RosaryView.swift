@@ -102,7 +102,7 @@ struct RosaryView: View {
                 VStack(alignment: .leading, spacing: 12) {
                     VStack(alignment: .center, spacing: 6) {
                         Text("Mysteries")
-                            .font(.system(size: 10, weight: .semibold, design: .default))
+                            .font(DivinityMenuSection.labelFont)
                             .foregroundStyle(accent.opacity(0.95))
                             .textCase(.uppercase)
                             .tracking(0.6)

@@ -29,7 +29,7 @@ struct PrayerLibraryView: View {
             VStack(spacing: 0) {
             if let errorText {
                 Text(errorText)
-                    .font(DivinityFont.caption(11))
+                    .font(DivinityPickerRow.subtitleFont)
                     .foregroundStyle(.red)
                     .padding(.horizontal, 10)
                     .padding(.bottom, 6)
@@ -95,7 +95,7 @@ struct PrayerLibraryView: View {
 
     private func librarySectionHeader(_ text: String) -> some View {
         Text(text)
-            .font(.system(size: 10, weight: .semibold, design: .default))
+            .font(DivinityMenuSection.labelFont)
             .foregroundStyle(accent.opacity(0.95))
             .textCase(.uppercase)
             .tracking(0.6)

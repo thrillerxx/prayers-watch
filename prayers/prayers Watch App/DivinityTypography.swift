@@ -39,3 +39,8 @@ enum DivinityPickerRow {
     static let iconFont = Font.system(size: 16, weight: .semibold)
     static let chevronFont = Font.system(size: 11, weight: .semibold)
 }
+
+/// Uppercase section labels (mystery picker, prayer library, settings).
+enum DivinityMenuSection {
+    static let labelFont = Font.system(size: 10, weight: .semibold, design: .default)
+}
