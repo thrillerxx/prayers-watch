@@ -9,6 +9,8 @@ import SwiftUI
 
 @main
 struct prayersApp: App {
+    @UIApplicationDelegateAdaptor(PhoneCompanionIconSync.self) private var appDelegate
+
     var body: some Scene {
         WindowGroup {
             ContentView()

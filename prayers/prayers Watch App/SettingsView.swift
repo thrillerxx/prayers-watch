@@ -13,6 +13,7 @@ struct SettingsView: View {
     @AppStorage(AppSettings.includeStJosephKey) private var includeStJoseph: Bool = AppSettings.defaultIncludeStJoseph
 
     @AppStorage(AppSettings.colorThemeKey) private var colorThemeRaw: String = AppSettings.defaultColorTheme
+    @AppStorage(AppSettings.appAlternateIconKey) private var alternateAppIconRaw: String = AlternateAppIconChoice.appDefault.rawValue
 
     @Environment(\.appColorTheme) private var theme
     @Environment(\.accessibilityReduceTransparency) private var reduceTransparency
@@ -35,6 +36,20 @@ struct SettingsView: View {
                     .font(DivinityPickerRow.titleFont)
                 } header: {
                     settingsSectionHeader("Appearance")
+                }
+
+                Section {
+                    Picker("App icon", selection: $alternateAppIconRaw) {
+                        ForEach(AlternateAppIconChoice.allCases) { choice in
+                            Text(choice.title).tag(choice.rawValue)
+                        }
+                    }
+                    .font(DivinityPickerRow.titleFont)
+                    Text("Alternate icons update the iPhone home screen. The watch app icon stays the same until Apple supports changing it from the watch.")
+                        .font(DivinityPickerRow.subtitleFont)
+                        .foregroundStyle(.secondary)
+                } header: {
+                    settingsSectionHeader("Change App Icon")
                 }
 
                 Section {
@@ -117,6 +132,9 @@ struct SettingsView: View {
         .toolbarBackground(DivinityChrome.canvasBackground, for: .navigationBar)
         .toolbarBackground(.visible, for: .navigationBar)
         .tint(accent)
+        .onChange(of: alternateAppIconRaw) { _, newValue in
+            WatchCompanionIconSync.shared.notifyPhoneIconChanged(alternateIconAssetName: newValue)
+        }
     }
 
     private func settingsSectionHeader(_ text: String) -> some View {

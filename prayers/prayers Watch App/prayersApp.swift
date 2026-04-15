@@ -54,5 +54,8 @@ private struct AppShell: View {
         }
         .environment(\.appColorTheme, theme)
         .preferredColorScheme(.dark)
+        .onAppear {
+            WatchCompanionIconSync.shared.activate()
+        }
     }
 }

@@ -92,6 +92,11 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		BB0011012F34767400DD1377 /* Shared */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Shared;
+			sourceTree = "<group>";
+		};
 		167C33042F34766F00DD1377 /* prayers */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = prayers;
@@ -186,6 +191,7 @@
 			isa = PBXGroup;
 			children = (
 				167C33042F34766F00DD1377 /* prayers */,
+				BB0011012F34767400DD1377 /* Shared */,
 				167C33152F34767100DD1377 /* prayersTests */,
 				167C331F2F34767100DD1377 /* prayersUITests */,
 				167C332C2F34767100DD1377 /* prayers Watch App */,
@@ -229,6 +235,7 @@
 			);
 			fileSystemSynchronizedGroups = (
 				167C33042F34766F00DD1377 /* prayers */,
+				BB0011012F34767400DD1377 /* Shared */,
 			);
 			name = prayers;
 			packageProductDependencies = (
@@ -299,6 +306,7 @@
 			);
 			fileSystemSynchronizedGroups = (
 				167C332C2F34767100DD1377 /* prayers Watch App */,
+				BB0011012F34767400DD1377 /* Shared */,
 			);
 			name = "prayers Watch App";
 			packageProductDependencies = (
@@ -761,8 +769,10 @@
 		167C33532F34767200DD1377 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_ALTERNATE_APPICON_NAMES = "AppIconRadiantCross AppIconTriquetra AppIconGeometricCross AppIconRosaryCross AppIconIchthys AppIconSacredHeart AppIconOpenBible AppIconDove";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"prayers/Preview Content\"";
@@ -792,8 +802,10 @@
 		167C33542F34767200DD1377 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_ALTERNATE_APPICON_NAMES = "AppIconRadiantCross AppIconTriquetra AppIconGeometricCross AppIconRosaryCross AppIconIchthys AppIconSacredHeart AppIconOpenBible AppIconDove";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"prayers/Preview Content\"";

@@ -19,6 +19,8 @@ enum AppSettings {
 
     // Appearance (named presets)
     static let colorThemeKey = "settings.appearance.colorTheme" // String rawValue AppColorTheme
+    /// iOS alternate app icon asset name, or empty for the primary icon. Synced to the paired iPhone via WatchConnectivity.
+    static let appAlternateIconKey = "settings.appearance.alternateAppIcon"
 
     // Defaults
     static let defaultVoiceLanguage = "en-US"
