@@ -36,6 +36,42 @@ enum DivinityChrome {
     }
 }
 
+/// Full-bleed blurred mystery art + theme gradient (stable asset per cold start via `MysteryArt.homeHeroAssetNameForProcess()`).
+/// Use as the bottom layer on menu and text screens; Rosary **now playing** keeps its own session-specific hero.
+struct DivinityMysteryHeroBackdrop: View {
+
+    @Environment(\.appColorTheme) private var theme
+    @Environment(\.accessibilityReduceTransparency) private var reduceTransparency
+    @Environment(\.accessibilityDifferentiateWithoutColor) private var differentiateWithoutColor
+
+    private var solidChrome: Bool {
+        reduceTransparency || differentiateWithoutColor
+    }
+
+    var body: some View {
+        let name = MysteryArt.homeHeroAssetNameForProcess()
+        let colors = theme.heroGradientColors(reduceTransparency: reduceTransparency, increaseContrast: differentiateWithoutColor)
+        ZStack {
+            Image(name)
+                .renderingMode(.original)
+                .resizable()
+                .aspectRatio(contentMode: .fill)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .clipped()
+                .blur(radius: solidChrome ? 0 : 20)
+                .id(name)
+
+            LinearGradient(
+                colors: colors,
+                startPoint: .top,
+                endPoint: .bottom
+            )
+            .allowsHitTesting(false)
+        }
+        .ignoresSafeArea()
+    }
+}
+
 /// Full-width row used on home, Rosary mystery picker, and Prayer Library (identical geometry).
 struct DivinityPickerRowButton: View {
 

@@ -23,8 +23,7 @@ struct ContentView: View {
     var body: some View {
         NavigationStack(path: $path) {
             ZStack {
-                /// Match `RosaryView.mysteryPicker`: solid canvas so gray row cards read the same (no full-bleed hero behind tiles).
-                DivinityChrome.canvasBackground.ignoresSafeArea()
+                DivinityMysteryHeroBackdrop()
 
                 /// Same layout container as `RosaryView.mysteryPicker` (`ScrollView` + `VStack(spacing: 12)` + `.padding(.horizontal, 10)`).
                 ScrollView {
@@ -58,7 +57,7 @@ struct ContentView: View {
             }
             .navigationBarTitleDisplayMode(.inline)
             .navigationTitle("")
-            .toolbarBackground(DivinityChrome.canvasBackground, for: .navigationBar)
+            .toolbarBackground(Color.clear, for: .navigationBar)
             .toolbarBackground(.visible, for: .navigationBar)
             .navigationDestination(for: NavRoute.self) { route in
                 switch route {

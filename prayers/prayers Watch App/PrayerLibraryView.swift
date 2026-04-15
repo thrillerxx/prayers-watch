@@ -25,7 +25,7 @@ struct PrayerLibraryView: View {
 
     var body: some View {
         ZStack {
-            DivinityChrome.canvasBackground.ignoresSafeArea()
+            DivinityMysteryHeroBackdrop()
             VStack(spacing: 0) {
             if let errorText {
                 Text(errorText)
@@ -85,7 +85,7 @@ struct PrayerLibraryView: View {
         }
         .navigationTitle("Prayer Library")
         .navigationBarTitleDisplayMode(.inline)
-        .toolbarBackground(DivinityChrome.canvasBackground, for: .navigationBar)
+        .toolbarBackground(Color.clear, for: .navigationBar)
         .toolbarBackground(.visible, for: .navigationBar)
         .tint(accent)
         .onAppear {
@@ -405,28 +405,33 @@ struct PrayerDetailView: View {
     }
 
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 12) {
-                if speech.isSpeaking || speech.isPaused {
-                    PrayerDetailNowPlayingHero(speech: speech)
-                }
+        ZStack {
+            DivinityMysteryHeroBackdrop()
+            ScrollView {
+                VStack(alignment: .leading, spacing: 12) {
+                    if speech.isSpeaking || speech.isPaused {
+                        PrayerDetailNowPlayingHero(speech: speech)
+                    }
 
-                if text.isEmpty {
-                    Text("No text for this prayer in the selected language.")
-                        .font(DivinityFont.caption(11))
-                        .foregroundStyle(.secondary)
-                } else {
-                    Text(text)
-                        .font(DivinityFont.prayer(14))
-                        .foregroundStyle(.primary)
-                        .fixedSize(horizontal: false, vertical: true)
+                    if text.isEmpty {
+                        Text("No text for this prayer in the selected language.")
+                            .font(DivinityFont.caption(11))
+                            .foregroundStyle(.secondary)
+                    } else {
+                        Text(text)
+                            .font(DivinityFont.prayer(14))
+                            .foregroundStyle(.primary)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
                 }
+                .padding(.horizontal, 10)
+                .padding(.vertical, 6)
             }
-            .padding(.horizontal, 10)
-            .padding(.vertical, 6)
         }
         .navigationBarTitleDisplayMode(.inline)
         .navigationTitle(Self.navigationTitleForWatch(prayer.title))
+        .toolbarBackground(Color.clear, for: .navigationBar)
+        .toolbarBackground(.visible, for: .navigationBar)
         .tint(accent)
         .onAppear {
             if !didAutoplay {
