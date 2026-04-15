@@ -94,8 +94,6 @@ struct RosaryView: View {
 
     private var mysteryPicker: some View {
         let accent = theme.accentColor(reduceTransparency: reduceTransparency, increaseContrast: increaseContrast)
-        let surface = DivinityChrome.elevatedSurface(theme: theme, reduceTransparency: reduceTransparency, increaseContrast: increaseContrast)
-        let stroke = DivinityChrome.elevatedSurfaceStroke(theme: theme, accent: accent, reduceTransparency: reduceTransparency)
 
         return ZStack {
             DivinityChrome.canvasBackground.ignoresSafeArea()
@@ -122,79 +120,27 @@ struct RosaryView: View {
                     .padding(.bottom, 4)
 
                     ForEach(RosaryMystery.allCases) { mystery in
-                        mysterySetPickerRow(
-                            mystery: mystery,
-                            accent: accent,
-                            surface: surface,
-                            stroke: stroke
-                        ) {
+                        mysterySetPickerRow(mystery: mystery) {
                             pickMystery(mystery)
                         }
                     }
                 }
+                .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.horizontal, 10)
                 .padding(.bottom, 8)
             }
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
             .scrollIndicators(.hidden)
         }
     }
 
-    private func mysterySetPickerRow(
-        mystery: RosaryMystery,
-        accent: Color,
-        surface: Color,
-        stroke: Color,
-        action: @escaping () -> Void
-    ) -> some View {
-        Button(action: action) {
-            HStack(alignment: .center, spacing: 8) {
-                ZStack {
-                    RoundedRectangle(cornerRadius: 9, style: .continuous)
-                        .fill(accent.opacity(reduceTransparency ? 0.28 : 0.22))
-                        .frame(width: 40, height: 40)
-                    Image(systemName: mysteryPickerIcon(mystery))
-                        .font(DivinityPickerRow.iconFont)
-                        .foregroundStyle(.white)
-                        .symbolRenderingMode(.monochrome)
-                }
-                .frame(width: 40, height: 40)
-
-                VStack(alignment: .leading, spacing: 3) {
-                    Text(mystery.title)
-                        .font(DivinityPickerRow.titleFont)
-                        .foregroundStyle(.primary)
-                        .lineLimit(2)
-                        .minimumScaleFactor(0.82)
-                        .multilineTextAlignment(.leading)
-                    Text(mysteryPickerSubtitle(mystery))
-                        .font(DivinityPickerRow.subtitleFont)
-                        .foregroundStyle(.secondary)
-                        .lineLimit(1)
-                        .minimumScaleFactor(0.75)
-                        .multilineTextAlignment(.leading)
-                }
-                .frame(maxWidth: .infinity, alignment: .leading)
-
-                Image(systemName: "chevron.right")
-                    .font(DivinityPickerRow.chevronFont)
-                    .foregroundStyle(Color.secondary.opacity(0.85))
-                    .frame(width: 14, height: 14)
-            }
-            .padding(.horizontal, 10)
-            .padding(.vertical, 12)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .contentShape(Rectangle())
-            .background {
-                RoundedRectangle(cornerRadius: 14, style: .continuous)
-                    .fill(surface)
-                    .overlay {
-                        RoundedRectangle(cornerRadius: 12, style: .continuous)
-                            .stroke(stroke, lineWidth: 0.5)
-                    }
-            }
-        }
-        .buttonStyle(.plain)
-        .accessibilityLabel(mystery.title)
+    private func mysterySetPickerRow(mystery: RosaryMystery, action: @escaping () -> Void) -> some View {
+        DivinityPickerRowButton(
+            icon: mysteryPickerIcon(mystery),
+            title: mystery.title,
+            subtitle: mysteryPickerSubtitle(mystery),
+            action: action
+        )
     }
 
     private func mysteryPickerIcon(_ mystery: RosaryMystery) -> String {

@@ -36,12 +36,12 @@ enum DivinityChrome {
     }
 }
 
-struct HomeNavigationTile: View {
+/// Full-width row used on home, Rosary mystery picker, and Prayer Library (identical geometry).
+struct DivinityPickerRowButton: View {
 
+    let icon: String
     let title: String
     let subtitle: String
-    let icon: String
-    /// Same control type as `mysterySetPickerRow` (`Button`); `NavigationLink` labels often stay content-width in watchOS scroll stacks.
     let action: () -> Void
 
     @Environment(\.appColorTheme) private var theme
@@ -95,7 +95,6 @@ struct HomeNavigationTile: View {
                     .foregroundStyle(Color.secondary.opacity(0.85))
                     .frame(width: 14, height: 14)
             }
-            /// Match `RosaryView.mysterySetPickerRow` padding and card shape.
             .padding(.horizontal, 10)
             .padding(.vertical, 12)
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -113,5 +112,17 @@ struct HomeNavigationTile: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .accessibilityLabel(title)
         .accessibilityHint(subtitle)
+    }
+}
+
+struct HomeNavigationTile: View {
+
+    let title: String
+    let subtitle: String
+    let icon: String
+    let action: () -> Void
+
+    var body: some View {
+        DivinityPickerRowButton(icon: icon, title: title, subtitle: subtitle, action: action)
     }
 }

@@ -9,11 +9,14 @@ struct PrayerSource: Codable, Hashable {
     let url: String
 }
 
-struct Prayer: Codable, Identifiable {
+struct Prayer: Codable, Identifiable, Hashable {
     let id: String
     let title: String
     let translations: [String: String]
     let sources: [PrayerSource]?
+
+    static func == (lhs: Prayer, rhs: Prayer) -> Bool { lhs.id == rhs.id }
+    func hash(into hasher: inout Hasher) { hasher.combine(id) }
 }
 
 enum PrayerStore {

@@ -5,6 +5,7 @@ struct PrayerLibraryView: View {
     @State private var prayers: [Prayer] = []
     @State private var massPrayers: [Prayer] = []
     @State private var errorText: String?
+    @State private var detailPrayer: Prayer?
 
     @ObservedObject private var speech = SpeechManager.shared
 
@@ -39,53 +40,43 @@ struct PrayerLibraryView: View {
                     .padding(.horizontal, 10)
                     .padding(.vertical, 8)
             } else {
-                List {
-                    if !massPrayers.isEmpty {
-                        Section {
+                /// Same row control and scroll layout as home + `RosaryView.mysteryPicker` (full-width `DivinityPickerRowButton`, not `List`).
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 12) {
+                        if !massPrayers.isEmpty {
+                            librarySectionHeader("Mass")
                             ForEach(massPrayers) { prayer in
-                                NavigationLink {
-                                    PrayerDetailView(prayer: prayer)
-                                } label: {
-                                    prayerRowLabel(title: prayer.title, icon: "building.columns")
-                                }
-                                .listRowInsets(EdgeInsets(top: 4, leading: 8, bottom: 4, trailing: 8))
+                                DivinityPickerRowButton(
+                                    icon: "building.columns",
+                                    title: prayer.title,
+                                    subtitle: "Mass",
+                                    action: { detailPrayer = prayer }
+                                )
                             }
-                        } header: {
-                            Text("Mass")
-                                .font(DivinityFont.caption(10))
-                                .foregroundStyle(accent.opacity(0.95))
-                                .textCase(.uppercase)
                         }
-                    }
-
-                    if !catalogPrayersExcludingMass.isEmpty {
-                        Section {
+                        if !catalogPrayersExcludingMass.isEmpty {
+                            librarySectionHeader(massPrayers.isEmpty ? "Prayers" : "More prayers")
                             ForEach(catalogPrayersExcludingMass) { prayer in
-                                NavigationLink {
-                                    PrayerDetailView(prayer: prayer)
-                                } label: {
-                                    prayerRowLabel(title: prayer.title, icon: "book.pages")
-                                }
-                                .listRowInsets(EdgeInsets(top: 4, leading: 8, bottom: 4, trailing: 8))
+                                DivinityPickerRowButton(
+                                    icon: "book.pages",
+                                    title: prayer.title,
+                                    subtitle: "Listen",
+                                    action: { detailPrayer = prayer }
+                                )
                             }
-                        } header: {
-                            Text(massPrayers.isEmpty ? "Prayers" : "More prayers")
-                                .font(DivinityFont.caption(10))
-                                .foregroundStyle(accent.opacity(0.95))
-                                .textCase(.uppercase)
                         }
                     }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.horizontal, 10)
+                    .padding(.bottom, 8)
                 }
-                .listStyle(.plain)
-                .scrollContentBackground(.hidden)
-                .listSectionSpacing(8)
-                .listRowBackground(
-                    RoundedRectangle(cornerRadius: 10, style: .continuous)
-                        .fill(DivinityChrome.elevatedSurface(theme: theme, reduceTransparency: reduceTransparency, increaseContrast: differentiateWithoutColor))
-                        .padding(.vertical, 2)
-                )
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+                .scrollIndicators(.hidden)
             }
             }
+        }
+        .navigationDestination(item: $detailPrayer) { prayer in
+            PrayerDetailView(prayer: prayer)
         }
         .safeAreaInset(edge: .bottom, spacing: 0) {
             if speech.isSpeaking || speech.isPaused {
@@ -102,29 +93,13 @@ struct PrayerLibraryView: View {
         }
     }
 
-    @ViewBuilder
-    private func prayerRowLabel(title: String, icon: String) -> some View {
-        HStack(alignment: .center, spacing: 10) {
-            ZStack {
-                RoundedRectangle(cornerRadius: 7, style: .continuous)
-                    .fill(accent.opacity(reduceTransparency ? 0.28 : 0.2))
-                    .frame(width: 32, height: 32)
-                Image(systemName: icon)
-                    .font(.system(size: 14, weight: .semibold))
-                    .foregroundStyle(accent)
-                    .symbolRenderingMode(.monochrome)
-            }
-            .frame(width: 32, height: 32)
-
-            Text(title)
-                .font(DivinityFont.title(14))
-                .lineLimit(3)
-                .minimumScaleFactor(0.82)
-                .multilineTextAlignment(.leading)
-                .frame(maxWidth: .infinity, alignment: .leading)
-        }
-        .padding(.vertical, 4)
-        .contentShape(Rectangle())
+    private func librarySectionHeader(_ text: String) -> some View {
+        Text(text)
+            .font(.system(size: 10, weight: .semibold, design: .default))
+            .foregroundStyle(accent.opacity(0.95))
+            .textCase(.uppercase)
+            .tracking(0.6)
+            .frame(maxWidth: .infinity, alignment: .leading)
     }
 
     private func loadPrayers() {
