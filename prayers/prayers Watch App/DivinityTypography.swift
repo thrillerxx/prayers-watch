@@ -32,7 +32,7 @@ enum DivinityFont {
     }
 }
 
-/// Shared metrics for home navigation tiles and Rosary mystery set rows (must stay in lockstep).
+/// Shared metrics for menu list rows (home, mysteries, prayer library) and matching instructional taglines.
 enum DivinityPickerRow {
     static let titleFont = Font.system(size: 15, weight: .semibold, design: .default)
     static let subtitleFont = Font.system(size: 11, weight: .medium, design: .default)

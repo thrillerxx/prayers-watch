@@ -35,7 +35,7 @@ struct PrayerLibraryView: View {
                     .padding(.bottom, 6)
             } else if prayers.isEmpty && massPrayers.isEmpty {
                 Text("No prayers found")
-                    .font(DivinityFont.caption(12))
+                    .font(DivinityPickerRow.subtitleFont)
                     .foregroundStyle(.secondary)
                     .padding(.horizontal, 10)
                     .padding(.vertical, 8)

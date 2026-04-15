@@ -29,19 +29,14 @@ struct ContentView: View {
                 /// Same layout container as `RosaryView.mysteryPicker` (`ScrollView` + `VStack(spacing: 12)` + `.padding(.horizontal, 10)`).
                 ScrollView {
                     VStack(alignment: .leading, spacing: 12) {
-                        /// Same header structure and system typography as mystery picker (`Mysteries` / `Rosary` / `Choose a set…`).
+                        /// Cinzel + Cormorant branding; tagline uses 11 pt to match `DivinityPickerRow` row subtitles on menu screens.
                         VStack(alignment: .center, spacing: 6) {
-                            Text("Home")
-                                .font(.system(size: 10, weight: .semibold, design: .default))
-                                .foregroundStyle(accent.opacity(0.95))
-                                .textCase(.uppercase)
-                                .tracking(0.6)
                             Text("Divinity")
-                                .font(.system(size: 20, weight: .bold, design: .default))
+                                .font(DivinityFont.chrome(20))
                                 .foregroundStyle(.primary)
                                 .multilineTextAlignment(.center)
                             Text("Prayers & Rosary")
-                                .font(.system(size: 12, weight: .medium, design: .default))
+                                .font(DivinityFont.caption(11))
                                 .foregroundStyle(.secondary)
                                 .multilineTextAlignment(.center)
                         }

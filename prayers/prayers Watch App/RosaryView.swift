@@ -111,7 +111,7 @@ struct RosaryView: View {
                             .foregroundStyle(.primary)
                             .multilineTextAlignment(.center)
                         Text("Choose a set to begin")
-                            .font(.system(size: 12, weight: .medium, design: .default))
+                            .font(DivinityPickerRow.subtitleFont)
                             .foregroundStyle(.secondary)
                             .multilineTextAlignment(.center)
                     }
