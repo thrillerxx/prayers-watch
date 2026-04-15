@@ -246,7 +246,7 @@ struct RosaryView: View {
     /// Keeps scroll content below the floating top chrome (time + Back/Stop) on 42mm / 46mm.
     private func rosaryNowPlayingScrollTopInset(watchWidth: CGFloat) -> CGFloat {
         /// Keep scroll content below top chrome; grows when chrome sits lower (`topPad`).
-        watchWidth >= 200 ? 85 : 77
+        watchWidth >= 200 ? 85 : 69
     }
 
     /// Horizontal inset so titles and prayer text stay inside the round watch mask.
@@ -257,8 +257,9 @@ struct RosaryView: View {
     /// Top bar: time on the first row; back and Stop on the second row at left/right, inset from the curved bezel.
     private func rosaryMusicTopChrome(watchWidth: CGFloat) -> some View {
         let isLargeWatch = watchWidth >= 200
-        /// Positive padding pushes top chrome down; 42mm sits a bit lower than before.
-        let topPad: CGFloat = isLargeWatch ? 10 : 8
+        /// Whole-chrome vertical offset; 42mm time-only shift uses `offset` below so Back/Stop stay put.
+        let topPad: CGFloat = isLargeWatch ? 10 : 0
+        let smallWatchTimeDrop: CGFloat = isLargeWatch ? 0 : 7
         /// Round watch face clips rectangular layout; keep controls clearly inside the circular mask.
         let edgeInset: CGFloat = max(isLargeWatch ? 52 : 48, (watchWidth * 0.29).rounded(.down))
         let chromeButtonSize: CGFloat = isLargeWatch ? 32 : 30
@@ -275,6 +276,7 @@ struct RosaryView: View {
                     .frame(maxWidth: .infinity)
             }
             .allowsHitTesting(false)
+            .offset(y: smallWatchTimeDrop)
 
             HStack(alignment: .center, spacing: 0) {
                 Button {
@@ -304,6 +306,7 @@ struct RosaryView: View {
                 .accessibilityLabel("Stop")
                 .accessibilityIdentifier("TransportStop")
             }
+            .padding(.top, -smallWatchTimeDrop)
         }
         .padding(.horizontal, edgeInset)
         .padding(.top, topPad)
