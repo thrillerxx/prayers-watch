@@ -251,7 +251,7 @@ struct RosaryView: View {
 
     /// Horizontal inset so titles and prayer text stay inside the round watch mask.
     private func rosaryReadableWidthInset(watchWidth: CGFloat) -> CGFloat {
-        max(18, (watchWidth * 0.15).rounded(.down))
+        max(22, (watchWidth * 0.175).rounded(.down))
     }
 
     /// Top bar: time on the first row; back and Stop on the second row at left/right, inset from the curved bezel.
@@ -378,7 +378,7 @@ struct RosaryView: View {
             .foregroundStyle(heroPrimaryText)
             .multilineTextAlignment(.center)
             .lineSpacing(4)
-            .minimumScaleFactor(0.68)
+            .minimumScaleFactor(0.62)
             .lineLimit(nil)
             .fixedSize(horizontal: false, vertical: true)
             .frame(maxWidth: .infinity, alignment: .center)
@@ -426,7 +426,7 @@ struct RosaryView: View {
                     .multilineTextAlignment(.center)
                     .lineLimit(4)
                     .lineSpacing(2)
-                    .minimumScaleFactor(0.65)
+                    .minimumScaleFactor(0.6)
                     .shadow(color: textShadowColor, radius: solidChrome ? 0 : 3, x: 0, y: 1)
             } else if let step = rosary.currentStep {
                 let fallback = step.title.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -437,7 +437,7 @@ struct RosaryView: View {
                         .multilineTextAlignment(.center)
                         .lineLimit(4)
                         .lineSpacing(2)
-                        .minimumScaleFactor(0.65)
+                        .minimumScaleFactor(0.6)
                         .shadow(color: textShadowColor, radius: solidChrome ? 0 : 3, x: 0, y: 1)
                 }
             }
