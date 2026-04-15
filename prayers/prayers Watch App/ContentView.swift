@@ -59,7 +59,7 @@ struct ContentView: View {
                                 .shadow(color: homeHeroLabelShadow, radius: homeHeroSolidChrome ? 0 : 2, x: 0, y: 1)
                         }
                         .frame(maxWidth: .infinity)
-                        .padding(.top, 6)
+                        .padding(.top, 0)
                         .padding(.bottom, 2)
 
                         homeCenterItem(.rosary, title: "Rosary", subtitle: "Mysteries", icon: "cross")
@@ -68,6 +68,7 @@ struct ContentView: View {
                         homeCenterItem(.settings, title: "Settings", subtitle: "Theme & voice", icon: "gearshape.fill")
                     }
                     .frame(maxWidth: .infinity, alignment: .center)
+                    .padding(.top, -14)
                     .padding(.horizontal, 12)
                     .padding(.bottom, 8)
                 }
