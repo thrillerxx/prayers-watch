@@ -1,6 +1,6 @@
 # Archive Status (2026-03-10)
 
-Historical note: older duplicate workspaces and `divinity*` copies were archived on a private dev machine to avoid confusion. The **active** codebase is this **`prayers-watch`** repository.
+Historical note: older duplicate workspaces and `divinity*` copies were archived on a private dev machine to reduce confusion. The **active** codebase is this **`prayers-watch`** repository.
 
 - Canonical Xcode project: `prayers/prayers.xcodeproj`
 - Canonical watch app source: `prayers/prayers Watch App`
