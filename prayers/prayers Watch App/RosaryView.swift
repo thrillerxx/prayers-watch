@@ -219,7 +219,7 @@ struct RosaryView: View {
                         rosaryPrayerBody
                     }
                     .padding(.top, rosaryNowPlayingScrollTopInset(watchWidth: geo.size.width))
-                    .padding(.bottom, 56)
+                    .padding(.bottom, 62)
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .scrollIndicators(.hidden)
@@ -475,8 +475,9 @@ struct RosaryView: View {
             }
             .padding(.horizontal, 8)
         }
-        .padding(.top, 10)
-        .padding(.bottom, 4)
+        /// Bottom-aligned in `ZStack`; less top padding + no bottom padding sits transport nearer the watch chin.
+        .padding(.top, 5)
+        .padding(.bottom, 0)
         .frame(maxWidth: .infinity)
         .background {
             if solidChrome {
