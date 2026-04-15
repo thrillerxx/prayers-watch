@@ -22,36 +22,53 @@ struct ContentView: View {
         theme.accentColor(reduceTransparency: reduceTransparency, increaseContrast: differentiateWithoutColor)
     }
 
+    private var homeHeroSolidChrome: Bool {
+        reduceTransparency || differentiateWithoutColor
+    }
+
+    /// Readable on full-bleed art; falls back to standard labels when a11y needs solid chrome.
+    private var homePrimaryText: Color {
+        homeHeroSolidChrome ? Color.primary : Color.white
+    }
+
+    private var homeSecondaryText: Color {
+        homeHeroSolidChrome ? Color.secondary : Color.white.opacity(0.78)
+    }
+
+    private var homeHeroLabelShadow: Color {
+        homeHeroSolidChrome ? .clear : Color.black.opacity(0.45)
+    }
+
     var body: some View {
         NavigationStack(path: $path) {
             ZStack {
                 DivinityHomeHeroBackdrop(assetName: homeHeroAssetName)
 
-                /// Same layout container as `RosaryView.mysteryPicker` (`ScrollView` + `VStack(spacing: 12)` + `.padding(.horizontal, 10)`).
                 ScrollView {
-                    VStack(alignment: .leading, spacing: 12) {
-                        /// Cinzel + Cormorant branding; tagline uses 11 pt to match `DivinityPickerRow` row subtitles on menu screens.
+                    VStack(alignment: .center, spacing: 18) {
                         VStack(alignment: .center, spacing: 6) {
                             Text("Divinity")
                                 .font(DivinityFont.chrome(20))
-                                .foregroundStyle(.primary)
+                                .foregroundStyle(homePrimaryText)
                                 .multilineTextAlignment(.center)
+                                .shadow(color: homeHeroLabelShadow, radius: homeHeroSolidChrome ? 0 : 2, x: 0, y: 1)
                             Text("Prayers & Rosary")
                                 .font(DivinityFont.caption(11))
-                                .foregroundStyle(.secondary)
+                                .foregroundStyle(homeSecondaryText)
                                 .multilineTextAlignment(.center)
+                                .shadow(color: homeHeroLabelShadow, radius: homeHeroSolidChrome ? 0 : 2, x: 0, y: 1)
                         }
                         .frame(maxWidth: .infinity)
                         .padding(.top, 6)
-                        .padding(.bottom, 4)
+                        .padding(.bottom, 2)
 
-                        homeTile(.rosary, title: "Rosary", subtitle: "Mysteries", icon: "cross")
-                        homeTile(.prayerLibrary, title: "Prayer Library", subtitle: "Browse & listen", icon: "books.vertical.fill")
-                        homeTile(.massResponses, title: "Mass Responses", subtitle: "At Mass", icon: "text.book.closed.fill")
-                        homeTile(.settings, title: "Settings", subtitle: "Theme & voice", icon: "gearshape.fill")
+                        homeCenterItem(.rosary, title: "Rosary", subtitle: "Mysteries", icon: "cross")
+                        homeCenterItem(.prayerLibrary, title: "Prayer Library", subtitle: "Browse & listen", icon: "books.vertical.fill")
+                        homeCenterItem(.massResponses, title: "Mass Responses", subtitle: "At Mass", icon: "text.book.closed.fill")
+                        homeCenterItem(.settings, title: "Settings", subtitle: "Theme & voice", icon: "gearshape.fill")
                     }
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(.horizontal, 10)
+                    .frame(maxWidth: .infinity, alignment: .center)
+                    .padding(.horizontal, 12)
                     .padding(.bottom, 8)
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
@@ -88,11 +105,37 @@ struct ContentView: View {
         .environment(\.appColorTheme, theme)
     }
 
-    @ViewBuilder
-    private func homeTile(_ route: NavRoute, title: String, subtitle: String, icon: String) -> some View {
-        HomeNavigationTile(title: title, subtitle: subtitle, icon: icon) {
+    private func homeCenterItem(_ route: NavRoute, title: String, subtitle: String, icon: String) -> some View {
+        Button {
             path.append(route)
+        } label: {
+            VStack(alignment: .center, spacing: 5) {
+                Image(systemName: icon)
+                    .font(.system(size: 22, weight: .semibold))
+                    .foregroundStyle(accent)
+                    .symbolRenderingMode(.monochrome)
+                    .shadow(color: homeHeroLabelShadow, radius: homeHeroSolidChrome ? 0 : 1, x: 0, y: 1)
+                Text(title)
+                    .font(DivinityPickerRow.titleFont)
+                    .foregroundStyle(homePrimaryText)
+                    .multilineTextAlignment(.center)
+                    .minimumScaleFactor(0.85)
+                    .lineLimit(2)
+                    .shadow(color: homeHeroLabelShadow, radius: homeHeroSolidChrome ? 0 : 2, x: 0, y: 1)
+                Text(subtitle)
+                    .font(DivinityPickerRow.subtitleFont)
+                    .foregroundStyle(homeSecondaryText)
+                    .multilineTextAlignment(.center)
+                    .lineLimit(2)
+                    .minimumScaleFactor(0.8)
+                    .shadow(color: homeHeroLabelShadow, radius: homeHeroSolidChrome ? 0 : 2, x: 0, y: 1)
+            }
+            .frame(maxWidth: .infinity)
+            .contentShape(Rectangle())
         }
+        .buttonStyle(.plain)
+        .accessibilityLabel(title)
+        .accessibilityHint(subtitle)
     }
 
     private var rosaryMiniPlayer: some View {

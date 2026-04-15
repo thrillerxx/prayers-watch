@@ -153,15 +153,3 @@ struct DivinityPickerRowButton: View {
         .accessibilityHint(subtitle)
     }
 }
-
-struct HomeNavigationTile: View {
-
-    let title: String
-    let subtitle: String
-    let icon: String
-    let action: () -> Void
-
-    var body: some View {
-        DivinityPickerRowButton(icon: icon, title: title, subtitle: subtitle, action: action)
-    }
-}
