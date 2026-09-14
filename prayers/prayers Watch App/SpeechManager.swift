@@ -32,6 +32,13 @@ final class SpeechManager: NSObject, ObservableObject, AVSpeechSynthesizerDelega
     private var lastSpeechVoice: String = "en-US"
     private var lastSpeechRate: Float = 0.45
 
+    /// The utterance currently owned by this manager. Stale `didCancel`/`didFinish` from a
+    /// previous `stopSpeaking` must not clear a newer speak/pause session.
+    private weak var activeUtterance: AVSpeechUtterance?
+
+    /// watchOS / Simulator often ignore `pauseSpeaking`; we stop audio but keep payload for resume.
+    private var pausedByStoppingUtterance = false
+
     private var progressTimer: Timer?
     private var progressSegmentStart: Date?
     private var progressAccumulated: TimeInterval = 0
@@ -49,6 +56,9 @@ final class SpeechManager: NSObject, ObservableObject, AVSpeechSynthesizerDelega
     var isSpeaking: Bool { state == .speaking }
     var isPaused: Bool { state == .paused }
 
+    /// True when the synthesizer is actually producing audio (can lag behind `state`).
+    var isHardwareSpeaking: Bool { synthesizer.isSpeaking && !synthesizer.isPaused }
+
     var canReplayCurrentUtterance: Bool {
         !lastSpeechText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
     }
@@ -63,8 +73,10 @@ final class SpeechManager: NSObject, ObservableObject, AVSpeechSynthesizerDelega
         subtitle: String? = nil,
         onFinish: (() -> Void)? = nil
     ) {
+        activateSpeechAudioSession()
         synthesizer.stopSpeaking(at: .immediate)
 
+        pausedByStoppingUtterance = false
         self.onFinish = onFinish
         lastSpeechText = text
         lastSpeechVoice = voiceLanguage
@@ -80,27 +92,56 @@ final class SpeechManager: NSObject, ObservableObject, AVSpeechSynthesizerDelega
         let utterance = AVSpeechUtterance(string: text)
         utterance.voice = AVSpeechSynthesisVoice(language: voiceLanguage)
         utterance.rate = rate
+        activeUtterance = utterance
         synthesizer.speak(utterance)
     }
 
     func pause() {
-        guard synthesizer.isSpeaking else { return }
-        synthesizer.pauseSpeaking(at: .immediate)
+        if state == .paused { return }
+        guard state == .speaking || synthesizer.isSpeaking else { return }
+
+        // `.word` is more reliable than `.immediate` on watchOS; Simulator often still no-ops.
+        _ = synthesizer.pauseSpeaking(at: .word)
+        if synthesizer.isPaused {
+            pausedByStoppingUtterance = false
+            freezeProgress()
+            state = .paused
+            return
+        }
+
+        pausedByStoppingUtterance = true
+        synthesizer.stopSpeaking(at: .immediate)
         freezeProgress()
         state = .paused
     }
 
     func resume() {
-        guard synthesizer.isPaused else { return }
-        synthesizer.continueSpeaking()
-        unfreezeProgress()
-        state = .speaking
+        if synthesizer.isPaused {
+            pausedByStoppingUtterance = false
+            synthesizer.continueSpeaking()
+            unfreezeProgress()
+            state = .speaking
+            return
+        }
+        guard state == .paused, !lastSpeechText.isEmpty else { return }
+        let finish = onFinish
+        speak(
+            text: lastSpeechText,
+            voiceLanguage: lastSpeechVoice,
+            rate: lastSpeechRate,
+            title: nowPlayingTitle,
+            artworkSymbol: nowPlayingArtworkSymbol,
+            subtitle: nowPlayingSubtitle,
+            onFinish: finish
+        )
     }
 
     func stop() {
+        pausedByStoppingUtterance = false
+        activeUtterance = nil
+        onFinish = nil
         synthesizer.stopSpeaking(at: .immediate)
         state = .idle
-        onFinish = nil
         clearNowPlayingPresentation()
     }
 
@@ -120,6 +161,9 @@ final class SpeechManager: NSObject, ObservableObject, AVSpeechSynthesizerDelega
     }
 
     func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didFinish utterance: AVSpeechUtterance) {
+        guard utterance === activeUtterance else { return }
+        activeUtterance = nil
+        pausedByStoppingUtterance = false
         resetProgressTimersOnly()
         playbackProgress = 0
         state = .idle
@@ -129,10 +173,24 @@ final class SpeechManager: NSObject, ObservableObject, AVSpeechSynthesizerDelega
     }
 
     func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didCancel utterance: AVSpeechUtterance) {
+        guard utterance === activeUtterance else { return }
+        if pausedByStoppingUtterance, state == .paused {
+            activeUtterance = nil
+            return
+        }
+        activeUtterance = nil
         resetProgressTimersOnly()
         playbackProgress = 0
         state = .idle
         onFinish = nil
+    }
+
+    private func activateSpeechAudioSession() {
+        #if os(watchOS) || os(iOS)
+        let session = AVAudioSession.sharedInstance()
+        try? session.setCategory(.playback, mode: .spokenAudio, options: [.duckOthers])
+        try? session.setActive(true)
+        #endif
     }
 
     private func restartProgressTracking(estimatedDurationForText text: String, rate: Float) {

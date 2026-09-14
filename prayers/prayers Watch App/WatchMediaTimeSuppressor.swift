@@ -43,13 +43,12 @@ struct WatchMediaTimeSuppressor: View {
               let url = Bundle.main.url(forResource: "silent_time_suppressor", withExtension: "mp4")
         else { return }
 
-        try? AVAudioSession.sharedInstance().setCategory(.playback, mode: .default)
-        try? AVAudioSession.sharedInstance().setActive(true)
+        try? AVAudioSession.sharedInstance().setCategory(.playback, mode: .default, options: [.mixWithOthers])
 
         let item = AVPlayerItem(url: url)
         let p = AVPlayer(playerItem: item)
-        p.isMuted = false
-        p.volume = 1.0
+        p.isMuted = true
+        p.volume = 0
         p.actionAtItemEnd = .none
 
         let loopPlayer = p

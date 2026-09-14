@@ -259,6 +259,10 @@ final class RosarySessionController: ObservableObject {
         cancelAutoTask(reason: "stop")
         playbackGeneration &+= 1
         speech.stop()
+        MPNowPlayingInfoCenter.default().playbackState = .stopped
+        var info = MPNowPlayingInfoCenter.default().nowPlayingInfo ?? [:]
+        info[MPNowPlayingInfoPropertyPlaybackRate] = 0.0
+        MPNowPlayingInfoCenter.default().nowPlayingInfo = info.isEmpty ? nil : info
     }
 
     func exitToMysteryPicker() {
@@ -291,12 +295,17 @@ final class RosarySessionController: ObservableObject {
     }
 
     func playPauseTapped() {
-        if speech.isSpeaking {
+        if speech.isSpeaking || speech.isHardwareSpeaking {
             speech.pause()
+            MPNowPlayingInfoCenter.default().playbackState = .paused
+            var info = MPNowPlayingInfoCenter.default().nowPlayingInfo ?? [:]
+            info[MPNowPlayingInfoPropertyPlaybackRate] = 0.0
+            MPNowPlayingInfoCenter.default().nowPlayingInfo = info
             return
         }
         if speech.isPaused {
             speech.resume()
+            publishRosaryNowPlayingIfNeeded()
             return
         }
         transition(to: index, reason: .manualStart)

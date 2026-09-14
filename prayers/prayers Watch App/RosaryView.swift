@@ -164,7 +164,7 @@ struct RosaryView: View {
     /// Music-style layout: blurred hero, small cover art; prayer scrolls full-width with controls overlaid (no text card).
     private var nowPlayingSession: some View {
         GeometryReader { geo in
-            ZStack(alignment: .bottom) {
+            ZStack(alignment: .top) {
                 WatchMediaTimeSuppressor()
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                     .allowsHitTesting(false)
@@ -189,14 +189,15 @@ struct RosaryView: View {
                     .padding(.top, rosaryNowPlayingScrollTopInset(watchWidth: geo.size.width))
                     .padding(.bottom, 74)
                 }
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
                 .scrollIndicators(.hidden)
                 .overlay(alignment: .top) {
                     rosaryMusicTopChrome(watchWidth: geo.size.width)
                         .ignoresSafeArea(edges: .top)
                 }
-
-                rosaryFloatingPlayerChrome
+                .overlay(alignment: .bottom) {
+                    rosaryFloatingPlayerChrome
+                }
             }
             .frame(width: geo.size.width, height: geo.size.height)
         }
@@ -212,9 +213,9 @@ struct RosaryView: View {
     }
 
     /// Keeps scroll content below the floating top chrome (time + Back/Stop) on 42mm / 46mm.
+    /// Tight enough that the 102pt cover sits in the visual center, not on the transport.
     private func rosaryNowPlayingScrollTopInset(watchWidth: CGFloat) -> CGFloat {
-        /// Keep scroll content below top chrome; grows when chrome sits lower (`topPad`).
-        watchWidth >= 200 ? 85 : 69
+        watchWidth >= 200 ? 54 : 48
     }
 
     /// Horizontal inset so titles and prayer text stay inside the round watch mask.
@@ -262,7 +263,7 @@ struct RosaryView: View {
                 Spacer(minLength: 0)
 
                 Button {
-                    Task { @MainActor in rosary.stopPlayback() }
+                    rosary.stopPlayback()
                 } label: {
                     Image(systemName: "stop.fill")
                         .font(.system(size: isLargeWatch ? 12 : 11, weight: .semibold))
@@ -320,7 +321,7 @@ struct RosaryView: View {
                         .renderingMode(.original)
                         .resizable()
                         .aspectRatio(contentMode: .fill)
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
                         .clipped()
                         .blur(radius: solidChrome ? 0 : 20)
                         .id(name)
@@ -367,7 +368,8 @@ struct RosaryView: View {
                     .resizable()
                     .interpolation(.high)
                     .aspectRatio(contentMode: .fill)
-                    .frame(width: 102, height: 102)
+                    .frame(width: 102, height: 102, alignment: .center)
+                    .clipped()
                     .clipShape(RoundedRectangle(cornerRadius: corner, style: .continuous))
                     .shadow(color: Color.black.opacity(solidChrome ? 0 : 0.4), radius: 8, x: 0, y: 3)
                     .id(name)
@@ -505,7 +507,7 @@ struct RosaryView: View {
         Button {
             rosary.playPauseTapped()
         } label: {
-            Image(systemName: speech.isSpeaking ? "pause.fill" : "play.fill")
+            Image(systemName: (speech.isSpeaking || speech.isHardwareSpeaking) ? "pause.fill" : "play.fill")
                 .font(.system(size: 19, weight: .semibold))
                 .foregroundStyle(solidChrome ? Color.black.opacity(0.88) : Color.black.opacity(0.82))
                 .symbolRenderingMode(.monochrome)
@@ -523,7 +525,7 @@ struct RosaryView: View {
             Circle()
                 .stroke(rosaryBrandGoldLight.opacity(0.95), lineWidth: 2.5)
         }
-        .accessibilityLabel(speech.isSpeaking ? "Pause" : "Play")
+        .accessibilityLabel((speech.isSpeaking || speech.isHardwareSpeaking) ? "Pause" : "Play")
         .accessibilityIdentifier("TransportPlayPause")
     }
 
