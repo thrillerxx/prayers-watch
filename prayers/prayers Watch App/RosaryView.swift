@@ -175,6 +175,7 @@ struct RosaryView: View {
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                     .overlay {
                         rosaryAlbumArtTile
+                            .offset(y: geo.size.width >= 200 ? -26 : -22)
                             .onLongPressGesture(minimumDuration: 0.55) {
                                 Task { @MainActor in
                                     rosary.exitToMysteryPicker()
