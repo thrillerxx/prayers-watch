@@ -25,7 +25,7 @@ Purpose: Coding standards, directory structure, and workflow expectations for Pr
 - **llm/:** Every doc in `llm/` starts with a one-line "Purpose:"; keep each file under 500 lines; update when behavior or decisions change.
 
 ## Development Workflow
-- **Build:** Use Xcode or `xcodebuild`; see `llm/workflows/dev-env-local.md` for scheme, destination, and commands.
+- **Build:** Use Xcode or `xcodebuild` on macOS after a GitHub pull; see `llm/workflows/github-airgap.md` and `llm/workflows/dev-env-local.md`. Real Watch: `llm/workflows/real-device-install.md`. Never SSH to the operator's personal laptop from Omarchy.
 - **Before commit:** Build succeeds; no duplicate resource warnings; run tests if present.
 - **Changes:** Align new features with `llm/project/phases/` and `project-rules.md`; add or update `llm/implementation/` notes for non-trivial behavior.
 - **Agents:** When using AI assistants, attach relevant `llm/project/` docs and `AGENTS.md` so outputs stay consistent with this repo.

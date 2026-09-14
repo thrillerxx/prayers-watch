@@ -8,7 +8,7 @@
 ## Validated release candidate (RC)
 - Tag: `rosary-watch-en-final-ui-rc`
 - Commit: `21fde32`
-- Rule: treat `21fde32` as the validated baseline. Do not advance scope from `main` until explicitly assigned.
+- Rule: treat `21fde32` as the known-good snapshot for regression. Current device work happens on `main`. See `AGENTS.md` and `llm/workflows/`.
 
 ## Non-RC work (WIP branches)
 - `feature/mass-responses` @ `3f950cc`

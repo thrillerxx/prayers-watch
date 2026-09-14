@@ -2,12 +2,15 @@ Purpose: Runbook to set up and validate the local dev environment for Prayers Wa
 
 # Local Dev Environment (Workflow)
 
-Use this workflow when a contributor (human or agent) needs to build and run the project locally.
+Use this workflow when a contributor (human or agent) needs to build and run the project locally **on macOS**.
+
+If you are on Omarchy (Linux), edit here and follow [github-airgap.md](github-airgap.md). Do not run Xcode on Linux. Do not SSH to the personal MacBook Pro.
 
 ## Prerequisites
 - **Xcode** (current or recent version supporting the project’s deployment targets).
 - **macOS** (required for Xcode and watchOS/iOS simulators).
 - Optional: **xcode-select** CLI tools if using `xcodebuild` from terminal.
+- Real Watch / iPhone: [real-device-install.md](real-device-install.md).
 
 ## Open in Xcode
 1. Clone the repo and open the project:
@@ -16,15 +19,9 @@ Use this workflow when a contributor (human or agent) needs to build and run the
 3. Choose a destination (e.g. **Apple Watch Series 11 (46mm)** or current simulator).
 4. Run (⌘R).
 
-## Remote Xcode (optional)
-- Set **`MAC_HOST`** to your macOS SSH target (see `scripts/remote_mac_xcode.sh`).
-- On the Mac, the repo is often at **`~/dev/prayers-watch`** (override with **`MAC_REPO_DIR`** when invoking from another machine).
-- From your dev host:
-```bash
-export MAC_HOST='you@your-mac'
-cd /path/to/prayers-watch
-scripts/remote_mac_xcode.sh main
-```
+## Remote Xcode (optional, dedicated builder only)
+
+Do not use this against a personal laptop. Default: [github-airgap.md](github-airgap.md). Dedicated Apple builder: [omarchy-mac-loop.md](omarchy-mac-loop.md).
 
 ## CLI build (watchOS Simulator)
 From repo root:

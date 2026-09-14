@@ -25,7 +25,7 @@ llm/
 │       └── [additional-phase].md (optional)
 ├── context/                   # Focused, reusable references for implementation
 ├── implementation/            # Notes on what the app currently does and how
-└── workflows/                 # Repeated operational runbooks
+└── workflows/                 # Repeated operational runbooks (index: workflows/README.md)
 ```
 
 ## Folder Intent
@@ -33,7 +33,7 @@ llm/
 - **project/** — Product plan: overview, user flows, tech stack, design rules, engineering standards, phased roadmap.
 - **context/** — Tight, implementation-oriented briefs (e.g. protocol summaries, domain models).
 - **implementation/** — Documentation about what the app currently does and how it is implemented.
-- **workflows/** — Runbooks you execute consistently (local build, CI, release).
+- **workflows/** — Runbooks you execute consistently (Omarchy→Mac loop, Simulator, real-device install/QA, audio capture). See [workflows/README.md](workflows/README.md).
 
 ## Conventions
 

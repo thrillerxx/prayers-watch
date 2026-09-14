@@ -1,0 +1,15 @@
+---
+description: SwiftUI and watchOS conventions for Prayers Watch
+globs: "**/*.swift"
+alwaysApply: false
+---
+
+# Swift / watchOS
+
+- Prefer small SwiftUI views; extract marquee, transport, and chrome into focused types.
+- Shared speech lives in `SpeechManager` (one session). Starting a new utterance must stop the current one.
+- Load prayers only from `rosary_prayers_en.json` via `PrayerStore`. Do not add another `prayers.json` to the Watch target.
+- `@StateObject` at the ownership root; `@ObservedObject` in children. Do not duplicate speech or settings stores.
+- Watch UI: compact controls, readable type, no toolbar collisions. Test mental model is 40mm and 49mm.
+- Throw or return `Result` instead of swallowing load/speech failures; surface a short user-facing message.
+- Keep files under ~500 lines. PascalCase filenames (`RosaryView.swift`).

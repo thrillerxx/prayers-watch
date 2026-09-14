@@ -1,0 +1,16 @@
+---
+description: Core operating rules for Prayers Watch (Divinity)
+alwaysApply: true
+---
+
+# Prayers Watch
+
+- Canonical repo only: this clone. Do not work from `archive/`, `divinity-app-work`, or `divinity-repo`.
+- Edit and git on Omarchy. Never start Xcode, Simulator, Docker Compose, or `npm run dev` here.
+- Never SSH, scp, or run `remote_mac_xcode.sh` against the personal MacBook Pro. Handoff is GitHub (`llm/workflows/github-airgap.md`).
+- Do not try to run macOS/Xcode in a VM on Omarchy.
+- Develop on `main`. Use tag `rosary-watch-en-final-ui-rc` only for regression against `21fde32`.
+- v1 is English-only. No Spanish, mystery-picker redesign, or schema expansion unless assigned.
+- Canonical content: `prayers/prayers Watch App/rosary_prayers_en.json` only — no duplicate JSON resource names.
+- Keep the app free (ICEL). Private Tailscale/SSH details stay out of this repo.
+- After Watch UI or playback changes, follow `llm/workflows/real-device-qa.md` and say what the human still has to pull/run on iPhone/Watch/Mac.

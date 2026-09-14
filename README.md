@@ -13,7 +13,7 @@ A watchOS (and companion iOS) app for Catholic prayers and guided Rosary. Built 
 - **Settings** — User preferences (e.g. speech, display).
 - **Watch-first** — Layout and interactions tuned for watchOS (marquee for long titles, compact controls).
 
-**Agents / automation:** read **`docs/agent-environment.md`** (Xcode on macOS, Simulator, Homebrew PATH, BlackHole). Keep private hostnames, VPN addresses, and personal paths in **local** notes—not in this repo.
+**Agents / automation:** [AGENTS.md](AGENTS.md), **`docs/agent-environment.md`**, and [`llm/workflows/`](llm/workflows/README.md). Keep private hostnames, VPN addresses, and personal paths in **local** notes—not in this repo.
 
 ## Open in Xcode
 - **Project:** `prayers/prayers.xcodeproj`
@@ -56,11 +56,7 @@ Simulator builds use `CODE_SIGNING_ALLOWED=NO`. For real Apple Watch deployment:
 
 1. Copy `prayers/Signing.local.xcconfig.example` to `prayers/Signing.local.xcconfig`
 2. Fill in your Apple Developer Team ID
-3. In Xcode, set each target's signing team, or use the remote script:
-
-```bash
-MAC_HOST=you@your-mac SIGN=1 DEVELOPMENT_TEAM=YOUR_TEAM_ID bash scripts/remote_mac_xcode.sh
-```
+3. In Xcode, set each target's signing team. Do **not** SSH from Omarchy to a personal Mac. Optional dedicated builder: `llm/workflows/omarchy-mac-loop.md`.
 
 Requirements:
 - Active Apple Developer Program membership ($99/year)

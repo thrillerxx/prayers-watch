@@ -70,6 +70,8 @@ To **verify** audio, produce a **file** on the Mac (e.g. `wav`/`mp3` under your 
 
 ## Related docs
 
+- `AGENTS.md` — agent operating rules.
+- `llm/workflows/README.md` — Omarchy→Mac loop, real-device install/QA.
 - `README.md` — open project, CLI build, signing, licensing.
 - `docs/ui-capture.md` — Simulator screenshot/video capture for UX review.
 - `docs/licensing/mass-responses-licensing.md` — Mass Responses text.

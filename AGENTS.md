@@ -1,56 +1,63 @@
-# Agent Rules
+# Agent Rules — Prayers Watch (Divinity)
 
-Use these rules to align AI assistants (Cursor, Goose, Claude, etc.) with project conventions. The tech stack is defined in `llm/project/tech-stack.md`; this file summarizes agent expectations.
+You are working on **Prayers Watch (Divinity)**: a watchOS + companion iOS SwiftUI app for Catholic prayers and a guided Rosary.
 
----
+Canonical clone: this repository. GitHub: `thrillerxx/prayers-watch`.  
+Bundle IDs: `com.divinityapp.prayers` (iOS) and `com.divinityapp.prayers.watchkitapp`.
 
-You are an expert in **Swift, SwiftUI, watchOS, and iOS**.
-You have extensive experience building production-grade native apps.
-You specialize in clean, scalable architectures and watch-appropriate UX.
-Never assume the user is correct; probe for clarity.
-Always review existing files before generating new ones.
-
-We are building an **AI-first codebase**: modular, scalable, readable. The structure must be highly navigable.
-All files require descriptive names, a short header explaining contents, and documented functions (e.g. Swift doc comments). Keep files under 500 lines.
-
-**Code style and structure:**
-- Write concise, technical code.
-- Prefer functional/declarative patterns; use value types and clear state ownership.
-- Add descriptive block comments to non-obvious functions.
-- Favour iteration and modularisation over duplication.
-- Throw errors or return Result instead of silent fallbacks.
-- Use descriptive variables (e.g. `isLoading`, `hasError`).
-- Prefer enums or typed constants over magic strings where it improves clarity.
-- Keep conditionals lean; avoid redundant braces.
-
-**Project source of truth:**
-- Planning and conventions live in `llm/` — see `llm/project/project-overview.md`, `llm/project/project-rules.md`, and `llm/project/setup.md`.
-- **Current state (v1 RC, paths, operational rules):** `llm/project/current-state.md`.
-- Follow `llm/project/design-rules.md` for UI and accessibility.
-- When adding features, align with `llm/project/phases/` and update `llm/implementation/` when behavior is non-trivial.
-
-**Dev environment:** This project is developed in **Cursor**. Assume Cursor as the primary IDE and agent context.
-
-**Operational rules (keep on track):**
-- Use **canonical repo:** this repository root. Do not work from stale duplicate workspaces.
-- Pin to **RC:** `rosary-watch-en-final-ui-rc` → commit `21fde32` unless we intentionally move forward.
-- Do **not** start Spanish, Mystery Picker redesign, or schema expansion for v1.
-- Do **not** drift into unrelated branches or older commits.
-- Mac-specific work (Xcode builds, simulator, audio capture) must happen on the designated macOS development machine.
-
-**One-line summary:** Divinity Prayers Watch is at a stable EN-only Apple Watch RC (Swift/SwiftUI), with deterministic content from `rosary_prayers_en.json`, cleaned-up watch UI, single-session prayer playback, passing headless watch UI tests, pinned at **rosary-watch-en-final-ui-rc** → **21fde32**.
+Do **not** use archived copies, `divinity-app-work`, or `divinity-repo` as the working tree.
 
 ---
 
-## Project structure
+## Machine split (non-negotiable)
 
-```
-llm/
-├── README.md
-├── project/          # Canonical project definition, rules, phased plans
-├── context/          # Focused reference notes (specs, models)
-├── implementation/   # Implementation notes for completed features
-└── workflows/        # Repeatable runbooks (e.g. local dev setup)
-```
+| Where | What you do |
+| --- | --- |
+| **Omarchy (this Linux box)** | Edit, git, docs, `llm/` workflows, push to GitHub. Never Xcode, Simulator, Docker Compose, `npm run dev`, or SSH into the personal MacBook Pro. |
+| **GitHub** | Source of truth. Handoff between Omarchy and the operator Mac. |
+| **MacBook Pro (operator only)** | Pull from GitHub, Xcode, Simulator, signing, install to the paired iPhone + Watch. Agents do **not** Remote-Login, `scp`, or run `remote_mac_xcode.sh` against this laptop. |
+| **iPhone + Apple Watch** | Pairing, Developer Mode, human QA. Tailscale on the phone does **not** let Omarchy install the Watch app. |
 
-See `llm/project/setup.md` for the full documentation workflow.
+A macOS VM on Omarchy is not supported (Intel Xeon host; Xcode requires Apple hardware).
+
+Private hostnames, Tailscale IPs, and SSH targets live in **local** notes (`OMARCHY_ENVIRONMENT.md` / oce-notes), never in this repo.
+
+Default runbook: `llm/workflows/github-airgap.md`. Optional dedicated builder (not the personal laptop): `llm/workflows/omarchy-mac-loop.md`.
+
+---
+
+## Product rules
+
+- Default branch is **`main`**. The tag `rosary-watch-en-final-ui-rc` (`21fde32`) is a known-good snapshot for regression, not a freeze on current work.
+- v1 stays **English-only**. Do not start Spanish, mystery-picker redesign, or schema expansion unless explicitly assigned.
+- One canonical prayer payload: `prayers/prayers Watch App/rosary_prayers_en.json`. Never add a second `prayers.json` / duplicate resource name to the Watch target.
+- Single audio session: starting a new prayer or Rosary step stops the current one.
+- Keep the app **free** (ICEL Mass Responses licensing). See `docs/licensing/mass-responses-licensing.md`.
+- Prefer small SwiftUI views, value types, explicit errors. Files under ~500 lines. PascalCase Swift files.
+
+Planning source of truth: `llm/project/` (`project-overview.md`, `current-state.md`, `design-rules.md`, `project-rules.md`).  
+Runbooks: `llm/workflows/`.
+
+---
+
+## How to change code
+
+1. Read the existing Swift file before editing it.
+2. Match nearby style. Do not drive-by refactor.
+3. After Watch UI or playback changes, update or extend `prayers Watch AppUITests` when the flow is automatable.
+4. Record non-trivial behavior in `llm/implementation/`.
+5. Push to GitHub when asked. Tell the operator the branch/SHA to pull in Xcode. Do not SSH to their MacBook Pro.
+
+---
+
+## Test matrix (what agents cannot skip telling the human)
+
+Omarchy **cannot** flash or launch this app. Real-device testing needs:
+
+1. Watch paired to **one** iPhone (the daily driver is fine). A second phone can run the iOS companion only — not the Watch.
+2. Same Apple Account / Developer team that will sign `com.divinityapp.prayers`.
+3. Developer Mode on the **paired** iPhone and Watch.
+4. Operator pulls GitHub on the MacBook Pro; `prayers/Signing.local.xcconfig` (gitignored Team ID) stays on that Mac.
+5. The **paired** iPhone connected to **the MacBook Pro** (USB the first time), not to Omarchy.
+
+Full checklists: `llm/workflows/real-device-install.md` and `llm/workflows/real-device-qa.md`.

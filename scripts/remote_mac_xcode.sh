@@ -1,10 +1,13 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# One-command Omarchy -> Mac workflow:
+# One-command Omarchy -> dedicated builder Mac (optional).
+# Default workflow is GitHub air-gap: do NOT point MAC_HOST at the operator's
+# personal laptop. See llm/workflows/github-airgap.md.
+#
 # - push selected branch to origin
-# - sync Mac clone to that branch
-# - run Xcode build + optional UI tests on Mac
+# - sync dedicated Mac clone to that branch
+# - run Xcode build + optional UI tests on that Mac
 
 # Set MAC_HOST to your Mac (e.g. export MAC_HOST='you@100.x.x.x' on Tailscale, or you@hostname.local).
 # Optional: MAC_REPO_DIR = absolute path to this repo on the Mac; if unset, the remote shell uses $HOME/dev/prayers-watch.

@@ -205,24 +205,26 @@ The most important thing is a **clean baseline** instead of chaos.
 ## What's Next
 
 1. **Freeze v1 scope** — No Spanish, mystery picker redesign, or schema expansion right now.
-2. **Run final real-device or simulator sanity pass** on the tagged RC: Rosary playback, Auto pacing, Back, Play/Pause, Stop, Library selection mid-playback, long text readability.
-3. **Complete audio capture on the correct RC** — On the designated macOS development machine, tag `rosary-watch-en-final-ui-rc` (peeled commit `21fde32`), canonical repo; BlackHole or other audio routing on the Mac if needed.
-4. **Preserve artifacts if needed** — Move screenshots, xcresults, or audio out of `/tmp`.
-5. **Prepare distribution** — After final sanity checks, internal distribution / TestFlight prep.
+2. **Install on the wiped Apple Watch** — Operator pulls GitHub on the MacBook Pro (no Omarchy SSH). Follow `llm/workflows/github-airgap.md` then `llm/workflows/real-device-install.md`. Current development line is `main`.
+3. **Real-device QA** — `llm/workflows/real-device-qa.md`: Rosary playback, Auto pacing, Back, Play/Pause, Stop, Library selection mid-playback, long text readability.
+4. **Complete audio capture** — On the Mac; BlackHole or other audio routing if needed (`llm/workflows/audio-capture-export.md`).
+5. **Preserve artifacts if needed** — Move screenshots, xcresults, or audio out of `/tmp`.
+6. **Prepare distribution** — After device QA, internal distribution / TestFlight prep.
 
 ---
 
 ## Recommended Instruction for Agents
 
-- **Use** the canonical repository root for this project
-- **Pin to** `rosary-watch-en-final-ui-rc` / `21fde32` (peeled)
+- **Use** the canonical repository root for this project (`AGENTS.md`)
+- **Develop on** `main`; use `rosary-watch-en-final-ui-rc` / `21fde32` only for regression
 - **Do not** start Spanish
 - **Do not** start Mystery Picker
 - **Do not** work from stale duplicate workspace copies
-- **Do not** drift into unrelated branches or older commits
+- **Do not** run Xcode or Simulator on Omarchy
+- **Do not** SSH to the personal MacBook Pro
 
 ---
 
 ## One-Line Summary
 
-**Divinity Prayers Watch** is now at a stable EN-only Apple Watch RC, built in Swift/SwiftUI, with deterministic prayer content from `rosary_prayers_en.json`, cleaned-up watch UI, stable single-session prayer playback, passing headless watch UI tests, and the current pinned release candidate at **rosary-watch-en-final-ui-rc** → **21fde32** (peeled).
+**Divinity Prayers Watch** is an EN-only Apple Watch + iOS companion app (Swift/SwiftUI) with deterministic content from `rosary_prayers_en.json`, cleaned-up watch UI, single-session TTS, and watch UI tests. Develop on **`main`**. Known-good snapshot: **rosary-watch-en-final-ui-rc** → **21fde32**.

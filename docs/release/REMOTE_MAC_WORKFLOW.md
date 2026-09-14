@@ -1,12 +1,11 @@
 # Remote Mac Build/Test Workflow
 
-- **Edit code** in your canonical clone of this repo (any machine).
-- **Build and test** with Xcode on **macOS** (local or via SSH).
+**Default:** GitHub air gap — Omarchy pushes, the operator pulls on their own Mac. See `llm/workflows/github-airgap.md`. Do **not** SSH to a personal laptop.
 
-## One-command runner (from a non-Mac dev host)
+This script is only for a **dedicated** Apple builder the operator has named.
 
 ```bash
-export MAC_HOST='you@your-mac'
+export MAC_HOST='you@dedicated-builder'
 cd /path/to/your/prayers-watch/clone
 scripts/remote_mac_xcode.sh
 ```
@@ -21,24 +20,12 @@ What it does:
 
 ## Common usage
 
-Build/test a specific branch:
 ```bash
 scripts/remote_mac_xcode.sh feature/mass-responses
-```
-
-Build only (skip tests):
-```bash
 RUN_TESTS=0 scripts/remote_mac_xcode.sh
-```
-
-Do not auto-push first (use already-pushed commit):
-```bash
 PUSH_FIRST=0 scripts/remote_mac_xcode.sh
-```
-
-Use a different simulator destination:
-```bash
-DESTINATION='platform=watchOS Simulator,name=Apple Watch Ultra 3 (49mm)' scripts/remote_mac_xcode.sh
+DESTINATION='platform=watchOS Simulator,name=Apple Watch Ultra 3 (49mm)' \
+  scripts/remote_mac_xcode.sh
 ```
 
 ## Notes
