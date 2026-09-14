@@ -26,8 +26,8 @@ struct prayers_Watch_AppApp: App {
     }
 }
 
-/// Hosts the main UI. Rosary “now playing” installs `WatchMediaTimeSuppressor` inside `RosaryView` so it sits in the NavigationStack
-/// content subtree (window-level overlay did not hide the status clock on 46mm for some layouts).
+/// Hosts the main UI. Do not install `VideoPlayer` here or in `RosaryView` — on watchOS it
+/// becomes a Now Playing container and parks the Rosary cover on the chin.
 private struct AppShell: View {
     let theme: AppColorTheme
     @EnvironmentObject private var rosarySession: RosarySessionController
