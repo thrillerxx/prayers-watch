@@ -161,51 +161,40 @@ struct RosaryView: View {
         }
     }
 
-    /// Cover is a ZStack-centered sibling of the chrome, not a child of the chrome VStack.
-    /// watchOS NavigationStack lets `Spacer` eat the top of a VStack and packs the rest
-    /// onto the chin — that is the CFB (empty band above, 102pt tile on pause).
+    /// Same chrome and transport as before. Only the 102pt cover is centered in the
+    /// empty band; session titles and prayer stay off this rest layout (they were
+    /// never visible in the original CFB — they sat below the parked cover).
     private var nowPlayingSession: some View {
         GeometryReader { geo in
-            let readableInset = rosaryReadableWidthInset(watchWidth: geo.size.width)
-            /// Optical lift so art+titles sit in the hole between chrome and transport.
-            let coverLift: CGFloat = geo.size.width >= 200 ? -18 : -14
-
-            ZStack(alignment: .center) {
+            ZStack(alignment: .bottom) {
                 if rosary.selectedMystery != nil {
                     mysteryHeroBackground
                 }
 
-                VStack(spacing: 6) {
-                    rosaryAlbumArtTile
-                    rosarySessionTitles
-                        .padding(.horizontal, readableInset)
-                        .onLongPressGesture(minimumDuration: 0.55) {
-                            Task { @MainActor in
-                                rosary.exitToMysteryPicker()
+                Color.clear
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .overlay {
+                        rosaryAlbumArtTile
+                            .onLongPressGesture(minimumDuration: 0.55) {
+                                Task { @MainActor in
+                                    rosary.exitToMysteryPicker()
+                                }
                             }
-                        }
-                    rosaryPrayerBody
-                        .padding(.horizontal, readableInset)
-                        .frame(maxHeight: 28)
-                        .clipped()
-                }
-                .offset(y: coverLift)
+                    }
+                    .overlay(alignment: .top) {
+                        rosaryMusicTopChrome(watchWidth: geo.size.width)
+                            .ignoresSafeArea(edges: .top)
+                    }
 
-                VStack(spacing: 0) {
-                    rosaryMusicTopChrome(watchWidth: geo.size.width)
-                    Spacer(minLength: 0)
-                    rosaryFloatingPlayerChrome
-                }
+                rosaryFloatingPlayerChrome
             }
             .frame(width: geo.size.width, height: geo.size.height)
         }
-        .ignoresSafeArea()
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .containerBackground(.clear, for: .navigation)
         ._statusBarHidden(true)
         #if DEBUG
         .onAppear {
-            print("[Rosary] nowPlayingSession active — cover ZStack-centered, no Spacer around art")
+            print("[Rosary] nowPlayingSession active — expect _statusBarHidden(true) on this screen")
         }
         #endif
     }
@@ -361,7 +350,6 @@ struct RosaryView: View {
                     .interpolation(.high)
                     .aspectRatio(contentMode: .fill)
                     .frame(width: 102, height: 102)
-                    .clipped()
                     .clipShape(RoundedRectangle(cornerRadius: corner, style: .continuous))
                     .shadow(color: Color.black.opacity(solidChrome ? 0 : 0.4), radius: 8, x: 0, y: 3)
                     .id(name)
