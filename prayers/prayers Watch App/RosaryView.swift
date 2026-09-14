@@ -161,26 +161,18 @@ struct RosaryView: View {
         }
     }
 
-    /// Music-style layout: blurred hero, small cover art; prayer scrolls under the titles.
-    /// Cover is *not* inside a ScrollView — watchOS centers/parks short scroll content on the chin,
-    /// which is why the 102pt tile sat on the transport with empty space above.
+    /// Cover is absolutely positioned. A full-screen hidden `VideoPlayer` was owning
+    /// watchOS Now Playing and parking artwork on the chin regardless of VStack padding.
     private var nowPlayingSession: some View {
         GeometryReader { geo in
-            let large = geo.size.width >= 200
-            let topReserve: CGFloat = large ? 44 : 40
-            let playerReserve: CGFloat = large ? 76 : 70
+            let coverCenterY = geo.size.height * 0.40
 
             ZStack {
-                WatchMediaTimeSuppressor()
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .allowsHitTesting(false)
-
                 if rosary.selectedMystery != nil {
                     mysteryHeroBackground
                 }
 
                 VStack(spacing: 6) {
-                    Color.clear.frame(height: topReserve)
                     rosaryAlbumArtTile
                     rosarySessionTitles
                         .onLongPressGesture(minimumDuration: 0.55) {
@@ -188,14 +180,17 @@ struct RosaryView: View {
                                 rosary.exitToMysteryPicker()
                             }
                         }
-                    ScrollView {
-                        rosaryPrayerBody
-                    }
-                    .scrollIndicators(.hidden)
-                    Color.clear.frame(height: playerReserve)
+                }
+                .position(x: geo.size.width / 2, y: coverCenterY)
+
+                ScrollView {
+                    rosaryPrayerBody
+                        .padding(.top, geo.size.height * 0.22)
+                        .padding(.bottom, 80)
                 }
                 .padding(.horizontal, rosaryReadableWidthInset(watchWidth: geo.size.width))
-                .frame(width: geo.size.width, height: geo.size.height, alignment: .top)
+                .scrollIndicators(.hidden)
+                .allowsHitTesting(true)
 
                 VStack(spacing: 0) {
                     rosaryMusicTopChrome(watchWidth: geo.size.width)
@@ -203,12 +198,13 @@ struct RosaryView: View {
                     Spacer(minLength: 0)
                     rosaryFloatingPlayerChrome
                 }
+
+                WatchMediaTimeSuppressor()
+                    .allowsHitTesting(false)
             }
             .frame(width: geo.size.width, height: geo.size.height)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        /// Apply on the now-playing subtree (not the whole `RosaryView`); corner clock still appeared on 46mm when this lived on the outer `Group`.
-        /// Uses underscored SPI; ineffective on some OS builds — then only VideoPlayer/Now Playing mitigations apply.
         ._statusBarHidden(true)
         #if DEBUG
         .onAppear {
@@ -362,19 +358,23 @@ struct RosaryView: View {
             if let mystery = rosary.selectedMystery {
                 let name = MysteryArt.assetName(mystery: mystery, stepIndex: rosary.index, steps: rosary.steps)
                 let corner: CGFloat = 12
-                Image(name)
-                    .renderingMode(.original)
-                    .resizable()
-                    .interpolation(.high)
-                    .aspectRatio(contentMode: .fill)
-                    .frame(width: 102, height: 102, alignment: .center)
+                RoundedRectangle(cornerRadius: corner, style: .continuous)
+                    .fill(Color.clear)
+                    .frame(width: 102, height: 102)
+                    .overlay {
+                        Image(name)
+                            .renderingMode(.original)
+                            .resizable()
+                            .interpolation(.high)
+                            .scaledToFill()
+                    }
                     .clipped()
                     .clipShape(RoundedRectangle(cornerRadius: corner, style: .continuous))
                     .shadow(color: Color.black.opacity(solidChrome ? 0 : 0.4), radius: 8, x: 0, y: 3)
                     .id(name)
             }
         }
-        .frame(maxWidth: .infinity)
+        .frame(width: 102, height: 102)
     }
 
     private var rosarySessionTitles: some View {

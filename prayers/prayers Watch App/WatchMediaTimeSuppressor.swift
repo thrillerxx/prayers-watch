@@ -31,6 +31,9 @@ struct WatchMediaTimeSuppressor: View {
             .accessibilityHidden(true)
         }
         .ignoresSafeArea()
+        .frame(width: 1, height: 1)
+        .opacity(0)
+        .allowsHitTesting(false)
         .onAppear(perform: startPlayback)
         .onDisappear(perform: stopPlayback)
         .onChange(of: scenePhase) { _, phase in
