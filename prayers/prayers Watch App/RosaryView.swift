@@ -161,10 +161,16 @@ struct RosaryView: View {
         }
     }
 
-    /// Music-style layout: blurred hero, small cover art; prayer scrolls full-width with controls overlaid (no text card).
+    /// Music-style layout: blurred hero, small cover art; prayer scrolls under the titles.
+    /// Cover is *not* inside a ScrollView — watchOS centers/parks short scroll content on the chin,
+    /// which is why the 102pt tile sat on the transport with empty space above.
     private var nowPlayingSession: some View {
         GeometryReader { geo in
-            ZStack(alignment: .top) {
+            let large = geo.size.width >= 200
+            let topReserve: CGFloat = large ? 44 : 40
+            let playerReserve: CGFloat = large ? 76 : 70
+
+            ZStack {
                 WatchMediaTimeSuppressor()
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                     .allowsHitTesting(false)
@@ -173,29 +179,28 @@ struct RosaryView: View {
                     mysteryHeroBackground
                 }
 
-                ScrollView {
-                    VStack(spacing: 10) {
-                        Color.clear.frame(height: 4)
-                        rosaryAlbumArtTile
-                        rosarySessionTitles
-                            .onLongPressGesture(minimumDuration: 0.55) {
-                                Task { @MainActor in
-                                    rosary.exitToMysteryPicker()
-                                }
+                VStack(spacing: 6) {
+                    Color.clear.frame(height: topReserve)
+                    rosaryAlbumArtTile
+                    rosarySessionTitles
+                        .onLongPressGesture(minimumDuration: 0.55) {
+                            Task { @MainActor in
+                                rosary.exitToMysteryPicker()
                             }
+                        }
+                    ScrollView {
                         rosaryPrayerBody
                     }
-                    .padding(.horizontal, rosaryReadableWidthInset(watchWidth: geo.size.width))
-                    .padding(.top, rosaryNowPlayingScrollTopInset(watchWidth: geo.size.width))
-                    .padding(.bottom, 74)
+                    .scrollIndicators(.hidden)
+                    Color.clear.frame(height: playerReserve)
                 }
-                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-                .scrollIndicators(.hidden)
-                .overlay(alignment: .top) {
+                .padding(.horizontal, rosaryReadableWidthInset(watchWidth: geo.size.width))
+                .frame(width: geo.size.width, height: geo.size.height, alignment: .top)
+
+                VStack(spacing: 0) {
                     rosaryMusicTopChrome(watchWidth: geo.size.width)
                         .ignoresSafeArea(edges: .top)
-                }
-                .overlay(alignment: .bottom) {
+                    Spacer(minLength: 0)
                     rosaryFloatingPlayerChrome
                 }
             }
@@ -210,12 +215,6 @@ struct RosaryView: View {
             print("[Rosary] nowPlayingSession active — expect _statusBarHidden(true) on this screen")
         }
         #endif
-    }
-
-    /// Keeps scroll content below the floating top chrome (time + Back/Stop) on 42mm / 46mm.
-    /// Tight enough that the 102pt cover sits in the visual center, not on the transport.
-    private func rosaryNowPlayingScrollTopInset(watchWidth: CGFloat) -> CGFloat {
-        watchWidth >= 200 ? 54 : 48
     }
 
     /// Horizontal inset so titles and prayer text stay inside the round watch mask.
