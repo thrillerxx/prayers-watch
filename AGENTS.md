@@ -44,7 +44,7 @@ Private hostnames, Tailscale IPs, and SSH targets live in **local** notes (`OMAR
 
 ## Product rules
 
-- Default branch is **`main`**. Current liked Rosary now-playing layout: tag **`rosary-nowplaying-liked`** (`ad3bf36`). Older regression snapshot: tag **`rosary-watch-en-final-ui-rc`** (`21fde32`) — not a freeze on current work.
+- Default branch is **`main`**. Current liked complete Rosary (sequence, wording, cover-only now-playing): tag **`rosary-complete-liked`** (`631b00f`). Layout-only ancestor: **`rosary-nowplaying-liked`** (`ad3bf36`). Older regression snapshot: **`rosary-watch-en-final-ui-rc`** (`21fde32`) — not a freeze on current work.
 - v1 stays **English-only**. Do not start Spanish, mystery-picker redesign, or schema expansion unless explicitly assigned. Small UX / product updates on `main` are in scope when the operator asks.
 - Home: Rosary, Prayer Library, Mass Responses, Settings. Mass Responses stays in-app and **free** (ICEL). See `docs/licensing/mass-responses-licensing.md`.
 - One canonical prayer payload: `prayers/prayers Watch App/rosary_prayers_en.json`. Never add a second `prayers.json` / duplicate resource name to the Watch target.

@@ -8,7 +8,8 @@
 
 ## Current line
 - **Develop on:** `main`
-- **Liked now-playing layout:** tag `rosary-nowplaying-liked` → `ad3bf36`
+- **Liked complete Rosary:** tag `rosary-complete-liked` → `631b00f`
+- **Layout-only ancestor:** tag `rosary-nowplaying-liked` → `ad3bf36`
 - **Older RC (regression only):** tag `rosary-watch-en-final-ui-rc` → `21fde32`
 - Daily loop: `AGENTS.md` + `llm/workflows/github-airgap.md` (no SSH to the personal Mac)
 

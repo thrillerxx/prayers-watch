@@ -5,7 +5,8 @@ A watchOS (and companion iOS) app for Catholic prayers and guided Rosary. Built 
 ## Current Scope (v1)
 - **In scope:** English-only prayer content, Rosary flow, prayer library, Mass Responses, settings, watch-first UI polish, and baseline watch UI tests.
 - **Out of scope:** Spanish localization, mystery picker redesign, and schema expansion beyond the current v1 data model.
-- **Current liked layout:** `rosary-nowplaying-liked` (`ad3bf36` on `main`).
+- **Current liked snapshot:** `rosary-complete-liked` (`631b00f` on `main`).
+- **Layout-only ancestor:** `rosary-nowplaying-liked` (`ad3bf36`).
 - **Older RC (regression):** `rosary-watch-en-final-ui-rc` (peeled commit `21fde32`).
 - **Daily loop:** [AGENTS.md](AGENTS.md) and [llm/workflows/github-airgap.md](llm/workflows/github-airgap.md) — Omarchy pushes GitHub; operator pulls on the Mac. No SSH to that laptop.
 
