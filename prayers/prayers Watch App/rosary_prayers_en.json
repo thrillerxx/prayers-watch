@@ -282,16 +282,16 @@
     },
     {
       "id": "mystery_sorrowful_1_announce",
-      "title": "The First Sorrowful Mystery: The Agony in the Garden",
+      "title": "1. The Agony in the Garden.",
       "translations": {
-        "en": "The First Sorrowful Mystery: The Agony in the Garden"
+        "en": "1. The Agony in the Garden."
       }
     },
     {
       "id": "mystery_sorrowful_1_meditation",
-      "title": "The First Sorrowful Mystery: The Agony in the Garden",
+      "title": "1. The Agony in the Garden.",
       "translations": {
-        "en": "In Gethsemane, Jesus experiences profound anguish but submits Himself to the Father: \"Not my will but yours be done.\"\n\nMeditation points: Trust and obedience amid suffering"
+        "en": "Lk 22.39-46. Verses 41-42,44: And he withdrew from them about a stone's throw, and knelt down and prayed, \"Father, if thou art willing, remove this cup from me; nevertheless not my will, but thine, be done.\" And there appeared to him an angel from heaven, strengthening him. And being in an agony he prayed more earnestly; and his sweat became like great drops of blood falling down upon the ground."
       }
     },
     {
@@ -303,16 +303,16 @@
     },
     {
       "id": "mystery_sorrowful_2_announce",
-      "title": "The Second Sorrowful Mystery: The Scourging at the Pillar",
+      "title": "2. The Scourging at the Pillar.",
       "translations": {
-        "en": "The Second Sorrowful Mystery: The Scourging at the Pillar"
+        "en": "2. The Scourging at the Pillar."
       }
     },
     {
       "id": "mystery_sorrowful_2_meditation",
-      "title": "The Second Sorrowful Mystery: The Scourging at the Pillar",
+      "title": "2. The Scourging at the Pillar.",
       "translations": {
-        "en": "Jesus is brutally beaten before His Crucifixion.\n\nMeditation points: The seriousness of sin and the depth of Christ's self-giving love"
+        "en": "Mt 27.15-26. Verse 26: Then Pilate released for them Barab'bas, and having scourged Jesus, delivered him to be crucified."
       }
     },
     {
@@ -324,16 +324,16 @@
     },
     {
       "id": "mystery_sorrowful_3_announce",
-      "title": "The Third Sorrowful Mystery: The Crowning with Thorns",
+      "title": "3. The Crowning with Thorns.",
       "translations": {
-        "en": "The Third Sorrowful Mystery: The Crowning with Thorns"
+        "en": "3. The Crowning with Thorns."
       }
     },
     {
       "id": "mystery_sorrowful_3_meditation",
-      "title": "The Third Sorrowful Mystery: The Crowning with Thorns",
+      "title": "3. The Crowning with Thorns.",
       "translations": {
-        "en": "Soldiers mock Jesus as a king and place a crown of thorns on His head.\n\nMeditation points: Worldly ideas of power contrasted with Christ's humble and suffering kingship"
+        "en": "Mt 27.27-31. Verses 29-30: And they stripped him and put a scarlet robe upon him, and plaiting a crown of thorns they put it on his head, and put a reed in his right hand. And kneeling before him they mocked him, saying, \"Hail, King of the Jews!\" And they spat upon him, and took the reed and struck him on the head."
       }
     },
     {
@@ -345,37 +345,37 @@
     },
     {
       "id": "mystery_sorrowful_4_announce",
-      "title": "The Fourth Sorrowful Mystery: The Carrying of the Cross",
+      "title": "4. The Carrying of the Cross.",
       "translations": {
-        "en": "The Fourth Sorrowful Mystery: The Carrying of the Cross"
+        "en": "4. The Carrying of the Cross."
       }
     },
     {
       "id": "mystery_sorrowful_4_meditation",
-      "title": "The Fourth Sorrowful Mystery: The Carrying of the Cross",
+      "title": "4. The Carrying of the Cross.",
       "translations": {
-        "en": "Jesus carries the Cross toward Calvary.\n\nMeditation points: Unite your own sufferings with Christ and persevere faithfully under your burdens"
+        "en": "Jn 19.16-17: Then he handed him over to them to be crucified. So they took Jesus, and he went out, bearing his own cross, to the place called the place of a skull, which is called in Hebrew Golgotha."
       }
     },
     {
       "id": "mystery_sorrowful_5_title",
       "title": "Sorrowful Mysteries 5 (Title)",
       "translations": {
-        "en": "The Crucifixion and Death of Jesus"
+        "en": "The Crucifixion"
       }
     },
     {
       "id": "mystery_sorrowful_5_announce",
-      "title": "The Fifth Sorrowful Mystery: The Crucifixion and Death of Jesus",
+      "title": "5. The Crucifixion.",
       "translations": {
-        "en": "The Fifth Sorrowful Mystery: The Crucifixion and Death of Jesus"
+        "en": "5. The Crucifixion."
       }
     },
     {
       "id": "mystery_sorrowful_5_meditation",
-      "title": "The Fifth Sorrowful Mystery: The Crucifixion and Death of Jesus",
+      "title": "5. The Crucifixion.",
       "translations": {
-        "en": "Jesus dies on the Cross for the salvation of the world.\n\nMeditation points: Supreme sign of God's love; calls us to repentance, gratitude, forgiveness, and self-sacrifice"
+        "en": "Lk 23.33-49. Verses 44-46: It was now about the sixth hour, and there was darkness over the whole land until the ninth hour, while the sun's light failed; and the curtain of the temple was torn in two. Then Jesus, crying with a loud voice, said, \"Father, into thy hands I commit my spirit!\" And having said this he breathed his last."
       }
     },
     {
