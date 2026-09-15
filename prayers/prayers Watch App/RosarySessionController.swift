@@ -108,10 +108,12 @@ final class RosarySessionController: ObservableObject {
     var displayTitle: String {
         guard let step = currentStep else { return "Rosary" }
         if case .prayerId(let prayerId) = step.content,
-           prayerId.hasPrefix("mystery_"),
-           prayerId.hasSuffix("_meditation") {
-            let titleId = prayerId.replacingOccurrences(of: "_meditation", with: "_title")
-            if let titlePrayer = prayersById[titleId],
+           prayerId.hasPrefix("mystery_") {
+            let titleId = prayerId
+                .replacingOccurrences(of: "_meditation", with: "_title")
+                .replacingOccurrences(of: "_announce", with: "_title")
+            if titleId != prayerId,
+               let titlePrayer = prayersById[titleId],
                let t = titlePrayer.translations[lang] ?? titlePrayer.translations["en"],
                !t.isEmpty {
                 return t

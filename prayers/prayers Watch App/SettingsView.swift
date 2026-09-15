@@ -61,7 +61,7 @@ struct SettingsView: View {
                         .font(DivinityPickerRow.titleFont)
                     Toggle("St. Joseph after Rosary", isOn: $includeStJoseph)
                         .font(DivinityPickerRow.titleFont)
-                    Text("Long-press the title on the Rosary screen to choose another mystery.")
+                    Text("One mystery set per session. Sunday is Glorious except in Advent and Lent (Sorrowful). Long-press the cover to change sets.")
                         .font(DivinityPickerRow.subtitleFont)
                         .foregroundStyle(.secondary)
                 } header: {

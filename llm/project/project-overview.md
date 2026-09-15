@@ -42,10 +42,11 @@ Deliver a simple, reliable watch and phone experience for praying the Rosary and
 - **Watch space:** Small screen; avoid clutter; long titles use marquee or truncation by design.
 
 ## v1 Scope (Current Baseline)
-- **In scope for v1:** EN only; deterministic prayer content loading; Rosary flow with mysteries and core prayers; Prayer Library with playable prayers; single active audio session; readable watch UI; basic automated watch UI coverage; release candidate tags pinned to known good commits.
-- **Out of scope for v1:** Spanish; Mystery Picker redesign / day-based mystery defaults; new schema expansion beyond what is already needed; big feature changes beyond stabilization and small UX polish.
+- **In scope for v1:** EN only; deterministic prayer content loading; Rosary flow with mysteries and core prayers; Prayer Library; Mass Responses (ICEL; app stays free); single active audio session; readable watch UI including liked now-playing cover; basic automated watch UI coverage.
+- **Out of scope for v1:** Spanish; Mystery Picker redesign / day-based mystery defaults; new schema expansion beyond what is already needed.
+- **How we work:** Omarchy edits, GitHub handoff, operator Mac for Xcode/Watch (`AGENTS.md`, `llm/workflows/github-airgap.md`).
 
-For the **pinned RC, canonical paths, build environment, and operational rules**, see **`llm/project/current-state.md`**.
+For **current tags, paths, and operational rules**, see **`llm/project/current-state.md`**.
 
 ## Success Criteria
 - **Setup:** App runs on Watch Simulator and device; build/lint from CLI and Xcode.

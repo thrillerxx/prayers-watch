@@ -1,17 +1,15 @@
-Purpose: Runbook for capturing and exporting prayer audio from Divinity Prayers Watch v1 on the designated macOS development machine.
+Purpose: Runbook for capturing and exporting prayer audio from Divinity Prayers Watch on the operator Mac.
 
-# Audio Capture + Export (RC)
+# Audio Capture + Export
 
 ## Goal
-Produce clean exported audio files (e.g. MP3/WAV) for selected prayers / Rosary steps from the pinned RC baseline.
+Produce clean exported audio files (e.g. MP3/WAV) for selected prayers / Rosary steps.
 
 ## Preconditions
-- Must be executed on the designated **macOS development machine** (Xcode + simulator/route audio).
-- Canonical repo: this repository root.
-- Check out the pinned RC tag/commit.
-- Decide capture target:
-  - Simulator audio capture, or
-  - Real-device capture (harder, but sometimes cleaner).
+- Run on the **operator Mac** after a GitHub pull (`llm/workflows/github-airgap.md`). Agents do not SSH to that laptop.
+- Canonical repo: this repository root (Mac clone, usually `~/dev/prayers-watch`).
+- Default baseline is current `main`. Record the SHA in the export folder name. RC comparison: tag `rosary-watch-en-final-ui-rc`.
+- Decide capture target: Simulator (usual) or real-device (harder, sometimes cleaner).
 
 ## 0) Baseline confirmation
 From repo root:

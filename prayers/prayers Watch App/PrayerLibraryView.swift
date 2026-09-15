@@ -109,8 +109,10 @@ struct PrayerLibraryView: View {
             prayers = try PrayerStore.load().filter { prayer in
                 let id = prayer.id
                 if id.hasPrefix("mysteryset_") { return false }
+                if id == "mysteries_intro" { return false }
                 if id.hasSuffix("_title") { return false }
                 if id.hasSuffix("_alt_title") { return false }
+                if id.hasSuffix("_announce") { return false }
                 return true
             }
         } catch {

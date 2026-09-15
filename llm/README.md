@@ -33,7 +33,7 @@ llm/
 - **project/** — Product plan: overview, user flows, tech stack, design rules, engineering standards, phased roadmap.
 - **context/** — Tight, implementation-oriented briefs (e.g. protocol summaries, domain models).
 - **implementation/** — Documentation about what the app currently does and how it is implemented.
-- **workflows/** — Runbooks you execute consistently (Omarchy→Mac loop, Simulator, real-device install/QA, audio capture). See [workflows/README.md](workflows/README.md).
+- **workflows/** — Runbooks you execute consistently (GitHub air gap daily loop, Simulator, real-device install/QA, audio capture). See [workflows/README.md](workflows/README.md).
 
 ## Conventions
 

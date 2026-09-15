@@ -14,9 +14,10 @@ Record: git SHA (`git rev-parse --short HEAD`), Watch model/size, watchOS versio
 
 ## Rosary
 
-- [ ] Open Rosary; step title readable (try the smallest face you care about).
+- [ ] Open Rosary; mystery picker then now-playing; titles readable on the smallest face you care about.
+- [ ] Mystery cover sits in the band **above** the transport (not parked on the chin).
 - [ ] Play / Pause toggles; Stop clears the session.
-- [ ] Auto mode advances without overlapping speech.
+- [ ] Auto mode advances without overlapping speech (Auto lives in Settings).
 - [ ] Two speech-speed presets; pause-between-parts feels deliberate.
 - [ ] Back to home and re-enter does not leave a zombie TTS session.
 

@@ -5,12 +5,13 @@ alwaysApply: true
 
 # Prayers Watch
 
-- Canonical repo only: this clone. Do not work from `archive/`, `divinity-app-work`, or `divinity-repo`.
-- Edit and git on Omarchy. Never start Xcode, Simulator, Docker Compose, or `npm run dev` here.
-- Never SSH, scp, or run `remote_mac_xcode.sh` against the personal MacBook Pro. Handoff is GitHub (`llm/workflows/github-airgap.md`).
+- Canonical repo only: this clone (`/home/car/.openclaw/workspace/prayers-watch` on Omarchy). Do not work from `archive/`, `divinity-app-work`, or `divinity-repo`.
+- Daily loop: edit here → commit/push when asked → operator pulls GitHub on the Mac (`llm/workflows/github-airgap.md`). Never start Xcode, Simulator, Docker Compose, or `npm run dev` here.
+- Never SSH, scp, or run `remote_mac_xcode.sh` against the personal MacBook Pro.
 - Do not try to run macOS/Xcode in a VM on Omarchy.
-- Develop on `main`. Use tag `rosary-watch-en-final-ui-rc` only for regression against `21fde32`.
+- Develop on `main`. Liked now-playing layout: tag `rosary-nowplaying-liked` (`ad3bf36`). RC regression only: `rosary-watch-en-final-ui-rc` (`21fde32`).
 - v1 is English-only. No Spanish, mystery-picker redesign, or schema expansion unless assigned.
 - Canonical content: `prayers/prayers Watch App/rosary_prayers_en.json` only — no duplicate JSON resource names.
+- Do not add SwiftUI `VideoPlayer` to `AppShell` or `RosaryView` (watchOS parks the Rosary cover on the chin).
 - Keep the app free (ICEL). Private Tailscale/SSH details stay out of this repo.
 - After Watch UI or playback changes, follow `llm/workflows/real-device-qa.md` and say what the human still has to pull/run on iPhone/Watch/Mac.

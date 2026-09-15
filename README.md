@@ -2,14 +2,17 @@
 
 A watchOS (and companion iOS) app for Catholic prayers and guided Rosary. Built with Swift and SwiftUI. Project planning and conventions are in **`llm/`** — see [llm/project/setup.md](llm/project/setup.md) and [llm/project/project-overview.md](llm/project/project-overview.md).
 
-## Current Scope (v1 RC)
-- **In scope:** English-only prayer content, Rosary flow, prayer library playback, settings, watch-first UI polish, and baseline watch UI tests.
+## Current Scope (v1)
+- **In scope:** English-only prayer content, Rosary flow, prayer library, Mass Responses, settings, watch-first UI polish, and baseline watch UI tests.
 - **Out of scope:** Spanish localization, mystery picker redesign, and schema expansion beyond the current v1 data model.
-- **Release baseline:** `rosary-watch-en-final-ui-rc` (peeled commit `21fde32`).
+- **Current liked layout:** `rosary-nowplaying-liked` (`ad3bf36` on `main`).
+- **Older RC (regression):** `rosary-watch-en-final-ui-rc` (peeled commit `21fde32`).
+- **Daily loop:** [AGENTS.md](AGENTS.md) and [llm/workflows/github-airgap.md](llm/workflows/github-airgap.md) — Omarchy pushes GitHub; operator pulls on the Mac. No SSH to that laptop.
 
 ## Features
 - **Rosary** — Guided Rosary with mysteries and steps; optional text-to-speech (play/pause/stop).
 - **Prayer Library** — Browse prayers, read full text, and speak aloud with shared transport controls.
+- **Mass Responses** — At-Mass responses (ICEL; app stays free).
 - **Settings** — User preferences (e.g. speech, display).
 - **Watch-first** — Layout and interactions tuned for watchOS (marquee for long titles, compact controls).
 

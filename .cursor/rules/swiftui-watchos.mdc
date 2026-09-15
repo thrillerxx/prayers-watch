@@ -7,8 +7,9 @@ alwaysApply: false
 # Swift / watchOS
 
 - Prefer small SwiftUI views; extract marquee, transport, and chrome into focused types.
-- Shared speech lives in `SpeechManager` (one session). Starting a new utterance must stop the current one.
+- Shared speech lives in `SpeechManager` (one session). Rosary playback state lives in `RosarySessionController`. Starting a new utterance must stop the current one.
 - Load prayers only from `rosary_prayers_en.json` via `PrayerStore`. Do not add another `prayers.json` to the Watch target.
+- Do not add SwiftUI `VideoPlayer` to `AppShell` or `RosaryView` — watchOS treats it as a Now Playing container and parks the mystery cover on the chin.
 - `@StateObject` at the ownership root; `@ObservedObject` in children. Do not duplicate speech or settings stores.
 - Watch UI: compact controls, readable type, no toolbar collisions. Test mental model is 40mm and 49mm.
 - Throw or return `Result` instead of swallowing load/speech failures; surface a short user-facing message.

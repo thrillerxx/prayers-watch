@@ -1,13 +1,12 @@
-Purpose: Step-by-step sanity pass checklist for Divinity Prayers Watch v1 on the pinned RC line.
+Purpose: Step-by-step sanity pass for Divinity Prayers Watch on the operator Mac after a GitHub pull.
 
-# v1 Sanity Pass (RC)
+# v1 Sanity Pass
 
-## Preconditions
-- Canonical repo: this repository root.
-- Check out the pinned RC tag/commit (do not run this on a random HEAD unless explicitly intended).
-- Use Xcode on the designated macOS development machine.
+Run this **on the Mac** after [github-airgap.md](github-airgap.md). Agents do not SSH to the laptop.
 
-## 0) Confirm you are on the correct baseline
+Default: current `main`. For RC comparison only, check out tag `rosary-watch-en-final-ui-rc` (`21fde32`) first. For the liked now-playing layout, tag `rosary-nowplaying-liked` (`ad3bf36`) is on `main`.
+
+## 0) Confirm you are on the intended baseline
 From repo root:
 - `git status -sb` (must be clean)
 - `git describe --tags --always --dirty`

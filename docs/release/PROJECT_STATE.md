@@ -1,23 +1,22 @@
 # prayers-watch — Project State
 
 ## Canonical repo/worktree
-- This repository (any clone path).
+- Omarchy clone: `/home/car/.openclaw/workspace/prayers-watch`
+- GitHub: `thrillerxx/prayers-watch`
 - Xcode project: `prayers/prayers.xcodeproj`
 - Watch app source folder: `prayers/prayers Watch App`
 
-## Validated release candidate (RC)
-- Tag: `rosary-watch-en-final-ui-rc`
-- Commit: `21fde32`
-- Rule: treat `21fde32` as the known-good snapshot for regression. Current device work happens on `main`. See `AGENTS.md` and `llm/workflows/`.
+## Current line
+- **Develop on:** `main`
+- **Liked now-playing layout:** tag `rosary-nowplaying-liked` → `ad3bf36`
+- **Older RC (regression only):** tag `rosary-watch-en-final-ui-rc` → `21fde32`
+- Daily loop: `AGENTS.md` + `llm/workflows/github-airgap.md` (no SSH to the personal Mac)
 
-## Non-RC work (WIP branches)
-- `feature/mass-responses` @ `3f950cc`
-  - Adds a new main-menu entry: “Mass Responses & Prayers”
-  - Backed by `mass_responses_en.txt` extracted from a PDF.
-  - Note: text appears to be from the Roman Missal (ICEL 2011). Confirm licensing before shipping.
+## Mass Responses
+Shipped on `main` (home item “Mass Responses”). Remote branch `feature/mass-responses` is historical. Text is from the Roman Missal (ICEL 2011); keep the app **free**. See `docs/licensing/mass-responses-licensing.md`.
 
-## macOS build/capture runner
-- Use **Xcode** on macOS; SSH target and paths are **local/private** (not documented in-repo).
+## macOS build/capture (operator Mac)
+- Pull GitHub, then use **Xcode** / `xcodebuild`. Agents do not SSH here.
 - Watch sim devices observed historically: Apple Watch Series 11 (42mm/46mm), Ultra 3 (49mm), SE 3 (40mm/44mm)
 - **BlackHole** (optional): virtual audio device for capturing simulator audio on macOS.
 
