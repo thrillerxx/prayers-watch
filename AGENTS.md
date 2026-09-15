@@ -42,9 +42,26 @@ Private hostnames, Tailscale IPs, and SSH targets live in **local** notes (`OMAR
 
 ---
 
+## Liked Rosary fallback (do not lose this)
+
+The operator approved this Watch build as **perfect** (2026-09-15). Treat it as the **restore point** if Rosary sequence, prayer wording, or now-playing regresses.
+
+| What | Value |
+| --- | --- |
+| **Git tag** | `rosary-complete-liked` |
+| **Commit** | `631b00f` |
+| **Includes** | Complete Rosary Prayer Guide opening → decades → closing; supplied Creed and intention wording; cover-only now-playing (no prayer text on the player) |
+
+- **Develop on** `main` for new work. Do **not** retag, delete, or move `rosary-complete-liked` unless the operator explicitly asks for a new liked snapshot.
+- **Restore fallback:** `git fetch origin --tags` then `git switch --detach rosary-complete-liked`
+- **Notes:** `llm/implementation/2026-09-15-rosary-complete-liked.md`
+- **Older tags (not this fallback):** layout-only `rosary-nowplaying-liked` (`ad3bf36`); March RC regression `rosary-watch-en-final-ui-rc` (`21fde32`).
+
+---
+
 ## Product rules
 
-- Default branch is **`main`**. Current liked complete Rosary (sequence, wording, cover-only now-playing): tag **`rosary-complete-liked`** (`631b00f`). Layout-only ancestor: **`rosary-nowplaying-liked`** (`ad3bf36`). Older regression snapshot: **`rosary-watch-en-final-ui-rc`** (`21fde32`) — not a freeze on current work.
+- Default branch is **`main`**. Liked fallback: **`rosary-complete-liked`** / **`631b00f`** (see section above).
 - v1 stays **English-only**. Do not start Spanish, mystery-picker redesign, or schema expansion unless explicitly assigned. Small UX / product updates on `main` are in scope when the operator asks.
 - Home: Rosary, Prayer Library, Mass Responses, Settings. Mass Responses stays in-app and **free** (ICEL). See `docs/licensing/mass-responses-licensing.md`.
 - One canonical prayer payload: `prayers/prayers Watch App/rosary_prayers_en.json`. Never add a second `prayers.json` / duplicate resource name to the Watch target.
