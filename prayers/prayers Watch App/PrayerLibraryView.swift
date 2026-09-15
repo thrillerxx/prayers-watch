@@ -113,6 +113,7 @@ struct PrayerLibraryView: View {
                 if id.hasSuffix("_title") { return false }
                 if id.hasSuffix("_alt_title") { return false }
                 if id.hasSuffix("_announce") { return false }
+                if id == "opening_hail_mary_intention" { return false }
                 return true
             }
         } catch {

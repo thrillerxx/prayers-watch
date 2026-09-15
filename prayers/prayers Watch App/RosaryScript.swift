@@ -173,10 +173,11 @@ enum RosaryScripts {
             steps.append(RosaryStep(id: UUID().uuidString, title: title, content: .prayerId(id)))
         }
 
-        // Opening
+        // Opening (crucifix → first large bead → three small beads → Glory Be)
         prayer("sign_of_cross", title: "Sign of the Cross")
         prayer("apostles_creed", title: "Apostles' Creed")
         prayer("our_father", title: "Our Father")
+        prayer("opening_hail_mary_intention", title: "Intention")
         prayer("hail_mary", title: "Hail Mary — Faith")
         prayer("hail_mary", title: "Hail Mary — Hope")
         prayer("hail_mary", title: "Hail Mary — Charity")

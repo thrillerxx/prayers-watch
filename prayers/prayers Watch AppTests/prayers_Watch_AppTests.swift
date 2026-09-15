@@ -80,18 +80,20 @@ struct prayers_Watch_AppTests {
     @Test func rosaryScriptFollowsCompleteGuideOrder() async throws {
         let steps = RosaryScripts.full(mystery: .joyful, includeFatima: true, includeStJoseph: false)
         let ids = steps.compactMap(prayerId)
-        #expect(Array(ids.prefix(7)) == [
+        #expect(Array(ids.prefix(8)) == [
             "sign_of_cross",
             "apostles_creed",
             "our_father",
+            "opening_hail_mary_intention",
             "hail_mary",
             "hail_mary",
             "hail_mary",
             "glory_be",
         ])
-        #expect(steps[3].title == "Hail Mary — Faith")
-        #expect(steps[4].title == "Hail Mary — Hope")
-        #expect(steps[5].title == "Hail Mary — Charity")
+        #expect(steps[3].title == "Intention")
+        #expect(steps[4].title == "Hail Mary — Faith")
+        #expect(steps[5].title == "Hail Mary — Hope")
+        #expect(steps[6].title == "Hail Mary — Charity")
 
         #expect(ids.contains("mystery_joyful_1_announce"))
         #expect(ids.contains("mystery_joyful_1_meditation"))
