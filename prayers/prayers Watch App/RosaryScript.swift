@@ -160,8 +160,6 @@ struct RosaryStep: Identifiable, Codable {
 }
 
 enum RosaryScripts {
-    static let decadeOrdinals = ["First", "Second", "Third", "Fourth", "Fifth"]
-
     static func full(
         mystery: RosaryMystery,
         includeFatima: Bool = true,
@@ -183,16 +181,15 @@ enum RosaryScripts {
         prayer("hail_mary", title: "Hail Mary — Charity")
         prayer("glory_be", title: "Glory Be")
 
-        // Each decade: announce, reflect, Our Father, 10 Hail Marys, Glory Be, optional Fatima.
+        // Each decade: numbered announce, Scripture, Our Father, 10 Hail Marys, Glory Be, optional Fatima.
         for i in 1...5 {
-            let ordinal = decadeOrdinals[i - 1]
             prayer(
                 "mystery_\(mystery.contentKey)_\(i)_announce",
-                title: "The \(ordinal) \(mystery.title) Mystery"
+                title: "\(i)."
             )
             prayer(
                 "mystery_\(mystery.contentKey)_\(i)_meditation",
-                title: "Reflect"
+                title: "Scripture"
             )
             prayer("our_father", title: "Our Father")
             for _ in 0..<10 {
