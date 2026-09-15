@@ -157,4 +157,35 @@ struct prayers_Watch_AppTests {
         #expect(MysteryArt.decadeNumber(mystery: m, stepIndex: idx, steps: steps) == 3)
         #expect(MysteryArt.assetName(mystery: m, stepIndex: idx, steps: steps) == "sorrowful_3")
     }
+
+    @Test func beadPositionMapsOpeningAndDecadeSteps() async throws {
+        let mystery = RosaryMystery.joyful
+        let steps = RosaryScripts.full(mystery: mystery, includeFatima: true, includeStJoseph: false)
+
+        let creedIdx = steps.firstIndex { prayerId($0) == "apostles_creed" }!
+        let posCreed = RosaryBeadPosition.compute(stepIndex: creedIdx, steps: steps, mystery: mystery)!
+        #expect(posCreed.phase == .opening(.crucifix))
+
+        let hopeIdx = steps.firstIndex { $0.title.contains("Hope") }!
+        let posHope = RosaryBeadPosition.compute(stepIndex: hopeIdx, steps: steps, mystery: mystery)!
+        #expect(posHope.phase == .opening(.smallHope))
+
+        let announceIdx = steps.firstIndex { prayerId($0) == "mystery_joyful_1_announce" }!
+        let posAnnounce = RosaryBeadPosition.compute(stepIndex: announceIdx, steps: steps, mystery: mystery)!
+        #expect(posAnnounce.phase == .decade(.meditation(decade: 1)))
+
+        let reflectIdx = steps.firstIndex { prayerId($0) == "mystery_joyful_1_meditation" }!
+        let ofIdx = reflectIdx + 1
+        #expect(prayerId(steps[ofIdx]) == "our_father")
+        let posOF = RosaryBeadPosition.compute(stepIndex: ofIdx, steps: steps, mystery: mystery)!
+        #expect(posOF.phase == .decade(.ourFather(decade: 1)))
+
+        let hm1Idx = ofIdx + 1
+        let posHM1 = RosaryBeadPosition.compute(stepIndex: hm1Idx, steps: steps, mystery: mystery)!
+        #expect(posHM1.phase == .decade(.hailMary(decade: 1, number: 1)))
+
+        let closingIdx = steps.firstIndex { prayerId($0) == "hail_holy_queen" }!
+        let posClosing = RosaryBeadPosition.compute(stepIndex: closingIdx, steps: steps, mystery: mystery)!
+        #expect(posClosing.phase == .closing(.hailHolyQueen))
+    }
 }

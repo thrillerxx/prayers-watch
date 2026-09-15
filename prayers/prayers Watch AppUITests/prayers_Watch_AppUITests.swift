@@ -111,7 +111,7 @@ final class prayers_Watch_AppUITests: XCTestCase {
         firstCell.tap()
     }
 
-    /// Rosary now-playing player: prev / play / next / stop (auto-advance lives in Settings only).
+    /// Rosary now-playing player: prev / play / bead indicator / stop (auto-advance lives in Settings only).
     @MainActor
     func testRosaryPlayerTransport() throws {
         let app = XCUIApplication()
@@ -130,9 +130,9 @@ final class prayers_Watch_AppUITests: XCTestCase {
         playButton.tap()
 
         let prev = app.buttons["TransportPrevious"].firstMatch
-        let next = app.buttons["TransportNext"].firstMatch
+        let beadIndicator = app.otherElements["RosaryBeadIndicator"].firstMatch
         XCTAssertTrue(prev.waitForExistence(timeout: 10))
-        XCTAssertTrue(next.waitForExistence(timeout: 5))
+        XCTAssertTrue(beadIndicator.waitForExistence(timeout: 5))
         prev.tap()
 
         let stopButton = app.buttons["TransportStop"].firstMatch

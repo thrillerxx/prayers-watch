@@ -15,6 +15,10 @@ struct SettingsView: View {
     @AppStorage(AppSettings.colorThemeKey) private var colorThemeRaw: String = AppSettings.defaultColorTheme
     @AppStorage(AppSettings.appAlternateIconKey) private var alternateAppIconRaw: String = AlternateAppIconChoice.appDefault.rawValue
 
+    #if DEBUG
+    @AppStorage(RosaryBeadIndicatorStyle.storageKey) private var beadIndicatorStyleRaw: String = RosaryBeadIndicatorStyle.decadeStrip.rawValue
+    #endif
+
     @Environment(\.appColorTheme) private var theme
     @Environment(\.accessibilityReduceTransparency) private var reduceTransparency
     @Environment(\.accessibilityDifferentiateWithoutColor) private var differentiateWithoutColor
@@ -123,6 +127,22 @@ struct SettingsView: View {
                 } header: {
                     settingsSectionHeader("Watch face")
                 }
+
+                #if DEBUG
+                Section {
+                    Picker("Bead indicator", selection: $beadIndicatorStyleRaw) {
+                        ForEach(RosaryBeadIndicatorStyle.allCases) { style in
+                            Text(style.displayName).tag(style.rawValue)
+                        }
+                    }
+                    .font(DivinityPickerRow.titleFont)
+                    Text("Long-press the bead indicator on the Rosary player to cycle styles.")
+                        .font(DivinityPickerRow.subtitleFont)
+                        .foregroundStyle(.secondary)
+                } header: {
+                    settingsSectionHeader("Developer")
+                }
+                #endif
             }
             .listStyle(.plain)
             .scrollContentBackground(.hidden)

@@ -133,6 +133,11 @@ final class RosarySessionController: ObservableObject {
         return t.isEmpty ? nil : t
     }
 
+    var beadPosition: RosaryBeadPosition? {
+        guard let mystery = selectedMystery, !steps.isEmpty else { return nil }
+        return RosaryBeadPosition.compute(stepIndex: index, steps: steps, mystery: mystery)
+    }
+
     var hailMaryCounterLabel: String? {
         guard let step = currentStep else { return nil }
         guard step.title == "Hail Mary" else { return nil }

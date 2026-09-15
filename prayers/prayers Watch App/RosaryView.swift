@@ -411,7 +411,6 @@ struct RosaryView: View {
 
     /// Progress + Music-style glass transport (side orbs + ringed play); Stop lives in the top bar.
     private var rosaryFloatingPlayerChrome: some View {
-        let nextDisabled = rosary.steps.isEmpty || rosary.index >= rosary.steps.count - 1
         return VStack(spacing: 6) {
             ThinProgressBar(value: rosary.overallProgressFraction, accent: rosaryControlAccentColor, dimmed: !solidChrome, lineHeight: 3)
                 .padding(.horizontal, 14)
@@ -426,14 +425,7 @@ struct RosaryView: View {
                     rosary.previousStep()
                 }
                 rosaryGlassTransportMainButton()
-                rosaryGlassTransportSideButton(
-                    icon: "forward.fill",
-                    disabled: nextDisabled,
-                    label: "Next",
-                    identifier: "TransportNext"
-                ) {
-                    rosary.nextStep()
-                }
+                rosaryBeadIndicatorSlot
                 Spacer(minLength: 0)
             }
             .padding(.horizontal, 8)
@@ -462,6 +454,23 @@ struct RosaryView: View {
         }
         /// Nudge toward the chin; paired with extra scroll bottom inset so text stays clear.
         .offset(y: 12)
+    }
+
+    @ViewBuilder
+    private var rosaryBeadIndicatorSlot: some View {
+        if let position = rosary.beadPosition {
+            RosaryBeadIndicator(
+                position: position,
+                solidChrome: solidChrome,
+                accentLight: rosaryBrandGoldLight,
+                accentDark: rosaryBrandGoldDark,
+                dimForeground: rosaryControlButtonForeground
+            )
+        } else {
+            Color.clear
+                .frame(width: 40, height: 40)
+                .accessibilityHidden(true)
+        }
     }
 
     private func rosaryGlassTransportSideButton(
