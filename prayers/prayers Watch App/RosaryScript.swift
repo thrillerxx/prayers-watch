@@ -51,7 +51,7 @@ enum RosaryLiturgicalCalendar {
     static func isAdvent(_ date: Date, calendar: Calendar = .current) -> Bool {
         let year = calendar.component(.year, from: date)
         guard let start = firstSundayOfAdvent(year: year, calendar: calendar),
-              let christmas = date(year: year, month: 12, day: 25, calendar: calendar) else {
+              let christmas = makeDate(year: year, month: 12, day: 25, calendar: calendar) else {
             return false
         }
         return date >= start && date < christmas
@@ -70,7 +70,7 @@ enum RosaryLiturgicalCalendar {
     }
 
     static func firstSundayOfAdvent(year: Int, calendar: Calendar = .current) -> Date? {
-        guard let christmas = date(year: year, month: 12, day: 25, calendar: calendar) else { return nil }
+        guard let christmas = makeDate(year: year, month: 12, day: 25, calendar: calendar) else { return nil }
         let christmasWeekday = calendar.component(.weekday, from: christmas)
         let daysBackToSunday = (christmasWeekday - 1 + 7) % 7
         let sundayOnOrBeforeChristmas = calendar.date(byAdding: .day, value: -daysBackToSunday, to: christmas)
@@ -101,10 +101,10 @@ enum RosaryLiturgicalCalendar {
         let m = (a + 11 * h + 22 * l) / 451
         let month = (h + l - 7 * m + 114) / 31
         let day = ((h + l - 7 * m + 114) % 31) + 1
-        return date(year: year, month: month, day: day, calendar: calendar)
+        return makeDate(year: year, month: month, day: day, calendar: calendar)
     }
 
-    private static func date(year: Int, month: Int, day: Int, calendar: Calendar) -> Date? {
+    private static func makeDate(year: Int, month: Int, day: Int, calendar: Calendar) -> Date? {
         var comps = DateComponents()
         comps.year = year
         comps.month = month
