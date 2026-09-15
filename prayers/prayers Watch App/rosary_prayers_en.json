@@ -543,14 +543,21 @@
       "id": "hail_holy_queen",
       "title": "Hail, Holy Queen",
       "translations": {
-        "en": "Hail, holy Queen, mother of mercy; hail, our life, our sweetness, and our hope. To thee do we cry, poor banished children of Eve. To thee do we send up our sighs, mourning and weeping in this valley of tears. Turn then, most gracious advocate, thine eyes of mercy toward us, and after this our exile, show unto us the blessed fruit of thy womb, Jesus. O clement, O loving, O sweet Virgin Mary. Pray for us, O holy Mother of God, that we may be made worthy of the promises of Christ. Amen."
+        "en": "Hail, Holy Queen, Mother of Mercy, our life, our sweetness, and our hope! To you we cry, poor banished children of Eve; to you we send up our sighs, mourning and weeping in this valley of tears. Turn then, O most gracious advocate, your eyes of mercy toward us, and after this our exile, show us to the blessed fruit of your womb, Jesus. O clement, O loving, O sweet Virgin Mary. Pray for us, O holy Mother of God, that we may be made worthy of the promises of Christ."
       }
     },
     {
       "id": "rosary_prayer",
-      "title": "Concluding Prayer",
+      "title": "Let us pray",
       "translations": {
-        "en": "O God, whose only Begotten Son, by His life, death, and resurrection, has purchased for us the rewards of eternal life, grant, we beseech thee, that meditating upon these mysteries of the most holy Rosary of the Blessed Virgin Mary, we may imitate what they contain and obtain what they promise, through the same Christ our Lord. Amen."
+        "en": "Let us pray. O God, whose only begotten Son, by his life, death, and resurrection, has purchased for us the rewards of eternal life, grant, we beseech you, that meditating upon these mysteries of the most holy rosary of the Blessed Virgin Mary, we may imitate what they contain and obtain what they promise, Through the same Christ our Lord. Amen."
+      }
+    },
+    {
+      "id": "st_michael",
+      "title": "Prayer to St. Michael the Archangel",
+      "translations": {
+        "en": "St. Michael the Archangel, defend us in battle; be our safeguard against the wickedness and snares of the devil. May God rebuke him, we humbly pray. And do you, O prince of the heavenly host, by the power of God, cast into Hell Satan and all the evil spirits who prowl about the world seeking the ruin of souls. Amen."
       }
     },
     {

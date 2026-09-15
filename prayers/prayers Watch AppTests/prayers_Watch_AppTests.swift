@@ -106,8 +106,8 @@ struct prayers_Watch_AppTests {
         #expect(ids[reflect + 13] == "fatima")
 
         #expect(steps.contains { if case .text = $0.content { return true }; return false } == false)
-        #expect(Array(ids.suffix(3)) == ["hail_holy_queen", "rosary_prayer", "sign_of_cross"])
-        #expect(steps[ids.count - 2].title == "Concluding Prayer")
+        #expect(Array(ids.suffix(4)) == ["hail_holy_queen", "rosary_prayer", "st_michael", "sign_of_cross"])
+        #expect(steps[ids.count - 3].title == "Let us pray")
     }
 
     @Test func rosaryScriptHasFiveAnnounceAndReflectPairs() async throws {
@@ -118,7 +118,12 @@ struct prayers_Watch_AppTests {
             #expect(ids.contains("mystery_luminous_\(i)_meditation"))
         }
         #expect(ids.contains("st_joseph_after_rosary"))
+        #expect(ids.contains("st_michael"))
         #expect(!ids.contains("fatima"))
+        let michael = ids.firstIndex(of: "st_michael")!
+        let joseph = ids.firstIndex(of: "st_joseph_after_rosary")!
+        #expect(michael < joseph)
+        #expect(ids.last == "sign_of_cross")
     }
 
     @Test func mysteryArtFallsBackToFirstDecadeBeforeMeditation() async throws {

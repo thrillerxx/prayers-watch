@@ -204,9 +204,10 @@ enum RosaryScripts {
             }
         }
 
-        // Closing (Hail Holy Queen includes "Pray for us…"; concluding prayer is in the complete guide)
+        // Closing — always Hail Holy Queen, Let us pray, St. Michael, Sign of the Cross.
         prayer("hail_holy_queen", title: "Hail, Holy Queen")
-        prayer("rosary_prayer", title: "Concluding Prayer")
+        prayer("rosary_prayer", title: "Let us pray")
+        prayer("st_michael", title: "St. Michael")
 
         if includeStJoseph {
             prayer("st_joseph_after_rosary", title: "St. Joseph")
