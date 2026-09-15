@@ -158,63 +158,63 @@
       "id": "mystery_luminous_1_title",
       "title": "Luminous Mysteries 1 (Title)",
       "translations": {
-        "en": "The Baptism of Jesus in the Jordan"
+        "en": "Jesus' Baptism in the Jordan"
       }
     },
     {
       "id": "mystery_luminous_1_announce",
-      "title": "The First Luminous Mystery: The Baptism of Jesus in the Jordan",
+      "title": "1. Jesus' Baptism in the Jordan.",
       "translations": {
-        "en": "The First Luminous Mystery: The Baptism of Jesus in the Jordan"
+        "en": "1. Jesus' Baptism in the Jordan."
       }
     },
     {
       "id": "mystery_luminous_1_meditation",
-      "title": "The First Luminous Mystery: The Baptism of Jesus in the Jordan",
+      "title": "1. Jesus' Baptism in the Jordan.",
       "translations": {
-        "en": "The heavens open, the Holy Spirit descends upon Jesus, and the Father declares Him to be the beloved Son.\n\nMeditation points: Jesus' identity and the beginning of His public mission"
+        "en": "Mt 3.16-17: And when Jesus was baptized, he went up immediately from the water, and behold, the heavens were opened and he saw the Spirit of God descending like a dove, and alighting on him; and lo, a voice from heaven, saying, \"this is my beloved son, with whom i am well pleased.\""
       }
     },
     {
       "id": "mystery_luminous_2_title",
       "title": "Luminous Mysteries 2 (Title)",
       "translations": {
-        "en": "The Wedding at Cana"
+        "en": "Jesus at the Wedding in Cana"
       }
     },
     {
       "id": "mystery_luminous_2_announce",
-      "title": "The Second Luminous Mystery: The Wedding at Cana",
+      "title": "2. Jesus at the Wedding in Cana.",
       "translations": {
-        "en": "The Second Luminous Mystery: The Wedding at Cana"
+        "en": "2. Jesus at the Wedding in Cana."
       }
     },
     {
       "id": "mystery_luminous_2_meditation",
-      "title": "The Second Luminous Mystery: The Wedding at Cana",
+      "title": "2. Jesus at the Wedding in Cana.",
       "translations": {
-        "en": "Jesus changes water into wine, His first public sign. Through Mary's intervention, the disciples are led to faith.\n\nMeditation points: Trust in Christ's power and confidence in Mary's intercession"
+        "en": "John 2.1-12. Verses 9-11: When the steward of the feast tasted the water now become wine, and did not know where it came from (though the servants who had drawn the water knew), the steward of the feast called the bridegroom and said to him, \"Every man serves the good wine first; and when men have drunk freely, then the poor wine; but you have kept the good wine until now.\" This, the first of his signs, Jesus did at Cana in Galilee, and manifested his glory; and his disciples believed in him."
       }
     },
     {
       "id": "mystery_luminous_3_title",
       "title": "Luminous Mysteries 3 (Title)",
       "translations": {
-        "en": "The Proclamation of the Kingdom of God"
+        "en": "Jesus Proclaims the Kingdom of God"
       }
     },
     {
       "id": "mystery_luminous_3_announce",
-      "title": "The Third Luminous Mystery: The Proclamation of the Kingdom of God",
+      "title": "3. Jesus Proclaims the Kingdom of God.",
       "translations": {
-        "en": "The Third Luminous Mystery: The Proclamation of the Kingdom of God"
+        "en": "3. Jesus Proclaims the Kingdom of God."
       }
     },
     {
       "id": "mystery_luminous_3_meditation",
-      "title": "The Third Luminous Mystery: The Proclamation of the Kingdom of God",
+      "title": "3. Jesus Proclaims the Kingdom of God.",
       "translations": {
-        "en": "Jesus announces that God's Kingdom is near and calls people to conversion. He also forgives sins.\n\nMeditation points: Examine your life, repent sincerely, and receive Christ's mercy"
+        "en": "Jn 1.14-15: Jesus came into Galilee, preaching the gospel of God, and saying, \"The time is fulfilled, and the kingdom of God is at hand; repent, and believe in the gospel.\""
       }
     },
     {
@@ -226,37 +226,37 @@
     },
     {
       "id": "mystery_luminous_4_announce",
-      "title": "The Fourth Luminous Mystery: The Transfiguration",
+      "title": "4. The Transfiguration.",
       "translations": {
-        "en": "The Fourth Luminous Mystery: The Transfiguration"
+        "en": "4. The Transfiguration."
       }
     },
     {
       "id": "mystery_luminous_4_meditation",
-      "title": "The Fourth Luminous Mystery: The Transfiguration",
+      "title": "4. The Transfiguration.",
       "translations": {
-        "en": "Jesus' divine glory shines forth before Peter, James, and John.\n\nMeditation points: Strengthened faith in Christ; points toward His Passion and Resurrection"
+        "en": "Lk 9.28-36: Now about eight days after these sayings he took with him Peter and John and James, and went up on the mountain to pray. And as he was praying, the appearance of his countenance was altered, and his raiment became dazzling white. And a voice came out of the cloud, saying, \"This is my Son, my Chosen; listen to him!\""
       }
     },
     {
       "id": "mystery_luminous_5_title",
       "title": "Luminous Mysteries 5 (Title)",
       "translations": {
-        "en": "The Institution of the Eucharist"
+        "en": "Institution of the Eucharist"
       }
     },
     {
       "id": "mystery_luminous_5_announce",
-      "title": "The Fifth Luminous Mystery: The Institution of the Eucharist",
+      "title": "5. Institution of the Eucharist.",
       "translations": {
-        "en": "The Fifth Luminous Mystery: The Institution of the Eucharist"
+        "en": "5. Institution of the Eucharist."
       }
     },
     {
       "id": "mystery_luminous_5_meditation",
-      "title": "The Fifth Luminous Mystery: The Institution of the Eucharist",
+      "title": "5. Institution of the Eucharist.",
       "translations": {
-        "en": "At the Last Supper, Jesus gives Himself to the Church in the Eucharist.\n\nMeditation points: Christ's sacrificial love and the Eucharist as the sacramental expression of His Paschal Mystery"
+        "en": "Lk 22.15-20: And he said to them, \"I have earnestly desired to eat this Passover with you before I suffer; for I tell you I shall not eat it until it is fulfilled in the kingdom of God.\" ... And he took bread, and when he had given thanks he broke it and gave it to them, saying, \"This is my body which is given for you. Do this in remembrance of me.\" And likewise the cup after supper, saying, \"This cup which is poured out for you is the new covenant in my blood.\""
       }
     },
     {
