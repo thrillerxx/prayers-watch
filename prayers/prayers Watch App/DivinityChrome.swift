@@ -123,7 +123,7 @@ struct DivinityPickerRowButton: View {
                     Text(subtitle)
                         .font(DivinityPickerRow.subtitleFont)
                         .foregroundStyle(.secondary)
-                        .lineLimit(2)
+                        .lineLimit(1)
                         .minimumScaleFactor(0.75)
                         .multilineTextAlignment(.leading)
                 }

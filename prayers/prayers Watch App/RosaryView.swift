@@ -110,7 +110,7 @@ struct RosaryView: View {
                             .font(.system(size: 20, weight: .bold, design: .default))
                             .foregroundStyle(.primary)
                             .multilineTextAlignment(.center)
-                        Text("One set per session")
+                        Text("Choose a set to begin")
                             .font(DivinityPickerRow.subtitleFont)
                             .foregroundStyle(.secondary)
                             .multilineTextAlignment(.center)
@@ -153,11 +153,12 @@ struct RosaryView: View {
     }
 
     private func mysteryPickerSubtitle(_ mystery: RosaryMystery) -> String {
-        let base = "\(mystery.assignedDaysLabel) · \(mystery.focusLabel)"
-        if mystery == RosaryMystery.defaultForToday() {
-            return "Today · \(base)"
+        switch mystery {
+        case .joyful: return "Incarnation"
+        case .luminous: return "Light"
+        case .sorrowful: return "Passion"
+        case .glorious: return "Glory"
         }
-        return base
     }
 
     /// Same chrome and transport as before. Only the 102pt cover is centered in the

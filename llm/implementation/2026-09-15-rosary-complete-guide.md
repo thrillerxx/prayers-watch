@@ -1,15 +1,15 @@
-Purpose: Record that the Watch Rosary session now follows the Complete Rosary Prayer Guide (one set of five mysteries per session).
+Purpose: Record that Rosary audio/content follows the Complete Rosary Prayer Guide without changing the liked now-playing UI.
 
-# Rosary complete-guide sequence (2026-09-15)
+# Rosary complete-guide content (2026-09-15)
 
-The Watch Rosary is no longer a shortened decade (meditation → Our Father → Hail Marys). It follows the guide the operator supplied:
+Now-playing stays cover + chrome + transport. Session titles and prayer body stay off that layout.
 
-1. **Opening:** Sign of the Cross, Apostles' Creed, Our Father, three Hail Marys (Faith, Hope, Charity), Glory Be.
-2. **Each of five decades:** Announce ("The First Joyful Mystery: The Annunciation"), Reflect (guide meditation + meditation points), Our Father, ten Hail Marys, Glory Be, optional Fatima.
-3. **Closing:** Hail, Holy Queen (includes "Pray for us…"), Concluding Prayer, Sign of the Cross. St. Joseph remains a Settings extra, not in the guide.
+What changed is the **spoken sequence and bundled text**:
 
-Mystery titles and meditations in `rosary_prayers_en.json` match the guide (including "The Crucifixion and Death of Jesus", "The Descent of the Holy Spirit", "The Baptism of Jesus in the Jordan", etc.).
+- Picker set order: Joyful, Luminous, Sorrowful, Glorious.
+- Each decade: announce, reflect (guide meditation + points), Our Father, ten Hail Marys, Glory Be, optional Fatima.
+- Mystery titles/meditations and core prayer wording match the operator’s guide.
+- Opening three Hail Marys are Faith / Hope / Charity in the script only (not shown on the player).
+- Closing: Hail Holy Queen (includes Pray for us), concluding prayer, Sign of the Cross.
 
-Picker order is Joyful, Luminous, Sorrowful, Glorious. Weekday defaults match the guide; **Sunday is Glorious except in Advent and Lent (Sorrowful)** via `RosaryLiturgicalCalendar`.
-
-Announce ids (`mystery_*_*_announce`) are filtered out of Prayer Library. Fatima stays optional in Settings (default on).
+Sunday autoplay is Glorious except Advent/Lent (Sorrowful). That is not shown as extra picker copy.

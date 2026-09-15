@@ -19,26 +19,6 @@ enum RosaryMystery: String, CaseIterable, Identifiable {
         }
     }
 
-    /// Short weekday assignment from the Complete Rosary Prayer Guide (watch picker).
-    var assignedDaysLabel: String {
-        switch self {
-        case .joyful: return "Mon & Sat"
-        case .luminous: return "Thursday"
-        case .sorrowful: return "Tue & Fri"
-        case .glorious: return "Wed & Sun"
-        }
-    }
-
-    /// Watch-sized focus line from the guide table.
-    var focusLabel: String {
-        switch self {
-        case .joyful: return "Incarnation & childhood"
-        case .luminous: return "Public ministry"
-        case .sorrowful: return "Passion & death"
-        case .glorious: return "Victory & Mary's glory"
-        }
-    }
-
     /// Rosary mystery content is loaded from `rosary_prayers_en.json` via ids:
     /// - mystery_<set>_<1-5>_title
     /// - mystery_<set>_<1-5>_announce
