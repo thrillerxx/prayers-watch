@@ -67,24 +67,6 @@ struct RosaryBeadPosition: Equatable {
         }
     }
 
-    /// Short label for style C (fits inside the transport orb).
-    var compactLabel: String {
-        switch phase {
-        case .opening:
-            return "Op"
-        case .decade(let bead):
-            switch bead {
-            case .meditation(let d): return "\(d)·M"
-            case .ourFather(let d): return "\(d)·F"
-            case .hailMary(let d, let n): return "\(d)·\(n)"
-            case .gloryBe(let d): return "\(d)·G"
-            case .fatima(let d): return "\(d)·Fa"
-            }
-        case .closing:
-            return "End"
-        }
-    }
-
     static func compute(stepIndex: Int, steps: [RosaryStep], mystery: RosaryMystery) -> RosaryBeadPosition? {
         guard steps.indices.contains(stepIndex) else { return nil }
         let step = steps[stepIndex]
@@ -184,43 +166,23 @@ struct RosaryBeadPosition: Equatable {
     }
 }
 
+/// User-selectable bead indicator layouts (extend `allCases` when adding styles).
 enum RosaryBeadIndicatorStyle: String, CaseIterable, Identifiable {
     case decadeStrip
-    case chainGlyph
-    case medallion
 
     var id: String { rawValue }
 
     var displayName: String {
         switch self {
-        case .decadeStrip: return "A — Decade strip"
-        case .chainGlyph: return "B — Chain glyph"
-        case .medallion: return "C — Medallion"
+        case .decadeStrip: return "Decade dots"
         }
     }
-
-    #if DEBUG
-    static let storageKey = "debug.rosary.beadIndicatorStyle"
-    #endif
 
     static var current: RosaryBeadIndicatorStyle {
-        #if DEBUG
-        let raw = UserDefaults.standard.string(forKey: storageKey) ?? RosaryBeadIndicatorStyle.decadeStrip.rawValue
+        let defaults = UserDefaults.standard
+        let raw = defaults.string(forKey: AppSettings.beadIndicatorStyleKey)
+            ?? defaults.string(forKey: "debug.rosary.beadIndicatorStyle")
+            ?? RosaryBeadIndicatorStyle.decadeStrip.rawValue
         return RosaryBeadIndicatorStyle(rawValue: raw) ?? .decadeStrip
-        #else
-        return .decadeStrip
-        #endif
     }
-
-    #if DEBUG
-    static func cycleNext() {
-        let all = RosaryBeadIndicatorStyle.allCases
-        guard let idx = all.firstIndex(of: current) else {
-            UserDefaults.standard.set(RosaryBeadIndicatorStyle.decadeStrip.rawValue, forKey: storageKey)
-            return
-        }
-        let next = all[(idx + 1) % all.count]
-        UserDefaults.standard.set(next.rawValue, forKey: storageKey)
-    }
-    #endif
 }

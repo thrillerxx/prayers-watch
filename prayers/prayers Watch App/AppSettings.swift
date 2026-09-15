@@ -16,6 +16,8 @@ enum AppSettings {
     static let hapticsKey = "settings.rosary.haptics"           // Bool
     static let includeFatimaKey = "settings.rosary.includeFatima" // Bool
     static let includeStJosephKey = "settings.rosary.includeStJoseph" // Bool
+    /// Rosary now-playing bead indicator layout (more styles later).
+    static let beadIndicatorStyleKey = "settings.rosary.beadIndicatorStyle"
 
     // Appearance (named presets)
     static let colorThemeKey = "settings.appearance.colorTheme" // String rawValue AppColorTheme

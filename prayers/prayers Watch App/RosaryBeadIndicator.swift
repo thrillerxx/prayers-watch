@@ -7,19 +7,15 @@ struct RosaryBeadIndicator: View {
     var accentDark: Color
     var dimForeground: Color
 
-    #if DEBUG
-    @AppStorage(RosaryBeadIndicatorStyle.storageKey) private var styleRaw: String = RosaryBeadIndicatorStyle.decadeStrip.rawValue
-    #endif
-
     var body: some View {
         Group {
-            switch resolvedStyle {
-            case .decadeStrip:
-                decadeStripStyle
-            case .chainGlyph:
-                chainGlyphStyle
-            case .medallion:
-                medallionStyle
+            switch position.phase {
+            case .opening(let bead):
+                openingStrip(bead: bead)
+            case .decade(let bead):
+                decadeStrip(bead: bead)
+            case .closing:
+                closingStrip
             }
         }
         .frame(width: 40, height: 40)
@@ -27,20 +23,6 @@ struct RosaryBeadIndicator: View {
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(position.accessibilityLabel)
         .accessibilityIdentifier("RosaryBeadIndicator")
-        #if DEBUG
-        .onLongPressGesture(minimumDuration: 0.6) {
-            RosaryBeadIndicatorStyle.cycleNext()
-            styleRaw = RosaryBeadIndicatorStyle.current.rawValue
-        }
-        #endif
-    }
-
-    private var resolvedStyle: RosaryBeadIndicatorStyle {
-        #if DEBUG
-        RosaryBeadIndicatorStyle(rawValue: styleRaw) ?? .decadeStrip
-        #else
-        .decadeStrip
-        #endif
     }
 
     private var indicatorGlassCircle: some View {
@@ -54,21 +36,6 @@ struct RosaryBeadIndicator: View {
                         lineWidth: 0.5
                     )
             }
-    }
-
-    // MARK: - Style A: decade strip
-
-    private var decadeStripStyle: some View {
-        Group {
-            switch position.phase {
-            case .opening(let bead):
-                openingStrip(bead: bead)
-            case .decade(let bead):
-                decadeStrip(bead: bead)
-            case .closing:
-                closingStrip
-            }
-        }
     }
 
     private func openingStrip(bead: RosaryBeadPosition.OpeningBead) -> some View {
@@ -138,92 +105,6 @@ struct RosaryBeadIndicator: View {
         Image(systemName: "flag.checkered")
             .font(.system(size: 11, weight: .semibold))
             .foregroundStyle(dimForeground.opacity(0.75))
-    }
-
-    // MARK: - Style B: chain glyph
-
-    private var chainGlyphStyle: some View {
-        ZStack {
-            chainPath
-                .stroke(dimForeground.opacity(0.35), lineWidth: 1)
-            chainHighlight
-        }
-        .padding(4)
-    }
-
-    private var chainPath: Path {
-        var path = Path()
-        let w: CGFloat = 32
-        let h: CGFloat = 28
-        path.move(to: CGPoint(x: w * 0.12, y: h * 0.92))
-        path.addLine(to: CGPoint(x: w * 0.12, y: h * 0.55))
-        for i in 0..<5 {
-            let cx = w * (0.22 + CGFloat(i) * 0.14)
-            path.addArc(
-                center: CGPoint(x: cx, y: h * 0.42),
-                radius: 4,
-                startAngle: .degrees(200),
-                endAngle: .degrees(-20),
-                clockwise: true
-            )
-        }
-        return path
-    }
-
-    @ViewBuilder
-    private var chainHighlight: some View {
-        let segment = chainSegmentIndex
-        Circle()
-            .fill(activeGold)
-            .frame(width: 5, height: 5)
-            .offset(chainHighlightOffset(segment: segment))
-    }
-
-    private var chainSegmentIndex: Int {
-        switch position.phase {
-        case .opening: return 0
-        case .decade(let bead):
-            switch bead {
-            case .meditation(let d): return d
-            case .ourFather(let d): return d
-            case .hailMary(let d, _): return d
-            case .gloryBe(let d): return d
-            case .fatima(let d): return d
-            }
-        case .closing: return 6
-        }
-    }
-
-    private func chainHighlightOffset(segment: Int) -> CGSize {
-        if segment == 0 {
-            return CGSize(width: -12, height: 10)
-        }
-        if segment >= 6 {
-            return CGSize(width: 12, height: -8)
-        }
-        let x = -8 + CGFloat(segment) * 5.5
-        return CGSize(width: x, height: -4)
-    }
-
-    // MARK: - Style C: medallion + numeric
-
-    private var medallionStyle: some View {
-        ZStack {
-            Circle()
-                .fill(
-                    LinearGradient(
-                        colors: [accentLight, accentDark],
-                        startPoint: .top,
-                        endPoint: .bottom
-                    )
-                )
-                .frame(width: 28, height: 28)
-            Text(position.compactLabel)
-                .font(.system(size: 9, weight: .bold, design: .rounded))
-                .foregroundStyle(Color.black.opacity(0.82))
-                .minimumScaleFactor(0.5)
-                .lineLimit(1)
-        }
     }
 
     private func beadDot(large: Bool, lit: Bool) -> some View {

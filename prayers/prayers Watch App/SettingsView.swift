@@ -14,10 +14,7 @@ struct SettingsView: View {
 
     @AppStorage(AppSettings.colorThemeKey) private var colorThemeRaw: String = AppSettings.defaultColorTheme
     @AppStorage(AppSettings.appAlternateIconKey) private var alternateAppIconRaw: String = AlternateAppIconChoice.appDefault.rawValue
-
-    #if DEBUG
-    @AppStorage(RosaryBeadIndicatorStyle.storageKey) private var beadIndicatorStyleRaw: String = RosaryBeadIndicatorStyle.decadeStrip.rawValue
-    #endif
+    @AppStorage(AppSettings.beadIndicatorStyleKey) private var beadIndicatorStyleRaw: String = RosaryBeadIndicatorStyle.decadeStrip.rawValue
 
     @Environment(\.appColorTheme) private var theme
     @Environment(\.accessibilityReduceTransparency) private var reduceTransparency
@@ -65,7 +62,13 @@ struct SettingsView: View {
                         .font(DivinityPickerRow.titleFont)
                     Toggle("St. Joseph after Rosary", isOn: $includeStJoseph)
                         .font(DivinityPickerRow.titleFont)
-                    Text("Long-press the title on the Rosary screen to choose another mystery.")
+                    Picker("Bead indicator", selection: $beadIndicatorStyleRaw) {
+                        ForEach(RosaryBeadIndicatorStyle.allCases) { style in
+                            Text(style.displayName).tag(style.rawValue)
+                        }
+                    }
+                    .font(DivinityPickerRow.titleFont)
+                    Text("Long-press the mystery cover on the Rosary screen to choose another set.")
                         .font(DivinityPickerRow.subtitleFont)
                         .foregroundStyle(.secondary)
                 } header: {
@@ -128,21 +131,6 @@ struct SettingsView: View {
                     settingsSectionHeader("Watch face")
                 }
 
-                #if DEBUG
-                Section {
-                    Picker("Bead indicator", selection: $beadIndicatorStyleRaw) {
-                        ForEach(RosaryBeadIndicatorStyle.allCases) { style in
-                            Text(style.displayName).tag(style.rawValue)
-                        }
-                    }
-                    .font(DivinityPickerRow.titleFont)
-                    Text("Long-press the bead indicator on the Rosary player to cycle styles.")
-                        .font(DivinityPickerRow.subtitleFont)
-                        .foregroundStyle(.secondary)
-                } header: {
-                    settingsSectionHeader("Developer")
-                }
-                #endif
             }
             .listStyle(.plain)
             .scrollContentBackground(.hidden)
