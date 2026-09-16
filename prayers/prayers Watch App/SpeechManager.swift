@@ -34,6 +34,8 @@ final class SpeechManager: NSObject, ObservableObject, AVSpeechSynthesizerDelega
     private var lastSpeechRate: Float = 0.45
     private var lastPrayerId: String?
     private var lastVoiceBank: RosaryVoice?
+    private var lastSpeedPreset: String = AppSettings.defaultSpeechSpeed
+    private var clipFinishWatchdog: DispatchWorkItem?
 
     /// The utterance currently owned by this manager. Stale `didCancel`/`didFinish` from a
     /// previous `stopSpeaking` must not clear a newer speak/pause session.
@@ -92,12 +94,15 @@ final class SpeechManager: NSObject, ObservableObject, AVSpeechSynthesizerDelega
         lastSpeechRate = rate
         lastPrayerId = prayerId
         lastVoiceBank = voiceBank
+        lastSpeedPreset = AppSettings.normalizedSpeechSpeed(
+            UserDefaults.standard.string(forKey: AppSettings.speechSpeedKey)
+        )
         nowPlayingTitle = title
         nowPlayingArtworkSymbol = artworkSymbol
         nowPlayingSubtitle = subtitle
 
         if let prayerId, let voiceBank, let url = voiceBank.clipURL(prayerId: prayerId) {
-            playClip(url: url, avSpeechRate: rate)
+            playClip(url: url, speedPreset: lastSpeedPreset, fallbackSpeechRate: rate)
             return
         }
 
@@ -115,6 +120,7 @@ final class SpeechManager: NSObject, ObservableObject, AVSpeechSynthesizerDelega
 
         if let audioPlayer {
             guard state == .speaking || audioPlayer.isPlaying else { return }
+            cancelClipFinishWatchdog()
             audioPlayer.pause()
             freezeProgress()
             state = .paused
@@ -140,9 +146,11 @@ final class SpeechManager: NSObject, ObservableObject, AVSpeechSynthesizerDelega
 
     func resume() {
         if let audioPlayer, state == .paused {
+            audioPlayer.rate = AppSettings.clipPlaybackRate(forSpeed: lastSpeedPreset)
             audioPlayer.play()
             unfreezeProgress()
             state = .speaking
+            armClipFinishWatchdog(player: audioPlayer)
             return
         }
         if synthesizer.isPaused {
@@ -179,10 +187,12 @@ final class SpeechManager: NSObject, ObservableObject, AVSpeechSynthesizerDelega
     /// Restart the current line of TTS from the beginning (prayer detail “rewind” control).
     func replayFromStart() {
         if let audioPlayer {
+            audioPlayer.rate = AppSettings.clipPlaybackRate(forSpeed: lastSpeedPreset)
             audioPlayer.currentTime = 0
             audioPlayer.play()
             restartProgressTracking(duration: clipProgressDuration(player: audioPlayer))
             state = .speaking
+            armClipFinishWatchdog(player: audioPlayer)
             return
         }
         let t = lastSpeechText.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -227,6 +237,37 @@ final class SpeechManager: NSObject, ObservableObject, AVSpeechSynthesizerDelega
 
     func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
         guard player === audioPlayer else { return }
+        finishClipPlayback(successfully: flag)
+    }
+
+    private func playClip(url: URL, speedPreset: String, fallbackSpeechRate: Float) {
+        do {
+            let player = try AVAudioPlayer(contentsOf: url)
+            player.delegate = self
+            player.enableRate = true
+            player.prepareToPlay()
+            let clipRate = AppSettings.clipPlaybackRate(forSpeed: speedPreset)
+            player.rate = clipRate
+            audioPlayer = player
+            restartProgressTracking(duration: clipProgressDuration(player: player))
+            state = .speaking
+            player.play()
+            player.rate = clipRate
+            armClipFinishWatchdog(player: player)
+        } catch {
+            audioPlayer = nil
+            restartProgressTracking(estimatedDurationForText: lastSpeechText, rate: fallbackSpeechRate)
+            state = .speaking
+            let utterance = AVSpeechUtterance(string: lastSpeechText)
+            utterance.voice = AVSpeechSynthesisVoice(language: lastSpeechVoice)
+            utterance.rate = fallbackSpeechRate
+            activeUtterance = utterance
+            synthesizer.speak(utterance)
+        }
+    }
+
+    private func finishClipPlayback(successfully flag: Bool) {
+        cancelClipFinishWatchdog()
         audioPlayer = nil
         resetProgressTimersOnly()
         playbackProgress = 0
@@ -238,33 +279,21 @@ final class SpeechManager: NSObject, ObservableObject, AVSpeechSynthesizerDelega
         }
     }
 
-    private func playClip(url: URL, avSpeechRate: Float) {
-        do {
-            let player = try AVAudioPlayer(contentsOf: url)
-            player.delegate = self
-            player.enableRate = true
-            player.rate = clipRate(fromAVSpeechRate: avSpeechRate)
-            player.prepareToPlay()
-            audioPlayer = player
-            restartProgressTracking(duration: clipProgressDuration(player: player))
-            state = .speaking
-            player.play()
-        } catch {
-            audioPlayer = nil
-            restartProgressTracking(estimatedDurationForText: lastSpeechText, rate: avSpeechRate)
-            state = .speaking
-            let utterance = AVSpeechUtterance(string: lastSpeechText)
-            utterance.voice = AVSpeechSynthesisVoice(language: lastSpeechVoice)
-            utterance.rate = avSpeechRate
-            activeUtterance = utterance
-            synthesizer.speak(utterance)
+    private func armClipFinishWatchdog(player: AVAudioPlayer) {
+        cancelClipFinishWatchdog()
+        let remaining = max(0.4, (player.duration - player.currentTime) / max(0.5, Double(player.rate)))
+        let item = DispatchWorkItem { [weak self, weak player] in
+            guard let self, let player, player === self.audioPlayer else { return }
+            guard self.state == .speaking, !player.isPlaying else { return }
+            self.finishClipPlayback(successfully: true)
         }
+        clipFinishWatchdog = item
+        DispatchQueue.main.asyncAfter(deadline: .now() + remaining + 0.4, execute: item)
     }
 
-    private func clipRate(fromAVSpeechRate rate: Float) -> Float {
-        if rate <= 0.38 { return 0.85 }
-        if rate <= 0.45 { return 0.92 }
-        return 1.0
+    private func cancelClipFinishWatchdog() {
+        clipFinishWatchdog?.cancel()
+        clipFinishWatchdog = nil
     }
 
     private func clipProgressDuration(player: AVAudioPlayer) -> TimeInterval {
@@ -273,6 +302,7 @@ final class SpeechManager: NSObject, ObservableObject, AVSpeechSynthesizerDelega
     }
 
     private func stopEnginesPreservingCallback() {
+        cancelClipFinishWatchdog()
         audioPlayer?.delegate = nil
         audioPlayer?.stop()
         audioPlayer = nil
@@ -283,7 +313,8 @@ final class SpeechManager: NSObject, ObservableObject, AVSpeechSynthesizerDelega
     private func activateSpeechAudioSession() {
         #if os(watchOS) || os(iOS)
         let session = AVAudioSession.sharedInstance()
-        try? session.setCategory(.playback, mode: .spokenAudio, options: [.duckOthers])
+        // `.default` (not `.spokenAudio`) so AVAudioPlayer.enableRate actually changes clip speed.
+        try? session.setCategory(.playback, mode: .default, options: [.duckOthers])
         try? session.setActive(true)
         #endif
     }

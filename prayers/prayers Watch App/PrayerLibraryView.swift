@@ -392,6 +392,7 @@ struct PrayerDetailView: View {
     }
 
     @ObservedObject private var speech = SpeechManager.shared
+    @AppStorage(AppSettings.speechSpeedKey) private var speechSpeed: String = AppSettings.defaultSpeechSpeed
 
     @Environment(\.appColorTheme) private var theme
     @Environment(\.accessibilityReduceTransparency) private var reduceTransparency
@@ -446,7 +447,7 @@ struct PrayerDetailView: View {
         speech.speak(
             text: text,
             voiceLanguage: "en-US",
-            rate: 0.45,
+            rate: AppSettings.avSpeechRate(forSpeed: speechSpeed),
             title: prayer.title,
             artworkSymbol: prayer.id.hasPrefix("mass_") ? "building.columns" : "book.pages",
             subtitle: prayer.id.hasPrefix("mass_") ? "Mass" : "Prayer",

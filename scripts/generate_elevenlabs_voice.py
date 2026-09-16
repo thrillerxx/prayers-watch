@@ -28,7 +28,7 @@ MODEL_ID = "eleven_multilingual_v2"
 SHORTLIST = [
     ("will", "bIHbv24MWmeRgasZH58o", "Will"),
     ("vestal", "80BSYnPfJdew4qey6gkW", "Vestal"),
-    ("sofia-soft", "d3VKSMWd3Wo3CCCSDwEo", "Sofia Soft"),
+    ("sofia-soft", "d3VKSMWd3Wo3CCCSDwEo", "Sofia"),
     ("setsuna", "l0IENxUSt1LQkQMIG7Ww", "Setsuna"),
     ("rowan", "kLhAstPcnnPxqzk6gS5i", "Rowan"),
     ("maxwell", "U9j1BBtczrnky1SP7UBR", "Maxwell"),

@@ -229,12 +229,7 @@ final class RosarySessionController: ObservableObject {
         let g = playbackGeneration
         let spokenIdx = idx
 
-        let rate: Float
-        switch speechSpeed {
-        case "veryslow": rate = 0.35
-        case "slow": rate = 0.42
-        default: rate = 0.50
-        }
+        let rate = AppSettings.avSpeechRate(forSpeed: speechSpeed)
 
         let prayerId: String?
         switch steps[idx].content {

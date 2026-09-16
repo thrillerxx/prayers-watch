@@ -86,7 +86,7 @@ struct SettingsView: View {
                     Picker("Speech Speed", selection: $speechSpeed) {
                         Text("Very Slow").tag("veryslow")
                         Text("Slow").tag("slow")
-                        Text("Normal").tag("normal")
+                        Text("Fast").tag("fast")
                     }
                     .font(DivinityPickerRow.titleFont)
 
@@ -141,6 +141,9 @@ struct SettingsView: View {
         .toolbarBackground(DivinityChrome.canvasBackground, for: .navigationBar)
         .toolbarBackground(.visible, for: .navigationBar)
         .tint(accent)
+        .onAppear {
+            speechSpeed = AppSettings.normalizedSpeechSpeed(speechSpeed)
+        }
         .onChange(of: alternateAppIconRaw) { _, newValue in
             WatchCompanionIconSync.shared.notifyPhoneIconChanged(alternateIconAssetName: newValue)
         }

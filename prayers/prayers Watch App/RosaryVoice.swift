@@ -17,7 +17,7 @@ enum RosaryVoice: String, CaseIterable, Identifiable {
         switch self {
         case .will: return "Will"
         case .vestal: return "Vestal"
-        case .sofiaSoft: return "Sofia Soft"
+        case .sofiaSoft: return "Sofia"
         case .setsuna: return "Setsuna"
         case .rowan: return "Rowan"
         case .maxwell: return "Maxwell"

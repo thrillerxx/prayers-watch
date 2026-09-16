@@ -9,7 +9,7 @@ enum AppSettings {
     static let rosaryVoiceKey = "settings.rosary.voice"         // RosaryVoice rawValue (ElevenLabs bank)
 
     // New pacing controls
-    static let speechSpeedKey = "settings.rosary.speechSpeed"   // String preset: slow|normal|fast
+    static let speechSpeedKey = "settings.rosary.speechSpeed"   // String preset: veryslow|slow|fast (legacy: normal)
     static let pauseBetweenPartsKey = "settings.rosary.pauseSeconds" // Int (1-10)
 
     // Rosary
@@ -28,7 +28,7 @@ enum AppSettings {
     // Defaults
     static let defaultVoiceLanguage = "en-US"
     static let defaultRosaryVoice = "will"
-    static let defaultSpeechSpeed = "slow" // veryslow|slow|normal
+    static let defaultSpeechSpeed = "slow" // veryslow|slow|fast
     static let defaultPauseBetweenPartsSeconds = 2
     static let defaultAutoAdvance = true
     static let defaultHaptics = true
@@ -36,4 +36,30 @@ enum AppSettings {
     static let defaultIncludeStJoseph = false
 
     static let defaultColorTheme = AppColorTheme.divinity.rawValue
+
+    static func normalizedSpeechSpeed(_ raw: String?) -> String {
+        switch raw ?? defaultSpeechSpeed {
+        case "veryslow": return "veryslow"
+        case "fast", "normal": return "fast"
+        default: return "slow"
+        }
+    }
+
+    /// AVSpeechUtterance.rate for system TTS fallback.
+    static func avSpeechRate(forSpeed raw: String?) -> Float {
+        switch normalizedSpeechSpeed(raw) {
+        case "veryslow": return 0.32
+        case "fast": return 0.52
+        default: return 0.42
+        }
+    }
+
+    /// AVAudioPlayer.rate for bundled ElevenLabs clips (0.5…2.0).
+    static func clipPlaybackRate(forSpeed raw: String?) -> Float {
+        switch normalizedSpeechSpeed(raw) {
+        case "veryslow": return 0.65
+        case "fast": return 1.20
+        default: return 0.85
+        }
+    }
 }
