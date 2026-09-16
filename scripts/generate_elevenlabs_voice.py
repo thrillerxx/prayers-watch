@@ -200,6 +200,21 @@ def cmd_audition(key: str, names: list[str]) -> None:
     print(f"wrote {AUDITION_DIR / 'voices.md'}")
 
 
+def cmd_ids(key: str, pairs: list[str]) -> None:
+    texts = prayer_texts()
+    AUDITION_DIR.mkdir(parents=True, exist_ok=True)
+    for pair in pairs:
+        if ":" not in pair:
+            raise SystemExit(f"expected slug:voice_id, got {pair!r}")
+        slug_name, voice_id = pair.split(":", 1)
+        slug_name = slug(slug_name)
+        voice_id = voice_id.strip()
+        for prayer_id in AUDITION_PRAYER_IDS:
+            dest = AUDITION_DIR / f"{slug_name}-{prayer_id}.mp3"
+            print(f"generating {dest.name} ({len(texts[prayer_id])} chars)", flush=True)
+            write_mp3(dest, synthesize(key, voice_id, texts[prayer_id]))
+
+
 def cmd_bank(key: str, voice_name: str) -> None:
     texts = prayer_texts()
     resolved = resolve_voices(key, [voice_name])
@@ -229,12 +244,16 @@ def main() -> None:
     sub = parser.add_subparsers(dest="cmd", required=True)
     audition = sub.add_parser("audition", help="Hail Mary + Creed for a handful of voices")
     audition.add_argument("--voices", nargs="+", default=list(AUDITION_VOICE_NAMES))
+    ids = sub.add_parser("ids", help="Hail Mary + Creed for explicit slug:voice_id pairs")
+    ids.add_argument("pairs", nargs="+", help="slug:voice_id")
     bank = sub.add_parser("bank", help="Render the full 51-clip Rosary bank")
     bank.add_argument("--voice", required=True, help="Premade voice name (e.g. Rachel)")
     args = parser.parse_args()
     key = load_api_key()
     if args.cmd == "audition":
         cmd_audition(key, args.voices)
+    elif args.cmd == "ids":
+        cmd_ids(key, args.pairs)
     elif args.cmd == "bank":
         cmd_bank(key, args.voice)
 
