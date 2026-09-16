@@ -1,7 +1,7 @@
 import Foundation
 
 /// Rosary / Library spoken voice.
-/// `machine` is Apple's built-in `AVSpeechSynthesizer` (the old English (US) option).
+/// `machine` is Apple's built-in `AVSpeechSynthesizer` (picker label: Apple Voice).
 /// The rest are bundled ElevenLabs VoiceBank clips (operator shortlist, 2026-09-16).
 enum RosaryVoice: String, CaseIterable, Identifiable {
     case machine
@@ -18,7 +18,7 @@ enum RosaryVoice: String, CaseIterable, Identifiable {
 
     var displayName: String {
         switch self {
-        case .machine: return "Machine"
+        case .machine: return "Apple Voice"
         case .will: return "Will"
         case .vestal: return "Vestal"
         case .sofiaSoft: return "Sofia"

@@ -72,7 +72,7 @@ final class SpeechManager: NSObject, ObservableObject, AVSpeechSynthesizerDelega
     }
 
     /// Starts speaking new text. Always stops any currently playing speech first.
-    /// Bundled VoiceBank clips play when the selected voice uses them; Machine uses system TTS.
+    /// Bundled VoiceBank clips play when the selected voice uses them; Apple Voice uses system TTS.
     func speak(
         text: String,
         voiceLanguage: String = "en-US",
