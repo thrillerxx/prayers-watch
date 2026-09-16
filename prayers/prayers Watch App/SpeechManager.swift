@@ -72,7 +72,7 @@ final class SpeechManager: NSObject, ObservableObject, AVSpeechSynthesizerDelega
     }
 
     /// Starts speaking new text. Always stops any currently playing speech first.
-    /// If `prayerId` has a bundled VoiceBank clip, that file plays instead of system TTS.
+    /// Bundled VoiceBank clips play when the selected voice uses them; Machine uses system TTS.
     func speak(
         text: String,
         voiceLanguage: String = "en-US",
@@ -101,7 +101,8 @@ final class SpeechManager: NSObject, ObservableObject, AVSpeechSynthesizerDelega
         nowPlayingArtworkSymbol = artworkSymbol
         nowPlayingSubtitle = subtitle
 
-        if let prayerId, let voiceBank, let url = voiceBank.clipURL(prayerId: prayerId) {
+        if let prayerId, let voiceBank, voiceBank.usesBundledClips,
+           let url = voiceBank.clipURL(prayerId: prayerId) {
             playClip(url: url, speedPreset: lastSpeedPreset, fallbackSpeechRate: rate)
             return
         }

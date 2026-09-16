@@ -77,7 +77,7 @@ The operator approved this Watch build as **perfect** (2026-09-15, updated after
 - v1 stays **English-only**. Do not start Spanish, mystery-picker redesign, or schema expansion unless explicitly assigned. Small UX / product updates on `main` are in scope when the operator asks.
 - Home: Rosary, Prayer Library, Mass Responses, Settings. Mass Responses stays in-app and **free** (ICEL). See `docs/licensing/mass-responses-licensing.md`.
 - One canonical prayer payload: `prayers/prayers Watch App/rosary_prayers_en.json`. Never add a second `prayers.json` / duplicate resource name to the Watch target.
-- Single audio session: starting a new prayer or Rosary step stops the current one. Rosary session state lives in `RosarySessionController` (survives navigation / mini-player). Speech is `SpeechManager.shared`. Rosary voice is a bundled ElevenLabs `VoiceBank` clip (Settings → Speech → Voice); system TTS is fallback only.
+- Single audio session: starting a new prayer or Rosary step stops the current one. Rosary session state lives in `RosarySessionController` (survives navigation / mini-player). Speech is `SpeechManager.shared`. Settings → Speech → Voice is **Machine** (Apple built-in `AVSpeechSynthesizer`, the old English (US) option) or a bundled ElevenLabs `VoiceBank` clip. System TTS is also the fallback if a clip is missing.
 - **Do not** put SwiftUI `VideoPlayer` in `AppShell` or `RosaryView`. On watchOS it becomes a Now Playing container and parks the 102pt mystery cover on the chin. Cover placement is a layout problem, not a video problem.
 - Prefer small SwiftUI views, value types, explicit errors. Files under ~500 lines. PascalCase Swift files.
 

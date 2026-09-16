@@ -1,7 +1,10 @@
 import Foundation
 
-/// Bundled ElevenLabs Rosary voices (operator shortlist, 2026-09-16).
+/// Rosary / Library spoken voice.
+/// `machine` is Apple's built-in `AVSpeechSynthesizer` (the old English (US) option).
+/// The rest are bundled ElevenLabs VoiceBank clips (operator shortlist, 2026-09-16).
 enum RosaryVoice: String, CaseIterable, Identifiable {
+    case machine
     case will
     case vestal
     case sofiaSoft = "sofia-soft"
@@ -15,6 +18,7 @@ enum RosaryVoice: String, CaseIterable, Identifiable {
 
     var displayName: String {
         switch self {
+        case .machine: return "Machine"
         case .will: return "Will"
         case .vestal: return "Vestal"
         case .sofiaSoft: return "Sofia"
@@ -26,6 +30,8 @@ enum RosaryVoice: String, CaseIterable, Identifiable {
         }
     }
 
+    var usesBundledClips: Bool { self != .machine }
+
     var folderName: String { rawValue }
 
     static var current: RosaryVoice {
@@ -35,6 +41,7 @@ enum RosaryVoice: String, CaseIterable, Identifiable {
     }
 
     func clipURL(prayerId: String) -> URL? {
+        guard usesBundledClips else { return nil }
         let name = "\(folderName)__\(prayerId)"
         if let nested = Bundle.main.url(
             forResource: name,

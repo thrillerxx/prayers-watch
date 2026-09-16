@@ -6,7 +6,7 @@ import SwiftUI
 enum AppSettings {
     // Speech
     static let voiceLanguageKey = "settings.voiceLanguage"      // e.g. en-US (system TTS fallback)
-    static let rosaryVoiceKey = "settings.rosary.voice"         // RosaryVoice rawValue (ElevenLabs bank)
+    static let rosaryVoiceKey = "settings.rosary.voice"         // RosaryVoice rawValue (machine | ElevenLabs bank)
 
     // New pacing controls
     static let speechSpeedKey = "settings.rosary.speechSpeed"   // veryslow|slow|normal|fast
