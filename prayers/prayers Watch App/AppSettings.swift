@@ -5,7 +5,8 @@ import SwiftUI
 /// Uses AppStorage so values persist across launches.
 enum AppSettings {
     // Speech
-    static let voiceLanguageKey = "settings.voiceLanguage"      // e.g. en-US
+    static let voiceLanguageKey = "settings.voiceLanguage"      // e.g. en-US (system TTS fallback)
+    static let rosaryVoiceKey = "settings.rosary.voice"         // RosaryVoice rawValue (ElevenLabs bank)
 
     // New pacing controls
     static let speechSpeedKey = "settings.rosary.speechSpeed"   // String preset: slow|normal|fast
@@ -26,6 +27,7 @@ enum AppSettings {
 
     // Defaults
     static let defaultVoiceLanguage = "en-US"
+    static let defaultRosaryVoice = "will"
     static let defaultSpeechSpeed = "slow" // veryslow|slow|normal
     static let defaultPauseBetweenPartsSeconds = 2
     static let defaultAutoAdvance = true

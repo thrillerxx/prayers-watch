@@ -449,7 +449,9 @@ struct PrayerDetailView: View {
             rate: 0.45,
             title: prayer.title,
             artworkSymbol: prayer.id.hasPrefix("mass_") ? "building.columns" : "book.pages",
-            subtitle: prayer.id.hasPrefix("mass_") ? "Mass" : "Prayer"
+            subtitle: prayer.id.hasPrefix("mass_") ? "Mass" : "Prayer",
+            prayerId: prayer.id,
+            voiceBank: RosaryVoice.current
         )
     }
 }

@@ -236,7 +236,21 @@ final class RosarySessionController: ObservableObject {
         default: rate = 0.50
         }
 
-        speech.speak(text: text, voiceLanguage: voiceLanguage, rate: rate) { [weak self] in
+        let prayerId: String?
+        switch steps[idx].content {
+        case .prayerId(let id):
+            prayerId = id
+        case .text:
+            prayerId = nil
+        }
+
+        speech.speak(
+            text: text,
+            voiceLanguage: voiceLanguage,
+            rate: rate,
+            prayerId: prayerId,
+            voiceBank: RosaryVoice.current
+        ) { [weak self] in
             DispatchQueue.main.async {
                 guard let self else { return }
                 if g != self.playbackGeneration { return }

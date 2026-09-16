@@ -2,7 +2,7 @@ import SwiftUI
 
 struct SettingsView: View {
 
-    @AppStorage(AppSettings.voiceLanguageKey) private var voiceLanguage: String = AppSettings.defaultVoiceLanguage
+    @AppStorage(AppSettings.rosaryVoiceKey) private var rosaryVoiceRaw: String = AppSettings.defaultRosaryVoice
 
     @AppStorage(AppSettings.speechSpeedKey) private var speechSpeed: String = AppSettings.defaultSpeechSpeed
     @AppStorage(AppSettings.pauseBetweenPartsKey) private var pauseBetweenPartsSeconds: Int = AppSettings.defaultPauseBetweenPartsSeconds
@@ -76,9 +76,10 @@ struct SettingsView: View {
                 }
 
                 Section {
-                    Picker("Voice", selection: $voiceLanguage) {
-                        Text("English (US)").tag("en-US")
-                        Text("English (UK)").tag("en-GB")
+                    Picker("Voice", selection: $rosaryVoiceRaw) {
+                        ForEach(RosaryVoice.allCases) { voice in
+                            Text(voice.displayName).tag(voice.rawValue)
+                        }
                     }
                     .font(DivinityPickerRow.titleFont)
 

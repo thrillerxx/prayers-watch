@@ -5,7 +5,7 @@ import AVFoundation
 ///
 /// NOTE: On Simulator, speech output can be muted/disabled depending on host audio.
 /// This manager focuses on correctness + state.
-final class SpeechManager: NSObject, ObservableObject, AVSpeechSynthesizerDelegate {
+final class SpeechManager: NSObject, ObservableObject, AVSpeechSynthesizerDelegate, AVAudioPlayerDelegate {
     static let shared = SpeechManager()
 
     enum State {
@@ -25,12 +25,15 @@ final class SpeechManager: NSObject, ObservableObject, AVSpeechSynthesizerDelega
     @Published private(set) var playbackProgress: Double = 0
 
     private let synthesizer = AVSpeechSynthesizer()
+    private var audioPlayer: AVAudioPlayer?
     private var onFinish: (() -> Void)?
 
     /// Last spoken payload so “from beginning” can restart without re-passing text from the view.
     private var lastSpeechText: String = ""
     private var lastSpeechVoice: String = "en-US"
     private var lastSpeechRate: Float = 0.45
+    private var lastPrayerId: String?
+    private var lastVoiceBank: RosaryVoice?
 
     /// The utterance currently owned by this manager. Stale `didCancel`/`didFinish` from a
     /// previous `stopSpeaking` must not clear a newer speak/pause session.
@@ -57,13 +60,17 @@ final class SpeechManager: NSObject, ObservableObject, AVSpeechSynthesizerDelega
     var isPaused: Bool { state == .paused }
 
     /// True when the synthesizer is actually producing audio (can lag behind `state`).
-    var isHardwareSpeaking: Bool { synthesizer.isSpeaking && !synthesizer.isPaused }
+    var isHardwareSpeaking: Bool {
+        if let audioPlayer, audioPlayer.isPlaying { return true }
+        return synthesizer.isSpeaking && !synthesizer.isPaused
+    }
 
     var canReplayCurrentUtterance: Bool {
         !lastSpeechText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
     }
 
     /// Starts speaking new text. Always stops any currently playing speech first.
+    /// If `prayerId` has a bundled VoiceBank clip, that file plays instead of system TTS.
     func speak(
         text: String,
         voiceLanguage: String = "en-US",
@@ -71,24 +78,31 @@ final class SpeechManager: NSObject, ObservableObject, AVSpeechSynthesizerDelega
         title: String? = nil,
         artworkSymbol: String? = nil,
         subtitle: String? = nil,
+        prayerId: String? = nil,
+        voiceBank: RosaryVoice? = nil,
         onFinish: (() -> Void)? = nil
     ) {
         activateSpeechAudioSession()
-        synthesizer.stopSpeaking(at: .immediate)
+        stopEnginesPreservingCallback()
 
         pausedByStoppingUtterance = false
         self.onFinish = onFinish
         lastSpeechText = text
         lastSpeechVoice = voiceLanguage
         lastSpeechRate = rate
+        lastPrayerId = prayerId
+        lastVoiceBank = voiceBank
         nowPlayingTitle = title
         nowPlayingArtworkSymbol = artworkSymbol
         nowPlayingSubtitle = subtitle
 
+        if let prayerId, let voiceBank, let url = voiceBank.clipURL(prayerId: prayerId) {
+            playClip(url: url, avSpeechRate: rate)
+            return
+        }
+
         restartProgressTracking(estimatedDurationForText: text, rate: rate)
-
         state = .speaking
-
         let utterance = AVSpeechUtterance(string: text)
         utterance.voice = AVSpeechSynthesisVoice(language: voiceLanguage)
         utterance.rate = rate
@@ -98,6 +112,15 @@ final class SpeechManager: NSObject, ObservableObject, AVSpeechSynthesizerDelega
 
     func pause() {
         if state == .paused { return }
+
+        if let audioPlayer {
+            guard state == .speaking || audioPlayer.isPlaying else { return }
+            audioPlayer.pause()
+            freezeProgress()
+            state = .paused
+            return
+        }
+
         guard state == .speaking || synthesizer.isSpeaking else { return }
 
         // `.word` is more reliable than `.immediate` on watchOS; Simulator often still no-ops.
@@ -116,6 +139,12 @@ final class SpeechManager: NSObject, ObservableObject, AVSpeechSynthesizerDelega
     }
 
     func resume() {
+        if let audioPlayer, state == .paused {
+            audioPlayer.play()
+            unfreezeProgress()
+            state = .speaking
+            return
+        }
         if synthesizer.isPaused {
             pausedByStoppingUtterance = false
             synthesizer.continueSpeaking()
@@ -132,6 +161,8 @@ final class SpeechManager: NSObject, ObservableObject, AVSpeechSynthesizerDelega
             title: nowPlayingTitle,
             artworkSymbol: nowPlayingArtworkSymbol,
             subtitle: nowPlayingSubtitle,
+            prayerId: lastPrayerId,
+            voiceBank: lastVoiceBank,
             onFinish: finish
         )
     }
@@ -140,13 +171,20 @@ final class SpeechManager: NSObject, ObservableObject, AVSpeechSynthesizerDelega
         pausedByStoppingUtterance = false
         activeUtterance = nil
         onFinish = nil
-        synthesizer.stopSpeaking(at: .immediate)
+        stopEnginesPreservingCallback()
         state = .idle
         clearNowPlayingPresentation()
     }
 
     /// Restart the current line of TTS from the beginning (prayer detail “rewind” control).
     func replayFromStart() {
+        if let audioPlayer {
+            audioPlayer.currentTime = 0
+            audioPlayer.play()
+            restartProgressTracking(duration: clipProgressDuration(player: audioPlayer))
+            state = .speaking
+            return
+        }
         let t = lastSpeechText.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !t.isEmpty else { return }
         speak(
@@ -156,6 +194,8 @@ final class SpeechManager: NSObject, ObservableObject, AVSpeechSynthesizerDelega
             title: nowPlayingTitle,
             artworkSymbol: nowPlayingArtworkSymbol,
             subtitle: nowPlayingSubtitle,
+            prayerId: lastPrayerId,
+            voiceBank: lastVoiceBank,
             onFinish: nil
         )
     }
@@ -185,12 +225,82 @@ final class SpeechManager: NSObject, ObservableObject, AVSpeechSynthesizerDelega
         onFinish = nil
     }
 
+    func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
+        guard player === audioPlayer else { return }
+        audioPlayer = nil
+        resetProgressTimersOnly()
+        playbackProgress = 0
+        state = .idle
+        let cb = onFinish
+        onFinish = nil
+        if flag {
+            cb?()
+        }
+    }
+
+    private func playClip(url: URL, avSpeechRate: Float) {
+        do {
+            let player = try AVAudioPlayer(contentsOf: url)
+            player.delegate = self
+            player.enableRate = true
+            player.rate = clipRate(fromAVSpeechRate: avSpeechRate)
+            player.prepareToPlay()
+            audioPlayer = player
+            restartProgressTracking(duration: clipProgressDuration(player: player))
+            state = .speaking
+            player.play()
+        } catch {
+            audioPlayer = nil
+            restartProgressTracking(estimatedDurationForText: lastSpeechText, rate: avSpeechRate)
+            state = .speaking
+            let utterance = AVSpeechUtterance(string: lastSpeechText)
+            utterance.voice = AVSpeechSynthesisVoice(language: lastSpeechVoice)
+            utterance.rate = avSpeechRate
+            activeUtterance = utterance
+            synthesizer.speak(utterance)
+        }
+    }
+
+    private func clipRate(fromAVSpeechRate rate: Float) -> Float {
+        if rate <= 0.38 { return 0.85 }
+        if rate <= 0.45 { return 0.92 }
+        return 1.0
+    }
+
+    private func clipProgressDuration(player: AVAudioPlayer) -> TimeInterval {
+        let rate = max(0.5, Double(player.rate))
+        return max(1, player.duration / rate)
+    }
+
+    private func stopEnginesPreservingCallback() {
+        audioPlayer?.delegate = nil
+        audioPlayer?.stop()
+        audioPlayer = nil
+        synthesizer.stopSpeaking(at: .immediate)
+        activeUtterance = nil
+    }
+
     private func activateSpeechAudioSession() {
         #if os(watchOS) || os(iOS)
         let session = AVAudioSession.sharedInstance()
         try? session.setCategory(.playback, mode: .spokenAudio, options: [.duckOthers])
         try? session.setActive(true)
         #endif
+    }
+
+    private func restartProgressTracking(duration: TimeInterval) {
+        progressTimer?.invalidate()
+        progressTimer = nil
+        progressSegmentStart = Date()
+        progressAccumulated = 0
+        playbackProgress = 0
+        progressDuration = max(1, duration)
+
+        let timer = Timer(timeInterval: 0.2, repeats: true) { [weak self] _ in
+            self?.tickProgress()
+        }
+        progressTimer = timer
+        RunLoop.main.add(timer, forMode: .common)
     }
 
     private func restartProgressTracking(estimatedDurationForText text: String, rate: Float) {

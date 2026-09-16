@@ -110,6 +110,10 @@ prayers/artifacts/capture_*.png
 prayers/artifacts/mac-visible/*.png
 prayers/artifacts/rosary_session*.png
 
+# Python generate helpers
+scripts/__pycache__/
+*.pyc
+
 # RC sanity logs / xcresult (may contain machine-specific absolute paths)
 artifacts/sanity/
 

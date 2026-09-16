@@ -10,7 +10,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
-import sys
+import time
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -19,10 +19,22 @@ from pathlib import Path
 REPO = Path(__file__).resolve().parents[1]
 JSON_PATH = REPO / "prayers" / "prayers Watch App" / "rosary_prayers_en.json"
 AUDITION_DIR = REPO / "artifacts" / "voice-audition"
-VOICEBANK_DIR = REPO / "prayers" / "prayers Watch App" / "VoiceBank" / "en"
+VOICEBANK_ROOT = REPO / "prayers" / "prayers Watch App" / "VoiceBank"
 CREDENTIALS = Path("/home/car/.openclaw/credentials/prayers-watch-elevenlabs.env")
 API = "https://api.elevenlabs.io/v1"
 MODEL_ID = "eleven_multilingual_v2"
+
+# Operator-approved shortlist (2026-09-16). slug, voice_id, display name.
+SHORTLIST = [
+    ("will", "bIHbv24MWmeRgasZH58o", "Will"),
+    ("vestal", "80BSYnPfJdew4qey6gkW", "Vestal"),
+    ("sofia-soft", "d3VKSMWd3Wo3CCCSDwEo", "Sofia Soft"),
+    ("setsuna", "l0IENxUSt1LQkQMIG7Ww", "Setsuna"),
+    ("rowan", "kLhAstPcnnPxqzk6gS5i", "Rowan"),
+    ("maxwell", "U9j1BBtczrnky1SP7UBR", "Maxwell"),
+    ("emma", "GBRoBWNHbhTm0DtDRtiO", "Emma"),
+    ("deacon-hugh", "4cY3czg0tgLP4TfI4JqZ", "Deacon Hugh"),
+]
 
 AUDITION_PRAYER_IDS = ("hail_mary", "apostles_creed")
 # Premade library names on this account use "Name - descriptor".
@@ -85,23 +97,39 @@ def prayer_texts() -> dict[str, str]:
 
 
 def api_request(path: str, key: str, data: bytes | None = None, accept: str = "application/json") -> bytes:
-    req = urllib.request.Request(
-        f"{API}{path}",
-        data=data,
-        method="POST" if data is not None else "GET",
-        headers={
-            "xi-api-key": key,
-            "Accept": accept,
-        },
-    )
-    if data is not None:
-        req.add_header("Content-Type", "application/json")
-    try:
-        with urllib.request.urlopen(req, timeout=120) as resp:
-            return resp.read()
-    except urllib.error.HTTPError as exc:
-        body = exc.read().decode("utf-8", errors="replace")
-        raise SystemExit(f"ElevenLabs HTTP {exc.code} on {path}: {body[:500]}") from exc
+    delays = (1, 2, 4, 8, 16, 32)
+    last_error: Exception | None = None
+    for attempt, delay in enumerate((*delays, None)):
+        req = urllib.request.Request(
+            f"{API}{path}",
+            data=data,
+            method="POST" if data is not None else "GET",
+            headers={
+                "xi-api-key": key,
+                "Accept": accept,
+            },
+        )
+        if data is not None:
+            req.add_header("Content-Type", "application/json")
+        try:
+            with urllib.request.urlopen(req, timeout=120) as resp:
+                return resp.read()
+        except urllib.error.HTTPError as exc:
+            body = exc.read().decode("utf-8", errors="replace")
+            last_error = exc
+            if exc.code in (429, 500, 502, 503) and delay is not None:
+                print(f"retry {exc.code} in {delay}s ({path})", flush=True)
+                time.sleep(delay)
+                continue
+            raise SystemExit(f"ElevenLabs HTTP {exc.code} on {path}: {body[:500]}") from exc
+        except TimeoutError as exc:
+            last_error = exc
+            if delay is not None:
+                print(f"retry timeout in {delay}s ({path})", flush=True)
+                time.sleep(delay)
+                continue
+            raise
+    raise SystemExit(f"ElevenLabs failed after retries: {last_error}")
 
 
 def list_voices(key: str) -> dict[str, dict]:
@@ -158,7 +186,7 @@ def synthesize(key: str, voice_id: str, text: str) -> bytes:
             "voice_settings": VOICE_SETTINGS,
         }
     ).encode("utf-8")
-    path = f"/text-to-speech/{urllib.parse.quote(voice_id)}?output_format=mp3_44100_128"
+    path = f"/text-to-speech/{urllib.parse.quote(voice_id)}?output_format=mp3_44100_64"
     return api_request(path, key, data=body, accept="audio/mpeg")
 
 
@@ -215,27 +243,70 @@ def cmd_ids(key: str, pairs: list[str]) -> None:
             write_mp3(dest, synthesize(key, voice_id, texts[prayer_id]))
 
 
-def cmd_bank(key: str, voice_name: str) -> None:
+def is_mp3(path: Path) -> bool:
+    if not path.is_file() or path.stat().st_size < 1000:
+        return False
+    head = path.read_bytes()[:3]
+    return head == b"ID3" or head[:2] in (b"\xff\xfb", b"\xff\xf3", b"\xff\xf2")
+
+
+def render_bank(key: str, slug_name: str, voice_id: str, display_name: str) -> None:
     texts = prayer_texts()
-    resolved = resolve_voices(key, [voice_name])
-    _, voice_id = resolved[0]
-    VOICEBANK_DIR.mkdir(parents=True, exist_ok=True)
     missing_ids = [i for i in ROSARY_IDS if i not in texts]
     if missing_ids:
         raise SystemExit(f"Missing JSON text for: {', '.join(missing_ids)}")
+    dest_dir = VOICEBANK_ROOT / slug_name
+    dest_dir.mkdir(parents=True, exist_ok=True)
+    done = 0
+    skipped = 0
     for prayer_id in ROSARY_IDS:
-        dest = VOICEBANK_DIR / f"{prayer_id}.mp3"
-        print(f"generating {dest.name}", flush=True)
+        dest = dest_dir / f"{prayer_id}.mp3"
+        if is_mp3(dest):
+            skipped += 1
+            continue
+        print(f"generating {slug_name}/{dest.name}", flush=True)
         write_mp3(dest, synthesize(key, voice_id, texts[prayer_id]))
+        done += 1
+    print(f"{slug_name}: wrote {done}, skipped {skipped}, total {len(ROSARY_IDS)}")
+    manifest = {
+        "slug": slug_name,
+        "displayName": display_name,
+        "voiceId": voice_id,
+        "model": MODEL_ID,
+        "clipCount": len(ROSARY_IDS),
+    }
+    (dest_dir / "manifest.json").write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
+
+
+def cmd_bank(key: str, voice_name: str) -> None:
+    resolved = resolve_voices(key, [voice_name])
+    full_name, voice_id = resolved[0]
+    render_bank(key, slug(full_name), voice_id, full_name)
+
+
+def cmd_shortlist(key: str) -> None:
+    for slug_name, voice_id, display_name in SHORTLIST:
+        render_bank(key, slug_name, voice_id, display_name)
+    catalog = [
+        {"slug": slug_name, "displayName": display_name, "voiceId": voice_id}
+        for slug_name, voice_id, display_name in SHORTLIST
+    ]
+    (VOICEBANK_ROOT / "catalog.json").write_text(json.dumps(catalog, indent=2) + "\n", encoding="utf-8")
     note = REPO / "llm" / "implementation" / "2026-09-16-elevenlabs-voicebank.md"
-    note.write_text(
-        "Purpose: Record which ElevenLabs voice produced the bundled Rosary VoiceBank.\n\n"
-        f"# Rosary VoiceBank ({voice_name})\n\n"
-        f"- Voice: **{voice_name}** (`{voice_id}`)\n"
-        f"- Model: `{MODEL_ID}`\n"
-        f"- Files: `prayers/prayers Watch App/VoiceBank/en/*.mp3` ({len(ROSARY_IDS)} clips)\n",
-        encoding="utf-8",
-    )
+    lines = [
+        "Purpose: Record the operator-approved ElevenLabs Rosary voices bundled in VoiceBank.",
+        "",
+        "# Rosary VoiceBank shortlist (2026-09-16)",
+        "",
+        f"- Model: `{MODEL_ID}`",
+        f"- Output: `prayers/prayers Watch App/VoiceBank/{{slug}}/*.mp3` ({len(ROSARY_IDS)} clips each)",
+        "",
+        "| Slug | Display name |",
+        "| --- | --- |",
+    ]
+    for slug_name, _voice_id, display_name in SHORTLIST:
+        lines.append(f"| `{slug_name}` | {display_name} |")
+    note.write_text("\n".join(lines) + "\n", encoding="utf-8")
     print(f"wrote {note}")
 
 
@@ -247,7 +318,8 @@ def main() -> None:
     ids = sub.add_parser("ids", help="Hail Mary + Creed for explicit slug:voice_id pairs")
     ids.add_argument("pairs", nargs="+", help="slug:voice_id")
     bank = sub.add_parser("bank", help="Render the full 51-clip Rosary bank")
-    bank.add_argument("--voice", required=True, help="Premade voice name (e.g. Rachel)")
+    bank.add_argument("--voice", required=True, help="Premade voice name (e.g. Will)")
+    sub.add_parser("shortlist", help="Render VoiceBanks for the operator-approved 8 voices")
     args = parser.parse_args()
     key = load_api_key()
     if args.cmd == "audition":
@@ -256,6 +328,8 @@ def main() -> None:
         cmd_ids(key, args.pairs)
     elif args.cmd == "bank":
         cmd_bank(key, args.voice)
+    elif args.cmd == "shortlist":
+        cmd_shortlist(key)
 
 
 if __name__ == "__main__":
