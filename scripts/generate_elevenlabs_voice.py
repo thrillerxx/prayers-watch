@@ -250,32 +250,28 @@ def is_mp3(path: Path) -> bool:
     return head == b"ID3" or head[:2] in (b"\xff\xfb", b"\xff\xf3", b"\xff\xf2")
 
 
+def clip_filename(slug_name: str, prayer_id: str) -> str:
+    """Unique bundle names. Xcode synchronized groups flatten resources to the app root."""
+    return f"{slug_name}__{prayer_id}.mp3"
+
+
 def render_bank(key: str, slug_name: str, voice_id: str, display_name: str) -> None:
     texts = prayer_texts()
     missing_ids = [i for i in ROSARY_IDS if i not in texts]
     if missing_ids:
         raise SystemExit(f"Missing JSON text for: {', '.join(missing_ids)}")
-    dest_dir = VOICEBANK_ROOT / slug_name
-    dest_dir.mkdir(parents=True, exist_ok=True)
+    VOICEBANK_ROOT.mkdir(parents=True, exist_ok=True)
     done = 0
     skipped = 0
     for prayer_id in ROSARY_IDS:
-        dest = dest_dir / f"{prayer_id}.mp3"
+        dest = VOICEBANK_ROOT / clip_filename(slug_name, prayer_id)
         if is_mp3(dest):
             skipped += 1
             continue
-        print(f"generating {slug_name}/{dest.name}", flush=True)
+        print(f"generating {dest.name}", flush=True)
         write_mp3(dest, synthesize(key, voice_id, texts[prayer_id]))
         done += 1
     print(f"{slug_name}: wrote {done}, skipped {skipped}, total {len(ROSARY_IDS)}")
-    manifest = {
-        "slug": slug_name,
-        "displayName": display_name,
-        "voiceId": voice_id,
-        "model": MODEL_ID,
-        "clipCount": len(ROSARY_IDS),
-    }
-    (dest_dir / "manifest.json").write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
 
 
 def cmd_bank(key: str, voice_name: str) -> None:

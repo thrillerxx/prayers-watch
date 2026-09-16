@@ -5,7 +5,7 @@ Purpose: Record the operator-approved ElevenLabs Rosary voices bundled in VoiceB
 Operator picked eight voices after audition. Each bank has 51 clips. Watch Settings → Speech → Voice selects the bank. `SpeechManager` plays the mp3; system TTS is fallback if a clip is missing.
 
 - Model: `eleven_multilingual_v2` (64 kbps mp3)
-- Output: `prayers/prayers Watch App/VoiceBank/{slug}/*.mp3`
+- Output: `prayers/prayers Watch App/VoiceBank/{slug}__{prayerId}.mp3` (flat unique names; Xcode synchronized groups copy resources to the app root and collide on `apostles_creed.mp3` if folders are used)
 - Default: Will
 - Liked now-playing layout is unchanged (no `VideoPlayer`)
 

@@ -35,10 +35,15 @@ enum RosaryVoice: String, CaseIterable, Identifiable {
     }
 
     func clipURL(prayerId: String) -> URL? {
-        Bundle.main.url(
-            forResource: prayerId,
+        let name = "\(folderName)__\(prayerId)"
+        if let nested = Bundle.main.url(
+            forResource: name,
             withExtension: "mp3",
-            subdirectory: "VoiceBank/\(folderName)"
-        )
+            subdirectory: "VoiceBank"
+        ) {
+            return nested
+        }
+        // Synchronized Watch target copies resources to the app root.
+        return Bundle.main.url(forResource: name, withExtension: "mp3")
     }
 }
