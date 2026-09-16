@@ -8,7 +8,7 @@ Operator picked eight voices after audition. Each bank has 51 clips. Watch Setti
 - Output: `prayers/prayers Watch App/VoiceBank/{slug}__{prayerId}.mp3` (flat unique names; Xcode synchronized groups copy resources to the app root and collide on `apostles_creed.mp3` if folders are used)
 - Default: Will
 - Display name: Sofia (files stay `sofia-soft__…`)
-- Clip speed follows Settings: Very Slow `0.65×`, Slow `0.85×`, Fast `1.20×`. Pause-between-parts still delays Auto-advance after each clip.
+- Clip speed follows Settings: Very Slow `0.65×`, Slow `0.82×`, Normal `1.00×`, Fast `1.20×`. Pause-between-parts still delays Auto-advance after each clip.
 - Liked now-playing layout is unchanged (no `VideoPlayer`)
 
 | Slug | Display name |

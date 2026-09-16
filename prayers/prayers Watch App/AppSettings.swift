@@ -9,7 +9,7 @@ enum AppSettings {
     static let rosaryVoiceKey = "settings.rosary.voice"         // RosaryVoice rawValue (ElevenLabs bank)
 
     // New pacing controls
-    static let speechSpeedKey = "settings.rosary.speechSpeed"   // String preset: veryslow|slow|fast (legacy: normal)
+    static let speechSpeedKey = "settings.rosary.speechSpeed"   // veryslow|slow|normal|fast
     static let pauseBetweenPartsKey = "settings.rosary.pauseSeconds" // Int (1-10)
 
     // Rosary
@@ -28,7 +28,7 @@ enum AppSettings {
     // Defaults
     static let defaultVoiceLanguage = "en-US"
     static let defaultRosaryVoice = "will"
-    static let defaultSpeechSpeed = "slow" // veryslow|slow|fast
+    static let defaultSpeechSpeed = "slow" // veryslow|slow|normal|fast
     static let defaultPauseBetweenPartsSeconds = 2
     static let defaultAutoAdvance = true
     static let defaultHaptics = true
@@ -40,7 +40,8 @@ enum AppSettings {
     static func normalizedSpeechSpeed(_ raw: String?) -> String {
         switch raw ?? defaultSpeechSpeed {
         case "veryslow": return "veryslow"
-        case "fast", "normal": return "fast"
+        case "normal": return "normal"
+        case "fast": return "fast"
         default: return "slow"
         }
     }
@@ -49,8 +50,9 @@ enum AppSettings {
     static func avSpeechRate(forSpeed raw: String?) -> Float {
         switch normalizedSpeechSpeed(raw) {
         case "veryslow": return 0.32
-        case "fast": return 0.52
-        default: return 0.42
+        case "normal": return 0.46
+        case "fast": return 0.54
+        default: return 0.40
         }
     }
 
@@ -58,8 +60,9 @@ enum AppSettings {
     static func clipPlaybackRate(forSpeed raw: String?) -> Float {
         switch normalizedSpeechSpeed(raw) {
         case "veryslow": return 0.65
+        case "normal": return 1.00
         case "fast": return 1.20
-        default: return 0.85
+        default: return 0.82
         }
     }
 }

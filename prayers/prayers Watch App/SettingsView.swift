@@ -86,6 +86,7 @@ struct SettingsView: View {
                     Picker("Speech Speed", selection: $speechSpeed) {
                         Text("Very Slow").tag("veryslow")
                         Text("Slow").tag("slow")
+                        Text("Normal").tag("normal")
                         Text("Fast").tag("fast")
                     }
                     .font(DivinityPickerRow.titleFont)
