@@ -46,7 +46,8 @@ On Omarchy: `/home/car/.openclaw/workspace/prayers-watch`. GitHub `thrillerxx/pr
 ## Current Line vs Regression Snapshots
 
 - **Develop on:** `main` (GitHub `thrillerxx/prayers-watch`).
-- **Liked complete Rosary:** tag `rosary-complete-liked` → `631b00f` (operator-approved 2026-09-15: Complete Rosary Prayer Guide sequence and wording, cover-only now-playing).
+- **Liked Rosary:** tag `rosary-liked` → `9bb27c4` (operator-approved: guide sequence/wording, cover-only now-playing, decade-dots bead indicator).
+- **Prior content snapshot:** tag `rosary-complete-liked` → `631b00f` (same content before bead indicator).
 - **Layout-only ancestor:** tag `rosary-nowplaying-liked` → `ad3bf36` (46mm Simulator cover layout).
 - **Older RC (regression only):** tag `rosary-watch-en-final-ui-rc` → peeled commit `21fde32` (annotated tag object `405490ed` — do not use as the code baseline).
 
@@ -159,7 +160,7 @@ Headless watch UI tests were added and improved. They give basic automated proof
 
 ## Important Commits and Tags
 
-**Current liked snapshot:** `rosary-complete-liked` → `631b00f`. Restore with `git switch --detach rosary-complete-liked`.
+**Current liked snapshot:** `rosary-liked` → `9bb27c4`. Restore with `git switch --detach rosary-liked`.
 
 **March 2026 RC (regression only):** `rosary-watch-en-final-ui-rc` → `21fde32` (annotated tag object `405490ed` — do not use as the code baseline).
 
@@ -194,7 +195,7 @@ Screenshots during UI test and polish work were commonly saved under a temporary
 v1 is **shippable-enough to iterate**:
 
 - EN content is complete; Mass Responses is on the home screen
-- Complete Rosary (guide sequence + wording + cover-only now-playing) is tagged `rosary-complete-liked` (`631b00f`)
+- Liked Rosary is tagged `rosary-liked` (`9bb27c4`)
 - Library filtering, single-session TTS, and headless watch UI tests are in place
 - Daily loop is GitHub air gap (Omarchy edit → operator Mac / Watch)
 
@@ -215,7 +216,7 @@ Work continues on `main`. The March RC tag is for regression, not a freeze.
 ## Recommended Instruction for Agents
 
 - **Use** `/home/car/.openclaw/workspace/prayers-watch` and `AGENTS.md`
-- **Develop on** `main`; liked snapshot `rosary-complete-liked` / `631b00f`; RC `21fde32` only for regression
+- **Develop on** `main`; liked snapshot `rosary-liked` / `9bb27c4`; RC `21fde32` only for regression
 - **Do not** start Spanish or Mystery Picker redesign
 - **Do not** work from stale duplicate workspace copies
 - **Do not** run Xcode or Simulator on Omarchy
@@ -226,4 +227,4 @@ Work continues on `main`. The March RC tag is for regression, not a freeze.
 
 ## One-Line Summary
 
-**Divinity Prayers Watch** is an EN-only Apple Watch + iOS companion app (Swift/SwiftUI) with `rosary_prayers_en.json`, Mass Responses, single-session TTS, and a liked complete Rosary. Develop on **`main`**. Daily loop: **GitHub air gap**. Liked tag: **rosary-complete-liked** → **631b00f**.
+**Divinity Prayers Watch** is an EN-only Apple Watch + iOS companion app (Swift/SwiftUI) with `rosary_prayers_en.json`, Mass Responses, single-session TTS, and a liked Rosary experience. Develop on **`main`**. Daily loop: **GitHub air gap**. Liked tag: **rosary-liked** → **9bb27c4**.

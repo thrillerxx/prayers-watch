@@ -4,7 +4,7 @@ Purpose: Step-by-step sanity pass for Divinity Prayers Watch on the operator Mac
 
 Run this **on the Mac** after [github-airgap.md](github-airgap.md). Agents do not SSH to the laptop.
 
-Default: current `main`. Liked complete Rosary: tag `rosary-complete-liked` (`631b00f`). For RC comparison only, check out tag `rosary-watch-en-final-ui-rc` (`21fde32`) first.
+Default: current `main`. Liked Rosary: tag `rosary-liked` (`9bb27c4`). For RC comparison only, check out tag `rosary-watch-en-final-ui-rc` (`21fde32`) first.
 
 ## 0) Confirm you are on the intended baseline
 From repo root:

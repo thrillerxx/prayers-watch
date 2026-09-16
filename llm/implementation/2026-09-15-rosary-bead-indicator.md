@@ -6,4 +6,4 @@ Purpose: Replace Rosary Forward with a read-only bead-position indicator (three 
 - **`RosaryBeadPosition`** maps `index` + `steps` to opening / decade / closing bead semantics.
 - **`RosaryBeadIndicator`:** decade dots (style A) only; B/C removed after operator review.
 - **Settings → Rosary → Bead indicator:** persists `AppSettings.beadIndicatorStyleKey` (single option “Decade dots” today; add cases to `RosaryBeadIndicatorStyle` when more layouts ship).
-- **Fallback unchanged:** `rosary-complete-liked` (`631b00f`) until a new liked snapshot is tagged.
+- **Liked snapshot:** tag `rosary-liked` → `9bb27c4` (operator-approved with decade-dots indicator).

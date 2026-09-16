@@ -44,24 +44,24 @@ Private hostnames, Tailscale IPs, and SSH targets live in **local** notes (`OMAR
 
 ## Liked Rosary fallback (do not lose this)
 
-The operator approved this Watch build as **perfect** (2026-09-15). Treat it as the **restore point** if Rosary sequence, prayer wording, or now-playing regresses.
+The operator approved this Watch build as **perfect** (2026-09-15, updated after bead indicator). Treat it as the **restore point** if Rosary sequence, prayer wording, now-playing, or bead indicator regresses.
 
 | What | Value |
 | --- | --- |
-| **Git tag** | `rosary-complete-liked` |
-| **Commit** | `631b00f` |
-| **Includes** | Complete Rosary Prayer Guide opening → decades → closing; supplied Creed and intention wording; cover-only now-playing (no prayer text on the player) |
+| **Git tag** | `rosary-liked` |
+| **Commit** | `9bb27c4` |
+| **Includes** | Complete Rosary Prayer Guide sequence and wording; cover-only now-playing; decade-dots bead indicator (no Forward); Settings → Rosary → Bead indicator (extensible) |
 
-- **Develop on** `main` for new work. Do **not** retag, delete, or move `rosary-complete-liked` unless the operator explicitly asks for a new liked snapshot.
-- **Restore fallback:** `git fetch origin --tags` then `git switch --detach rosary-complete-liked`
-- **Notes:** `llm/implementation/2026-09-15-rosary-complete-liked.md`
-- **Older tags (not this fallback):** layout-only `rosary-nowplaying-liked` (`ad3bf36`); March RC regression `rosary-watch-en-final-ui-rc` (`21fde32`).
+- **Develop on** `main` for new work. Do **not** retag, delete, or move `rosary-liked` unless the operator explicitly asks for a new liked snapshot.
+- **Restore fallback:** `git fetch origin --tags` then `git switch --detach rosary-liked`
+- **Notes:** `llm/implementation/2026-09-15-rosary-liked.md`
+- **Older tags (not this fallback):** content-only `rosary-complete-liked` (`631b00f`); layout-only `rosary-nowplaying-liked` (`ad3bf36`); March RC `rosary-watch-en-final-ui-rc` (`21fde32`).
 
 ---
 
 ## Product rules
 
-- Default branch is **`main`**. Liked fallback: **`rosary-complete-liked`** / **`631b00f`** (see section above).
+- Default branch is **`main`**. Liked fallback: **`rosary-liked`** / **`9bb27c4`** (see section above).
 - v1 stays **English-only**. Do not start Spanish, mystery-picker redesign, or schema expansion unless explicitly assigned. Small UX / product updates on `main` are in scope when the operator asks.
 - Home: Rosary, Prayer Library, Mass Responses, Settings. Mass Responses stays in-app and **free** (ICEL). See `docs/licensing/mass-responses-licensing.md`.
 - One canonical prayer payload: `prayers/prayers Watch App/rosary_prayers_en.json`. Never add a second `prayers.json` / duplicate resource name to the Watch target.
