@@ -1,23 +1,38 @@
 Purpose: Operator voice audition for Rosary TTS (Hail Mary + Apostles' Creed).
 
 Model: `eleven_multilingual_v2`. Speed 0.9. Stability 0.75.
-Listen on the Mac after a GitHub pull, or play the mp3s in this folder.
 
-| File | Voice | Prayer |
+The account only has **21 premade voices**. Round 1 (Sarah, Bella, Lily, George, Daniel, Brian) was already rejected. This pull adds the remaining premades that could still fit prayer, plus **library** voices (liturgy, pastoral, meditation, calm narrator).
+
+Start with the **new** files. Skip `sarah-`, `bella-`, `lily-`, `george-`, `daniel-`, `brian-`.
+
+## New premade (this account)
+
+| Voice | Hail Mary | Creed |
 | --- | --- | --- |
-| `alice-hail_mary.mp3` | Alice - Clear, Engaging Educator (`Xb7hH8MSUJpSbSDYk0k2`) | hail_mary |
-| `alice-apostles_creed.mp3` | Alice - Clear, Engaging Educator (`Xb7hH8MSUJpSbSDYk0k2`) | apostles_creed |
-| `bill-hail_mary.mp3` | Bill - Wise, Mature, Balanced (`pqHfZKP75CvOlQylNhV4`) | hail_mary |
-| `bill-apostles_creed.mp3` | Bill - Wise, Mature, Balanced (`pqHfZKP75CvOlQylNhV4`) | apostles_creed |
-| `chris-hail_mary.mp3` | Chris - Charming, Down-to-Earth (`iP95p4xoKVk53GoZ742B`) | hail_mary |
-| `chris-apostles_creed.mp3` | Chris - Charming, Down-to-Earth (`iP95p4xoKVk53GoZ742B`) | apostles_creed |
-| `eric-hail_mary.mp3` | Eric - Smooth, Trustworthy (`cjVigY5qzO86Huf0OWal`) | hail_mary |
-| `eric-apostles_creed.mp3` | Eric - Smooth, Trustworthy (`cjVigY5qzO86Huf0OWal`) | apostles_creed |
-| `matilda-hail_mary.mp3` | Matilda - Knowledgable, Professional (`XrExE9yKIg1WjnnlVkGX`) | hail_mary |
-| `matilda-apostles_creed.mp3` | Matilda - Knowledgable, Professional (`XrExE9yKIg1WjnnlVkGX`) | apostles_creed |
-| `river-hail_mary.mp3` | River - Relaxed, Neutral, Informative (`SAz9YHcvj6GT2YYXdXww`) | hail_mary |
-| `river-apostles_creed.mp3` | River - Relaxed, Neutral, Informative (`SAz9YHcvj6GT2YYXdXww`) | apostles_creed |
-| `roger-hail_mary.mp3` | Roger - Laid-Back, Casual, Resonant (`CwhRBWXzGAHq8TQ4Fs17`) | hail_mary |
-| `roger-apostles_creed.mp3` | Roger - Laid-Back, Casual, Resonant (`CwhRBWXzGAHq8TQ4Fs17`) | apostles_creed |
-| `will-hail_mary.mp3` | Will - Relaxed Optimist (`bIHbv24MWmeRgasZH58o`) | hail_mary |
-| `will-apostles_creed.mp3` | Will - Relaxed Optimist (`bIHbv24MWmeRgasZH58o`) | apostles_creed |
+| Alice — British educator | `alice-hail_mary.mp3` | `alice-apostles_creed.mp3` |
+| Bill — wise, mature | `bill-hail_mary.mp3` | `bill-apostles_creed.mp3` |
+| Chris — down-to-earth | `chris-hail_mary.mp3` | `chris-apostles_creed.mp3` |
+| Eric — smooth, trustworthy | `eric-hail_mary.mp3` | `eric-apostles_creed.mp3` |
+| Matilda — professional | `matilda-hail_mary.mp3` | `matilda-apostles_creed.mp3` |
+| River — relaxed, neutral | `river-hail_mary.mp3` | `river-apostles_creed.mp3` |
+| Roger — laid-back resonant | `roger-hail_mary.mp3` | `roger-apostles_creed.mp3` |
+| Will — relaxed | `will-hail_mary.mp3` | `will-apostles_creed.mp3` |
+
+## Library (not in the default 21)
+
+| Voice | Hail Mary | Creed |
+| --- | --- | --- |
+| Deacon Hugh — daily office / liturgy | `deacon-hugh-hail_mary.mp3` | `deacon-hugh-apostles_creed.mp3` |
+| Jamar — pastoral | `jamar-hail_mary.mp3` | `jamar-apostles_creed.mp3` |
+| Elliot — British meditation | `elliot-hail_mary.mp3` | `elliot-apostles_creed.mp3` |
+| Vestal — grounded fatherly narrator | `vestal-hail_mary.mp3` | `vestal-apostles_creed.mp3` |
+| Setsuna — calm clear narrator | `setsuna-hail_mary.mp3` | `setsuna-apostles_creed.mp3` |
+| Maxwell — calm smooth audiobook | `maxwell-hail_mary.mp3` | `maxwell-apostles_creed.mp3` |
+| Rowan — gentle British | `rowan-hail_mary.mp3` | `rowan-apostles_creed.mp3` |
+| Emma — soft-spoken British | `emma-hail_mary.mp3` | `emma-apostles_creed.mp3` |
+| Sofia Soft — meditation | `sofia-soft-hail_mary.mp3` | `sofia-soft-apostles_creed.mp3` |
+
+Skipped premades (wrong tone for prayer): Adam, Callum, Charlie, Harry, Jessica, Laura, Liam.
+
+If none of these work, next options are: pick a Voice Library listing from elevenlabs.io, or clone a voice you like.
