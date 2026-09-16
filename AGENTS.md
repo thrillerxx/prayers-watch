@@ -42,6 +42,18 @@ Private hostnames, Tailscale IPs, and SSH targets live in **local** notes (`OMAR
 
 ---
 
+## ElevenLabs TTS (Omarchy studio only)
+
+Operator key **`prayers-watch-tts`** (2026-09-16). Used only to **pre-render** Rosary audio on Omarchy. The Watch app plays bundled `VoiceBank` clips; this key is never shipped.
+
+- **Load from:** `/home/car/.openclaw/credentials/prayers-watch-elevenlabs.env` (mode `0600`). Variable: `ELEVENLABS_API_KEY`.
+- **Never** commit, print, or paste the value into git, chat, the Watch/iOS app, GitHub, or Vercel.
+- **Never** use `impress-dubbing-production` or `impress-prod-scribe-worker` for this app.
+- If the operator drops the key in **CFB**, copy it to that credentials path and record only the path here.
+- Generate script: `scripts/generate_elevenlabs_voice.py`.
+
+---
+
 ## Liked Rosary fallback (do not lose this)
 
 The operator approved this Watch build as **perfect** (2026-09-15, updated after bead indicator). Treat it as the **restore point** if Rosary sequence, prayer wording, now-playing, or bead indicator regresses.
