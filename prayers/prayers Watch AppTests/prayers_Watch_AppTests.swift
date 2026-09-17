@@ -116,6 +116,70 @@ struct prayers_Watch_AppTests {
         #expect(steps[ids.count - 3].title == "Let us pray")
     }
 
+    @Test func decadeAnnouncesUseOrdinalSpokenTitles() async throws {
+        let expected = ["1st Decade", "2nd Decade", "3rd Decade", "4th Decade", "5th Decade"]
+        for mystery in RosaryMystery.allCases {
+            let steps = RosaryScripts.full(mystery: mystery)
+            let titles = steps.compactMap { step -> String? in
+                guard case .prayerId(let id) = step.content, id.hasSuffix("_announce") else { return nil }
+                return step.title
+            }
+            #expect(titles == expected)
+        }
+    }
+
+    @Test func spokenDecadeAnnouncesAndScriptureCitations() async throws {
+        let prayers = try PrayerStore.load()
+        let textById = Dictionary(uniqueKeysWithValues: prayers.map { ($0.id, $0.translations["en"] ?? "") })
+        let ordinals = ["1st", "2nd", "3rd", "4th", "5th"]
+
+        for set in ["joyful", "luminous", "sorrowful", "glorious"] {
+            for (i, ordinal) in ordinals.enumerated() {
+                let n = i + 1
+                let announce = try #require(textById["mystery_\(set)_\(n)_announce"])
+                #expect(announce.hasPrefix("\(ordinal) Decade. "))
+                #expect(!announce.hasPrefix("\(n). "))
+
+                let meditation = try #require(textById["mystery_\(set)_\(n)_meditation"])
+                #expect(!meditation.hasPrefix("Mt "))
+                #expect(!meditation.hasPrefix("Mk "))
+                #expect(!meditation.hasPrefix("Lk "))
+                #expect(!meditation.hasPrefix("Jn "))
+                #expect(!meditation.hasPrefix("Universal Catechism"))
+                if meditation.hasPrefix("Acts ") {
+                    #expect(meditation.hasPrefix("Acts of the Apostles"))
+                }
+            }
+        }
+
+        let baptism = try #require(textById["mystery_luminous_1_meditation"])
+        #expect(baptism.hasPrefix("Matthew chapter 3, verses 13 through 17:"))
+        #expect(baptism.contains("to be baptized by him"))
+        #expect(baptism.contains("fulfil all righteousness"))
+        #expect(baptism.contains("this is my beloved son"))
+
+        let kingdom = try #require(textById["mystery_luminous_3_meditation"])
+        #expect(kingdom.hasPrefix("Mark chapter 1, verses 14 through 15:"))
+        #expect(!kingdom.hasPrefix("John "))
+        #expect(!kingdom.hasPrefix("Jn "))
+
+        let agony = try #require(textById["mystery_sorrowful_1_meditation"])
+        #expect(agony.contains("Verses 41 through 44"))
+        #expect(agony.contains("angel from heaven"))
+
+        let thorns = try #require(textById["mystery_sorrowful_3_meditation"])
+        #expect(thorns.contains("Verses 28 through 30"))
+        #expect(thorns.contains("scarlet robe"))
+
+        let assumption = try #require(textById["mystery_glorious_4_meditation"])
+        #expect(assumption.hasPrefix("Catechism of the Catholic Church, paragraph 974:"))
+
+        let transfiguration = try #require(textById["mystery_luminous_4_meditation"])
+        #expect(transfiguration.hasPrefix("Luke chapter 9, verses 28 through 36:"))
+        #expect(transfiguration.contains("listen to him"))
+        #expect(!transfiguration.contains("Moses and Elias"))
+    }
+
     @Test func rosaryScriptHasFiveAnnounceAndReflectPairs() async throws {
         let steps = RosaryScripts.full(mystery: .luminous, includeFatima: false, includeStJoseph: true)
         let ids = steps.compactMap(prayerId)

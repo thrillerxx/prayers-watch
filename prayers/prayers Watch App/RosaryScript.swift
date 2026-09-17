@@ -181,11 +181,11 @@ enum RosaryScripts {
         prayer("hail_mary", title: "Hail Mary — Charity")
         prayer("glory_be", title: "Glory Be")
 
-        // Each decade: numbered announce, Scripture, Our Father, 10 Hail Marys, Glory Be, optional Fatima.
+        // Each decade: ordinal announce, Scripture, Our Father, 10 Hail Marys, Glory Be, optional Fatima.
         for i in 1...5 {
             prayer(
                 "mystery_\(mystery.contentKey)_\(i)_announce",
-                title: "\(i)."
+                title: Self.decadeAnnounceTitle(i)
             )
             prayer(
                 "mystery_\(mystery.contentKey)_\(i)_meditation",
@@ -213,5 +213,16 @@ enum RosaryScripts {
         prayer("sign_of_cross", title: "Sign of the Cross")
 
         return steps
+    }
+
+    static func decadeAnnounceTitle(_ decade: Int) -> String {
+        switch decade {
+        case 1: return "1st Decade"
+        case 2: return "2nd Decade"
+        case 3: return "3rd Decade"
+        case 4: return "4th Decade"
+        case 5: return "5th Decade"
+        default: return "Decade \(decade)"
+        }
     }
 }

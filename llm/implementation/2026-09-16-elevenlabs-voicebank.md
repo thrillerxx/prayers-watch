@@ -9,6 +9,7 @@ Operator picked eight voices after audition. Each bank has 51 clips. Watch Setti
 - Default: Will
 - Display name: Sofia (files stay `sofia-soft__…`)
 - Clip speed follows Settings: Very Slow `0.65×`, Slow `0.82×`, Normal `1.00×`, Fast `1.20×`. Pause-between-parts still delays Auto-advance after each clip.
+- Decade announce clips speak `1st Decade. …` through `5th Decade. …`. Scripture clips speak full book names, chapter, and verses (see `2026-09-16-spoken-decade-scripture.md`). Re-render those clips with `python3 scripts/generate_elevenlabs_voice.py refresh --suffix _announce _meditation`.
 - Liked now-playing layout is unchanged (no `VideoPlayer`)
 
 | Slug | Display name |

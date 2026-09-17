@@ -255,7 +255,13 @@ def clip_filename(slug_name: str, prayer_id: str) -> str:
     return f"{slug_name}__{prayer_id}.mp3"
 
 
-def render_bank(key: str, slug_name: str, voice_id: str, display_name: str) -> None:
+def render_bank(
+    key: str,
+    slug_name: str,
+    voice_id: str,
+    display_name: str,
+    overwrite_suffixes: tuple[str, ...] = (),
+) -> None:
     texts = prayer_texts()
     missing_ids = [i for i in ROSARY_IDS if i not in texts]
     if missing_ids:
@@ -265,7 +271,8 @@ def render_bank(key: str, slug_name: str, voice_id: str, display_name: str) -> N
     skipped = 0
     for prayer_id in ROSARY_IDS:
         dest = VOICEBANK_ROOT / clip_filename(slug_name, prayer_id)
-        if is_mp3(dest):
+        force = any(prayer_id.endswith(suffix) for suffix in overwrite_suffixes)
+        if is_mp3(dest) and not force:
             skipped += 1
             continue
         print(f"generating {dest.name}", flush=True)
@@ -278,6 +285,19 @@ def cmd_bank(key: str, voice_name: str) -> None:
     resolved = resolve_voices(key, [voice_name])
     full_name, voice_id = resolved[0]
     render_bank(key, slug(full_name), voice_id, full_name)
+
+
+def cmd_refresh(key: str, suffixes: list[str]) -> None:
+    if not suffixes:
+        raise SystemExit("refresh requires at least one id suffix, e.g. _announce _meditation")
+    for slug_name, voice_id, display_name in SHORTLIST:
+        render_bank(
+            key,
+            slug_name,
+            voice_id,
+            display_name,
+            overwrite_suffixes=tuple(suffixes),
+        )
 
 
 def cmd_shortlist(key: str) -> None:
@@ -316,6 +336,8 @@ def main() -> None:
     bank = sub.add_parser("bank", help="Render the full 51-clip Rosary bank")
     bank.add_argument("--voice", required=True, help="Premade voice name (e.g. Will)")
     sub.add_parser("shortlist", help="Render VoiceBanks for the operator-approved 8 voices")
+    refresh = sub.add_parser("refresh", help="Overwrite VoiceBank clips whose ids end with the given suffixes")
+    refresh.add_argument("--suffix", nargs="+", required=True, help="e.g. _announce _meditation")
     args = parser.parse_args()
     key = load_api_key()
     if args.cmd == "audition":
@@ -326,6 +348,8 @@ def main() -> None:
         cmd_bank(key, args.voice)
     elif args.cmd == "shortlist":
         cmd_shortlist(key)
+    elif args.cmd == "refresh":
+        cmd_refresh(key, args.suffix)
 
 
 if __name__ == "__main__":
