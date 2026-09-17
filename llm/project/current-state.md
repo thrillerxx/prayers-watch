@@ -47,6 +47,7 @@ On Omarchy: `/home/car/.openclaw/workspace/prayers-watch`. GitHub `thrillerxx/pr
 
 - **Develop on:** `main` (GitHub `thrillerxx/prayers-watch`).
 - **Liked Rosary:** tag `rosary-liked` → `9bb27c4` (operator-approved: guide sequence/wording, cover-only now-playing, decade-dots bead indicator).
+- **Liked voice/scripture:** tag `rosary-voice-liked` → `dcb8a3c` (Eight ElevenLabs banks + Apple Voice; 1st–5th Decade; full citations).
 - **Prior content snapshot:** tag `rosary-complete-liked` → `631b00f` (same content before bead indicator).
 - **Layout-only ancestor:** tag `rosary-nowplaying-liked` → `ad3bf36` (46mm Simulator cover layout).
 - **Older RC (regression only):** tag `rosary-watch-en-final-ui-rc` → peeled commit `21fde32` (annotated tag object `405490ed` — do not use as the code baseline).

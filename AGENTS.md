@@ -67,6 +67,7 @@ The operator approved this Watch build as **perfect** (2026-09-15, updated after
 - **Develop on** `main` for new work. Do **not** retag, delete, or move `rosary-liked` unless the operator explicitly asks for a new liked snapshot.
 - **Restore fallback:** `git fetch origin --tags` then `git switch --detach rosary-liked`
 - **Notes:** `llm/implementation/2026-09-15-rosary-liked.md`
+- **Voice/scripture snapshot (2026-09-16):** tag `rosary-voice-liked` → `dcb8a3c`. Eight ElevenLabs banks + Apple Voice; 1st–5th Decade; full citations. Restore: `git switch --detach rosary-voice-liked`. Do **not** retag unless asked. Notes: `llm/implementation/2026-09-16-rosary-voice-liked.md`
 - **Older tags (not this fallback):** content-only `rosary-complete-liked` (`631b00f`); layout-only `rosary-nowplaying-liked` (`ad3bf36`); March RC `rosary-watch-en-final-ui-rc` (`21fde32`).
 
 ---
